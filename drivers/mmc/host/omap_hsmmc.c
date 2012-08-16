@@ -2808,13 +2808,13 @@ static int omap_hsmmc_suspend(struct device *dev)
 				mmc = host->mmc;
 				flush_delayed_work_sync(&mmc->disable);
 			}
-			mmc_host_enable(host->mmc);
+//			mmc_host_enable(host->mmc);
 			omap_hsmmc_disable_irq(host);
 			OMAP_HSMMC_WRITE(host->base, HCTL,
 				OMAP_HSMMC_READ(host->base, HCTL) & ~SDBP);
 			if (!mmc)
 				mmc_do_release_host(host->mmc);
-			mmc_host_disable(host->mmc);
+//			mmc_host_disable(host->mmc);
 
 			if (host->got_dbclk)
 				clk_disable(host->dbclk);
