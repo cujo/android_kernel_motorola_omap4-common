@@ -1,3 +1,6 @@
+280fd3d Fix defconfig
+c11eb92 Fix build script
+d46d4ad Added todays changelog
 9ee0432 intellideman: Fix enum value
 5c13721 CPU: fix wrong symbols
 21ec219 Added todays changelog
