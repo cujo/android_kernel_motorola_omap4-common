@@ -1,3 +1,5 @@
+b766668 Enable PM_FOOTPRINT to fix screen rotation
+eb469eb Added todays changelog
 eedc704 Added todays changelog
 e7be8a9 Merge branch 'JBX' into EDISON_WORKING
 89608db Update edison defconfig
@@ -31,15 +33,3 @@ ba7f7d7 Forgot the makefile entry for frandom
 4a1a52f Revert "Revert "Revert "Revert "ARM: smpboot: Enable interrupts after marking CPU online/active""""
 d8f8274 Revert "Revert "Revert "Revert "ARM: SMP: use a timing out completion for cpu hotplug""""
 f17eeb4 Revert "Revert "Revert "Revert "ARM: smp: Fix cpu_up() racing with sys_reboot""""
-6abb200 Added todays changelog
-9530f46 CPU: Fix typo
-aa41489 CPU: Define missing domain
-69c3039 Raise kernel version
-1a976f8 PM: Add missing function
-7acffdf OPP: Optimize DSS OPPs
-0584d5d DSS: Implement workaround for Errata ID:i733.
-1420feb PM: IVA AUTO RET relaxed workaround in idle path
-492a1a9 CPU: Fix a wron definition
-c358212 emif: Fix PWR DN value
-329c8ad EMIF: implementation of errata i735 for PM timer
-9b24882 Disable Intellidemand, Badass is default
