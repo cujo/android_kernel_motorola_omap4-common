@@ -34,10 +34,6 @@
 #include <linux/wakelock.h>
 #include <linux/workqueue.h>
 
-#ifdef CONFIG_TOUCH_WAKE
-#include <linux/touch_wake.h>
-#endif 
-
 #define CT405_I2C_RETRIES	2
 #define CT405_I2C_RETRY_DELAY	5
 
@@ -1256,12 +1252,6 @@ static DEVICE_ATTR(registers, 0644, ct405_registers_show,
 static irqreturn_t ct405_irq_handler(int irq, void *dev)
 {
 	struct ct405_data *ct = dev;
-
-#ifdef CONFIG_TOUCH_WAKE
-{
-proximity_detected();
-}
-#endif
 
 	disable_irq_nosync(ct->client->irq);
 

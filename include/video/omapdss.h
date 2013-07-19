@@ -338,8 +338,6 @@ static inline int omap_display_init(struct omap_dss_board_info *board_data)
 struct omap_display_platform_data {
 	struct omap_dss_board_info *board_data;
 	/* TODO: Additional members to be added when PM is considered */
-	int (*device_scale) (struct device *req_dev, struct device *target_dev,
-			unsigned long rate);
 };
 
 struct omap_video_timings {
@@ -503,9 +501,6 @@ struct omap_overlay_manager_info {
 
 	bool cpr_enable;
 	struct omap_dss_cpr_coefs cpr_coefs;
-#ifdef CONFIG_OMAP2_DSS_GAMMA_CONTROL
-	u8 gamma;
-#endif 
 };
 
 struct omap_overlay_manager {
@@ -528,8 +523,6 @@ struct omap_overlay_manager {
 	/* if true, info has been changed but not applied() yet */
 	bool info_dirty;
 	bool ignore_sync;
-
-	bool m2m_only;
 
 	int (*set_device)(struct omap_overlay_manager *mgr,
 		struct omap_dss_device *dssdev);
@@ -791,8 +784,6 @@ struct omap_dss_device *omap_dss_find_device(void *data,
 
 int omap_dss_start_device(struct omap_dss_device *dssdev);
 void omap_dss_stop_device(struct omap_dss_device *dssdev);
-
-void dss_m2m_clock_handling(struct omap_overlay_manager *mgr);
 
 int omap_dss_get_num_overlay_managers(void);
 struct omap_overlay_manager *omap_dss_get_overlay_manager(int num);

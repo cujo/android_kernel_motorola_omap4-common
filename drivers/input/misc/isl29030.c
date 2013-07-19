@@ -33,10 +33,6 @@
 #include <linux/uaccess.h>
 #include <linux/workqueue.h>
 
-#ifdef CONFIG_TOUCH_WAKE
-#include <linux/touch_wake.h>
-#endif 
-
 struct isl29030_data {
 	struct input_dev *dev;
 	struct i2c_client *client;
@@ -849,11 +845,6 @@ static irqreturn_t ld_isl29030_irq_handler(int irq, void *dev)
 {
 	struct isl29030_data *isl = dev;
 
-#ifdef CONFIG_TOUCH_WAKE
-{
-proximity_detected();
-}
-#endif
 	disable_irq_nosync(isl->client->irq);
 	queue_work(isl->workqueue, &isl->work);
 	enable_irq(isl->client->irq);

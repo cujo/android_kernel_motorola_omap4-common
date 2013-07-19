@@ -128,4 +128,3 @@ for CFG in $(sed -n "$SED_CONFIG_EXP" $TMP_FILE); do
 done
 
 clean_up
-
