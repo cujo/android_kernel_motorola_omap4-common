@@ -39,7 +39,6 @@ export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
 make ARCH=arm mapphone_edison_defconfig
-export LOCALVERSION="-Edison"
 
 # execute build command with "-j4 core flag" 
 # (You may change this to the count of your CPU.
