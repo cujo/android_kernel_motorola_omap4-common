@@ -22,7 +22,7 @@ make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
-cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/nightly/system/lib/modules/
+cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/edison/system/lib/modules/
 
 # Switch to kernel folder
 echo "Entering kernel source..."
@@ -46,13 +46,13 @@ make ARCH=arm mapphone_edison_defconfig
 echo "Building..."
 make -j4
 
-# Copy and rename the zImage into nightly/nightly package folder
+# Copy and rename the zImage into edison package folder
 # Keep in mind that we assume that the modules were already built and are in place
 # So we just copy and rename, then pack to zip including the date
 echo "Packaging flashable Zip file..."
-cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/nightly/system/etc/kexec/kernel
+cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/edison/system/etc/kexec/kernel
 
-cd /home/mnl-manz/razr_kdev_kernel/built/nightly
+cd /home/mnl-manz/razr_kdev_kernel/built/edison
 zip -r "3.0.8-Edison_$(date +"%Y-%m-%d").zip" *
 mv "3.0.8-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
 
