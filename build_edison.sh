@@ -18,7 +18,7 @@ lunch 12
 
 # built kernel & modules
 echo "Building modules..."
-make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig BOARD_KERNEL_CMDLINE='root=/dev/ram0 rw mem=1023M@0x80000000 console=null vram=10300K omapfb.vram=0:8256K,1:4K,2:2040K init=/init ip=off mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(webtop),p25(userdata) mot_sst=1 androidboot.bootloader=0x0A72' CONFIG_APANIC_PLABEL="mmcblk1p20" BOARD_KERNEL_BASE=0x80000000 BOARD_PAGE_SIZE=0x4096 $OUT/boot.img
+make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig BOARD_KERNEL_CMDLINE='root=/dev/ram0 rw mem=1023M@0x80000000 console=ttyO2,115200 vram=10300K omapfb.vram=0:8256K,1:4K,2:2040K init=/init ip=off mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(webtop),p25(userdata) mot_sst=1 androidboot.bootloader=0x0A72' CONFIG_APANIC_PLABEL="mmcblk1p20" BOARD_KERNEL_BASE=0x80000000 BOARD_PAGE_SIZE=0x4096 $OUT/boot.img
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
@@ -39,7 +39,7 @@ export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
 make ARCH=arm mapphone_OCEdison_defconfig
-export LOCALVERSION="-JBX-0.7a-Hybrid-Edison-Nightly"
+export LOCALVERSION="-Edison"
 
 # execute build command with "-j4 core flag" 
 # (You may change this to the count of your CPU.
@@ -54,7 +54,7 @@ echo "Packaging flashable Zip file..."
 cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/nightly/system/etc/kexec/kernel
 
 cd /home/mnl-manz/razr_kdev_kernel/built/nightly
-zip -r "JBX-Kernel-0.7a-Hybrid-Edison-Nightly_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.7a-Hybrid-Edison-Nightly_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+zip -r "3.0.8-Edison_$(date +"%Y-%m-%d").zip" *
+mv "3.0.8-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
 
 echo "done"

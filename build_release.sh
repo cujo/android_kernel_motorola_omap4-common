@@ -18,7 +18,7 @@ lunch 12
 
 # built kernel & modules
 echo "Building modules..."
-make -j8 TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCE_defconfig CONFIG_APANIC_PLABEL="mmcblk1p20" $OUT/boot.img
+make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig BOARD_KERNEL_CMDLINE='root=/dev/ram0 rw mem=1023M@0x80000000 console=null vram=10300K omapfb.vram=0:8256K,1:4K,2:2040K init=/init ip=off mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(webtop),p25(userdata) mot_sst=1 androidboot.bootloader=0x0A72' CONFIG_APANIC_PLABEL="mmcblk1p20" BOARD_KERNEL_BASE=0x80000000 BOARD_PAGE_SIZE=0x4096 $OUT/boot.img
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
@@ -38,8 +38,8 @@ export SUBARCH=arm
 export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
-make ARCH=arm mapphone_OCE_defconfig
-export LOCALVERSION="-JBX-0.7d-Hybrid"
+make ARCH=arm mapphone_OCEdison_defconfig
+export LOCALVERSION="-JBX-0.7b-Hybrid-Edison"
 
 # execute build command with "-j4 core flag" 
 # (You may change this to the count of your CPU.
@@ -54,8 +54,16 @@ echo "Packaging flashable Zip file..."
 cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/rls/system/etc/kexec/kernel
 
 cd /home/mnl-manz/razr_kdev_kernel/built/rls
-zip -r "JBX-Kernel-0.7d-Hybrid_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.7d-Hybrid_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+zip -r "JBX-Kernel-0.7b-Hybrid-Edison_$(date +"%Y-%m-%d").zip" *
+mv "JBX-Kernel-0.7b-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+
+# Exporting changelog to file
+echo "Exporting changelog to file: '/built/Changelog-[date]'"
+cd /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/
+git log --oneline --after="yesterday" > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
+git add changelog/ .
+git commit -m "Added todays changelog"
+git push origin JBX_EDISON
 
 # Exporting changelog to file
 echo "Exporting changelog to file: '/built/Changelog-[date]'"
@@ -63,6 +71,6 @@ cd /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common
 git log --oneline --after="yesterday" > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
 git add changelog/ .
 git commit -m "Added todays changelog"
-git push origin JBX_STABLE
+git push origin JBX_EDISON
 
 echo "done"
