@@ -65,12 +65,5 @@ git add changelog/ .
 git commit -m "Added todays changelog"
 git push origin JBX_EDISON
 
-# Exporting changelog to file
-echo "Exporting changelog to file: '/built/Changelog-[date]'"
-cd /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common
-git log --oneline --after="yesterday" > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
-git add changelog/ .
-git commit -m "Added todays changelog"
-git push origin JBX_EDISON
 
 echo "done"
