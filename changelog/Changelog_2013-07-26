@@ -1,2 +1,13 @@
+e638874 Revert "Revert "Revert "DSS: Implement workaround for Errata ID:i733."""
+e67bc4c Revert "PM: IVA AUTO RET relaxed workaround in idle path"
+fa4357f Revert "Revert "DSS: Implement workaround for Errata ID:i733.""
+5876a30 Build script update
+0ac1e50 Merge branch 'JBX_STABLE' into JBX_EDISON
+e7234ca Set new options in defconfig
+c8c2f69 defconfig: changes
+109007d add config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT to disable first_boot logic in mapphone_panel
+c5c179c defconfig for edison
+e2610be Add permission checking for binder IPC.
+8cb9df1 Added todays changelog
 5930710 Revert "DSS: Implement workaround for Errata ID:i733."
 7390b18 Remove anything related to touch_wake
