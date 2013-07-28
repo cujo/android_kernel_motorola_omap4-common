@@ -706,7 +706,6 @@ config OMAP_TEMP_CONTROL
 	help
 	  Enable support for Temp Control
 
-
 config FSYNC_CONTROL
         bool "Support for FSync Control"
         default y
@@ -725,5 +724,17 @@ config VIBRATOR_CONTROL
        help
 	 Say Y here to enable Vibrator Control
 
+config TOUCH_WAKE
+	bool "Support for Touch Wake"
+	default y
+	help
+	  Say Y here to enable Touch Wake
+
+config BATTERY_FRIEND
+        bool "Support for Battery friendly mode"
+        default y
+        help
+          Say Y here to enable Battery Friend Feature
+ 
 
 endif # MISC_DEVICES
