@@ -1,3 +1,5 @@
+b421332 More cleanup from touch_wake
+9f03d5d Added todays changelog and updated full history
 572b550 Defconfig: Resort options
 52f36a9 Revert "EMIF: implementation of errata i735 for PM timer"
 e66006c Cleanup from touch_wake code
