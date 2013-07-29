@@ -1,3 +1,14 @@
+572b550 Defconfig: Resort options
+52f36a9 Revert "EMIF: implementation of errata i735 for PM timer"
+e66006c Cleanup from touch_wake code
+9ed553e Revert "Revert "Revert "Fixing touchwake..."""
+4042914 Revert "Revert "Fixing touchwake...""
+a742321 Revert "Revert "Revert "Limit Live OC val to 119, fix a typo"""
+ef41b50 Revert "Revert "Limit Live OC val to 119, fix a typo""
+359ab42 Revert "Revert "Revert "PM: IVA AUTO RET relaxed workaround in idle path"""
+6bc40b9 Revert "Revert "PM: IVA AUTO RET relaxed workaround in idle path""
+2bb13aa0 Revert "Add additional topology option / fix SD card timeout"
+1445805 Added todays changelog and updated full history
 a65f6b0 Defconfig Updates
 34b630a Merge branch 'JBX_STABLE' into JBX_EDISON
 aafa8dc Defconfig updates
