@@ -1,0 +1,26 @@
+86131d5 Disbale snappy compress/decompress
+12e26bb Added todays changelog and updated full history
+b5016aa Disable Intellidemand
+d5ac6c2 Battery Friend: Fix missing rule definitions
+ff2779a Battery Friend: Move needed functions for governor change to early suspend area
+33a6680 Battery Friend: Extended with dynamic hotplug function. When Battery Friend is ON it will always turn OFF CPU1 during suspend (screen off) - but it will never allow to turn off CPU1 during active state (screen on). The code also protects against conflicts between using battery friend + a hotplug governor (which isn't a goot idea though). When Battery Friend is disabled the governor will be switched to hotplug during suspend and the prior governor will be restored on resum.
+da81176 Enable GPU higher clocks
+811278c Defconfig Updates, lower 2-phase freq for ondemand
+059b1fa defconfig updates: Snappy Compress/Decompress
+709ccba Clean up from fast charge
+2ff8bbb Battery Friend: Fix gamma finally
+73ab832 Battery Friend: Fix gamma value lock
+8b44931 Added todays changelog and updated full history
+b421332 More cleanup from touch_wake
+9f03d5d Added todays changelog and updated full history
+572b550 Defconfig: Resort options
+52f36a9 Revert "EMIF: implementation of errata i735 for PM timer"
+e66006c Cleanup from touch_wake code
+9ed553e Revert "Revert "Revert "Fixing touchwake..."""
+4042914 Revert "Revert "Fixing touchwake...""
+a742321 Revert "Revert "Revert "Limit Live OC val to 119, fix a typo"""
+ef41b50 Revert "Revert "Limit Live OC val to 119, fix a typo""
+359ab42 Revert "Revert "Revert "PM: IVA AUTO RET relaxed workaround in idle path"""
+6bc40b9 Revert "Revert "PM: IVA AUTO RET relaxed workaround in idle path""
+2bb13aa0 Revert "Add additional topology option / fix SD card timeout"
+1445805 Added todays changelog and updated full history
