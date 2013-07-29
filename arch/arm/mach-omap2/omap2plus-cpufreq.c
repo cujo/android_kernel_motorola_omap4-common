@@ -57,7 +57,6 @@ struct lpj_info {
 	unsigned int	freq;
 };
 
-
 static DEFINE_PER_CPU(struct lpj_info, lpj_ref);
 static struct lpj_info global_lpj_ref;
 #endif
@@ -89,10 +88,6 @@ static int polmax = 1000000;
 
 #ifdef CONFIG_CPU_FREQ_GOV_INTELLIDEMAND
 extern bool lmf_screen_state;
-#endif
-
-#ifdef CONFIG_RESUME_BOOST
-static void boost();
 #endif
 
 static unsigned int omap_getspeed(unsigned int cpu)
