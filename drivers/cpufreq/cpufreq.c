@@ -387,7 +387,7 @@ show_one(cpuinfo_min_freq, cpuinfo.min_freq);
 show_one(cpuinfo_max_freq, cpuinfo.max_freq);
 show_one(cpuinfo_transition_latency, cpuinfo.transition_latency);
 show_one(scaling_min_freq, min);
-show_one(scaling_max_freq, max);
+show_one(o chmo_freq, max);
 show_one(scaling_cur_freq, cur);
 show_one(cpu_utilization, util);
 
@@ -617,8 +617,16 @@ cpufreq_freq_attr_ro(bios_limit);
 cpufreq_freq_attr_ro(related_cpus);
 cpufreq_freq_attr_ro(affected_cpus);
 cpufreq_freq_attr_ro(cpu_utilization);
-cpufreq_freq_attr_rw(scaling_min_freq);
-cpufreq_freq_attr_rw(scaling_max_freq);
+#ifdef CONFIG_BATTERY_FRIEND
+if (likely(battery_friend_active))
+	{
+cpufreq_freq_attr_ro(scaling_min_freq);
+cpufreq_freq_attr_ro(scaling_max_freq);
+	}
+else
+cpufreq_freq_attr_ro(scaling_min_freq);
+cpufreq_freq_attr_ro(scaling_max_freq);
+#endif
 cpufreq_freq_attr_rw(scaling_governor);
 cpufreq_freq_attr_rw(scaling_setspeed);
 
