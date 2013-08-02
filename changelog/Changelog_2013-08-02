@@ -1,3 +1,5 @@
+5b16808 Battery Friend: Don't allow hotplug during device is active
+e8599a3 Added todays changelog and updated full history
 1ee4973 Fix build script
 fb397a0 Build script: Fix module source depencies address
 4767f14 Edison: Defconfig updates
@@ -40,9 +42,3 @@ f158c26 Added todays changelog and updated full history
 d76af32 Merge branch 'JBX' into JBX_STABLE
 af6b778 Battery Friend: Fix gamma finally
 30d97c9 Revert "Battery Friend: Change the gamma rule for generic change of gamma value"
-feeaded Added todays changelog and updated full history
-dfa8206 Disable Intellidemand
-2c895c6 Battery Friend: Fix missing rule definitions
-56cb71b Added todays changelog and updated full history
-820b0fa Battery Friend: Move needed functions for governor change to early suspend area
-8eb98da Battery Friend: Extended with dynamic hotplug function. When Battery Friend is ON it will always turn OFF CPU1 during suspend (screen off) - but it will never allow to turn off CPU1 during active state (screen on). The code also protects against conflicts between using battery friend + a hotplug governor (which isn't a goot idea though). When Battery Friend is disabled the governor will be switched to hotplug during suspend and the prior governor will be restored on resum.
