@@ -22,7 +22,7 @@ make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
-cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/rls/system/lib/modules/
+cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/edison/rls/system/lib/modules/
 
 # Switch to kernel folder
 echo "Entering kernel source..."
@@ -51,9 +51,9 @@ make -j4
 # Keep in mind that we assume that the modules were already built and are in place
 # So we just copy and rename, then pack to zip including the date
 echo "Packaging flashable Zip file..."
-cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/rls/system/etc/kexec/kernel
+cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/edison/rls/system/etc/kexec/kernel
 
-cd /home/mnl-manz/razr_kdev_kernel/built/rls
+cd /home/mnl-manz/razr_kdev_kernel/built/edison/rls
 zip -r "JBX-Kernel-0.8-Hybrid-Edison_$(date +"%Y-%m-%d").zip" *
 mv "JBX-Kernel-0.8-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
 
