@@ -17,7 +17,7 @@ export USE_CCACHE=1
 make ARCH=arm distclean
 make mrproper
 source build/envsetup.sh
-lunch 12
+lunch 84
 
 # built kernel & modules
 echo "Building modules..."
