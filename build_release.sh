@@ -14,7 +14,7 @@ cd ~/android/system
 make ARCH=arm distclean
 make mrproper
 source build/envsetup.sh
-lunch 12
+lunch 84
 
 # built kernel & modules
 echo "Building modules..."
@@ -39,7 +39,7 @@ export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
 make ARCH=arm mapphone_OCEdison_defconfig
-export LOCALVERSION="-JBX-0.7d-Hybrid-Edison"
+export LOCALVERSION="-JBX-0.8-Hybrid-Edison"
 
 # execute build command with "-j4 core flag" 
 # (You may change this to the count of your CPU.
@@ -54,8 +54,8 @@ echo "Packaging flashable Zip file..."
 cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/rls/system/etc/kexec/kernel
 
 cd /home/mnl-manz/razr_kdev_kernel/built/rls
-zip -r "JBX-Kernel-0.7d-Hybrid-Edison_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.7d-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+zip -r "JBX-Kernel-0.8-Hybrid-Edison_$(date +"%Y-%m-%d").zip" *
+mv "JBX-Kernel-0.8-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
 
 # Exporting changelog to file
 echo "Exporting changelog to file: '/built/Changelog-[date]'"
