@@ -1,3 +1,8 @@
+d2bb576 Defconfig updates
+3700102 defconfig updates: Enable default tracers
+80aa0fb Build script updates
+8ca28b2 Battery Friend: CPUFREQ: Added early suspend
+cae1ba9 Added todays changelog and updated full history
 dbfe895 Build script updates
 c8a7357 Battery Friend: Resort some options
 9486c42 Added todays changelog and updated full history
