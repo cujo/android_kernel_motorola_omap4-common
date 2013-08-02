@@ -1,0 +1,71 @@
+6354680 Fix build script
+ac0aa23 Merge brnach 'JBX_STABLE' into JBX_EDISON
+fb397a0 Build script: Fix module source depencies address
+4767f14 Edison: Defconfig updates
+66d8212 Added todays changelog and updated full history
+d2bb576 Defconfig updates
+3700102 defconfig updates: Enable default tracers
+80aa0fb Build script updates
+8ca28b2 Battery Friend: CPUFREQ: Added early suspend
+938d813 Revert "temp commit"
+060ceae temp commit
+cae1ba9 Added todays changelog and updated full history
+dbfe895 Build script updates
+c8a7357 Battery Friend: Resort some options
+9486c42 Added todays changelog and updated full history
+a0673b0 CPUFREQ: Remove battery friend option here
+d60c938 Added todays changelog and updated full history
+9a17e52 Defconfig: Add ARCH_HAS_RELAX
+bddcf8e Defconfig updstes
+dc1d026 [PATCH, v9] cgroups: introduce timer slack controller Changelog:
+274c9a6 dpll44xx: Set pr_info active for debugging
+db2dfd9 BLX: change complete chrgcmpl to charge terminate chrgterm
+ae6bb47 BLX: Try new config
+1206a83 Battery Friend / CPUFREQ: Fix typo
+1ed00cf Battery Friend / CPUFREQ: Lock the min/max frequencies - this should fix the overall behavior and doesn't need the frequency lock feature from App side
+3a0f1d0 Battery Friend: Fix accidently wrong definition The old config was controlled by an extra option. I forgot to remove/rename it - that's why early suspend didn't work for CPU
+95848ed Added new changelog
+ea14177 build script updates
+a57f9a8 build Script updates
+8b315a8 Added new changelog
+b843cdb Added todays changelog and updated full history
+132ca73 Edison defconfig update
+b27a9db Edison defconfig update
+b480afe Added todays changelog and updated full history
+1212aba Enable some options - since the kernel is booting again
+af22590 Added todays changelog and updated full history
+6e41a1d Revert from higher GPU clocks
+cdb7785 Added todays changelog and updated full history
+93261ed Revert from higher GPU clocks
+4e57ebd Added todays changelog and updated full history
+742abfd Disable DMA shared buffer
+71d81f1 Disable DMA shared buffer
+d099468 Added todays changelog and updated full history
+fe26ccb Added todays changelog and updated full history
+0abdd56 disable snappy compress/decompress - its not compatible
+f158c26 Added todays changelog and updated full history
+9c8fc48 Fix snappy
+86131d5 Disbale snappy compress/decompress
+12e26bb Added todays changelog and updated full history
+5d5d92b Added todays changelog and updated full history
+b5016aa Disable Intellidemand
+d5ac6c2 Battery Friend: Fix missing rule definitions
+ff2779a Battery Friend: Move needed functions for governor change to early suspend area
+33a6680 Battery Friend: Extended with dynamic hotplug function. When Battery Friend is ON it will always turn OFF CPU1 during suspend (screen off) - but it will never allow to turn off CPU1 during active state (screen on). The code also protects against conflicts between using battery friend + a hotplug governor (which isn't a goot idea though). When Battery Friend is disabled the governor will be switched to hotplug during suspend and the prior governor will be restored on resum.
+da81176 Enable GPU higher clocks
+811278c Defconfig Updates, lower 2-phase freq for ondemand
+059b1fa defconfig updates: Snappy Compress/Decompress
+709ccba Clean up from fast charge
+2ff8bbb Battery Friend: Fix gamma finally
+73ab832 Battery Friend: Fix gamma value lock
+77f4e2e USB: Fix wrong insertion
+5f87c5f Added todays changelog and updated full history
+d76af32 Merge branch 'JBX' into JBX_STABLE
+af6b778 Battery Friend: Fix gamma finally
+30d97c9 Revert "Battery Friend: Change the gamma rule for generic change of gamma value"
+feeaded Added todays changelog and updated full history
+dfa8206 Disable Intellidemand
+2c895c6 Battery Friend: Fix missing rule definitions
+56cb71b Added todays changelog and updated full history
+820b0fa Battery Friend: Move needed functions for governor change to early suspend area
+8eb98da Battery Friend: Extended with dynamic hotplug function. When Battery Friend is ON it will always turn OFF CPU1 during suspend (screen off) - but it will never allow to turn off CPU1 during active state (screen on). The code also protects against conflicts between using battery friend + a hotplug governor (which isn't a goot idea though). When Battery Friend is disabled the governor will be switched to hotplug during suspend and the prior governor will be restored on resum.
