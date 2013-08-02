@@ -1,3 +1,7 @@
+1ee4973 Fix build script
+fb397a0 Build script: Fix module source depencies address
+4767f14 Edison: Defconfig updates
+66d8212 Added todays changelog and updated full history
 d2bb576 Defconfig updates
 3700102 defconfig updates: Enable default tracers
 80aa0fb Build script updates
@@ -42,9 +46,3 @@ dfa8206 Disable Intellidemand
 56cb71b Added todays changelog and updated full history
 820b0fa Battery Friend: Move needed functions for governor change to early suspend area
 8eb98da Battery Friend: Extended with dynamic hotplug function. When Battery Friend is ON it will always turn OFF CPU1 during suspend (screen off) - but it will never allow to turn off CPU1 during active state (screen on). The code also protects against conflicts between using battery friend + a hotplug governor (which isn't a goot idea though). When Battery Friend is disabled the governor will be switched to hotplug during suspend and the prior governor will be restored on resum.
-4a64031 Enable GPU higher clocks
-292dbaf Defconfig Updates, lower 2-phase freq for ondemand
-8b50e58 defconfig updates: Snappy Compress/Decompress
-171f0ca Clean up from fast charge
-c44b70d3 Battery Friend: Change the gamma rule for generic change of gamma value
-30ca47a Battery Friend: Fix gamma value lock
