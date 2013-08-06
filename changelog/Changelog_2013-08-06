@@ -1,0 +1,10 @@
+99bd60d Raise Kernel version
+aea8aba Battery Friend: DOn't allow hotplug during active mode
+a907888 Battery Friend: Fix dynamic fsync
+d21fd4f Battery Friend: Fix typo
+908662b Added todays changelog and updated full history
+5b16808 Battery Friend: Don't allow hotplug during device is active
+e8599a3 Added todays changelog and updated full history
+1ee4973 Fix build script
+fb397a0 Build script: Fix module source depencies address
+4767f14 Edison: Defconfig updates
