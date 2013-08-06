@@ -1,3 +1,5 @@
+fb57941 Revert "Battery Friend: DOn't allow hotplug during active mode"
+b653cc3 Added todays changelog and updated full history
 99bd60d Raise Kernel version
 aea8aba Battery Friend: DOn't allow hotplug during active mode
 a907888 Battery Friend: Fix dynamic fsync
