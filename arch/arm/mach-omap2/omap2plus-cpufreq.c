@@ -907,7 +907,13 @@ static int omap_cpufreq_resume_noirq(struct device *dev)
 
 	if (omap_getspeed(0) != current_target_freq)
 		omap_cpufreq_scale(mpu_dev, current_target_freq);
-
+#ifdef CONFIG_BATTERY_FRIEND
+if (likely(battery_friend_active))
+       {
+                if ((!cpu_online(1)) || (cpu_down(1)))
+                        cpu_up(1);
+}
+#endif
 	omap_cpufreq_suspended = false;
 	mutex_unlock(&omap_cpufreq_lock);
 	return 0;
