@@ -1,3 +1,5 @@
+da2570c Revert "Battery Friend: DOn't allow hotplug during active mode"
+ddf0953 Added todays changelog and updated full history
 24def5f Raise KErnel Version
 d5ffd12 Battery Friend: DOn't allow hotplug during active mode
 fe67a77 PM: IVA AUTO RET relaxed workaround in idle path
