@@ -1,0 +1,12 @@
+24def5f Raise KErnel Version
+d5ffd12 Battery Friend: DOn't allow hotplug during active mode
+fe67a77 PM: IVA AUTO RET relaxed workaround in idle path
+3e50c23 DSS: Implement workaround for Errata ID:i733.
+c458776 Fix USB speed mode
+e5df31d Revert "Revert "EMIF: implementation of errata i735 for PM timer""
+39befbd Build script fixes
+241cde8 Added todays changelog and updated full history
+6354680 Fix build script
+ac0aa23 Merge brnach 'JBX_STABLE' into JBX_EDISON
+fb397a0 Build script: Fix module source depencies address
+4767f14 Edison: Defconfig updates
