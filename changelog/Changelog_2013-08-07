@@ -1,3 +1,9 @@
+f0ca9a7 cpufreq: fix typo
+c19a8ec defconfig fix
+0eb4bdb Defconfig updates
+788972a cpufreq: Fix policy stuck on 300mhz min all the time
+a747ae7 Battery Friend: Fix suspend state rule
+92e18e3 Added todays changelog and updated full history
 4bf52ff Fix build errors
 e5c4ae2 Added todays changelog and updated full history
 0c2e24a wake_up_process() should never wakeup a TASK_STOPPED/TRACED task. Change it to use TASK_NORMAL and add the WARN_ON().
