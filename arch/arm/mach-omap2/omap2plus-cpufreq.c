@@ -383,13 +383,8 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 #ifdef CONFIG_CPU_FREQ_GOV_INTELLIDEMAND
 	lmf_screen_state = false;
 #endif
-#ifdef CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF
-		cpufreq_store_default_gov();
-	if (cpufreq_change_gov(cpufreq_conservative_gov))
-			pr_err("Early_suspend: Error changing governor to %s\n",
-			cpufreq_conservative_gov);
-#endif
-#ifdef CONFIG_BATTERY_FRIEND
+
+#if defined(CONFIG_BATTERY_FRIEND) && defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF)
     if (likely(battery_friend_active))
 	{
         if (dyn_hotplug) {
@@ -398,8 +393,18 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 
 	pr_info("Battery Friend: CPU1 down due to device suspend\n");
         	}
-	}     
+	}  
+else   
+	{
+
+		cpufreq_store_default_gov();
+	if (cpufreq_change_gov(cpufreq_conservative_gov))
+			pr_err("Early_suspend: Error changing governor to %s\n",
+			cpufreq_conservative_gov);
+	}
 #endif
+
+
 
 	if (screen_off_max_freq) {
 		max_capped = screen_off_max_freq;
@@ -419,11 +424,8 @@ unsigned int cur;
 #ifdef CONFIG_CPU_FREQ_GOV_INTELLIDEMAND
 	lmf_screen_state = true;
 #endif
-#ifdef CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF
-	if (cpufreq_restore_default_gov())
-		pr_err("Early_suspend: Unable to restore governor\n");
-#endif
-#ifdef CONFIG_BATTERY_FRIEND
+
+#if defined(CONFIG_BATTERY_FRIEND) && defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF)
     if (likely(battery_friend_active))
 	{
 
@@ -434,7 +436,12 @@ unsigned int cur;
 	pr_info("Battery Friend: CPU1 up due to device wakeup\n");
         }
  }   
-#endif	
+else
+	{
+	if (cpufreq_restore_default_gov())
+		pr_err("Early_suspend: Unable to restore governor\n");
+	}
+#endif
 
 	if (max_capped) {
 		max_capped = 0;
