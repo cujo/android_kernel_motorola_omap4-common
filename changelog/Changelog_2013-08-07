@@ -1,3 +1,5 @@
+4bf52ff Fix build errors
+e5c4ae2 Added todays changelog and updated full history
 0c2e24a wake_up_process() should never wakeup a TASK_STOPPED/TRACED task. Change it to use TASK_NORMAL and add the WARN_ON().
 9fcda45 selinucx: Use GFP_ATOMIC under spinlock
 ead3e26 rq_stats: changing the show function for sysfs entry def_timer_ms
