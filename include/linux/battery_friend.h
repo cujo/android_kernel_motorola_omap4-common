@@ -3,6 +3,6 @@
 #ifndef _LINUX_BATTERY_FRIEND_H
 #define _LINUX_BATTERY_FRIEND_H
 
-extern int active_state;
+extern bool active_state;
 
 #endif
