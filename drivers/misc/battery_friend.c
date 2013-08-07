@@ -117,8 +117,6 @@ static void battery_friend_late_resume(struct early_suspend *h)
 {
 	mutex_lock(&battery_mutex);
 	battery_friend_early_suspend_active = false;
-				if (num_online_cpus() == 1 && active_state = true) {
-					cpu_up(1);
 	mutex_unlock(&battery_mutex);
 }
 
