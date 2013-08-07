@@ -30,6 +30,7 @@
 #include <linux/thermal_framework.h>
 #include <linux/platform_device.h>
 #include <linux/earlysuspend.h>
+#include <linux/battery_friend.h>
 
 #include <asm/system.h>
 #include <asm/smp_plat.h>
@@ -441,6 +442,8 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 #endif
 
 #if defined(CONFIG_BATTERY_FRIEND) && defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF)
+	active_state = false;
+
     if (likely(battery_friend_active))
 	{
         if (dyn_hotplug) {
@@ -482,6 +485,8 @@ unsigned int cur;
 #endif
 
 #if defined(CONFIG_BATTERY_FRIEND) && defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF)
+	active_state = true;
+
     if (likely(battery_friend_active))
 	{
 
