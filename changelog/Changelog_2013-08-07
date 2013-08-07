@@ -1,0 +1,20 @@
+0c2e24a wake_up_process() should never wakeup a TASK_STOPPED/TRACED task. Change it to use TASK_NORMAL and add the WARN_ON().
+9fcda45 selinucx: Use GFP_ATOMIC under spinlock
+ead3e26 rq_stats: changing the show function for sysfs entry def_timer_ms
+0f75421 rq_stats: set rq_info.init after initializing rq_info attributes
+6584a56 dynamic fsync: don't disable fdatasync()
+1a37767 dynamic fsync: add kernel panic notifier to force flush outstanding data more paranoia safety checks
+c09944a dynamic fsync: add reboot notifier to force flush outstanding data this should further prevent data corruption from kernel panics and forced reboots
+7772ec5 Battery Friend: Prepare the generic early suspend handler dependant on active_state
+6b37b42 Battery Friend: Force active governor to ktoonservative
+441a0c6 Battery Friend: Redefine rule - we don't want to have Conservative governor in use during suspend where CPU1 is turned off because the resume process can take more time. We set whether dynamic hotplug or conservative while suspend - dependant on Battery Friend is whether On or Off.
+52ed4f4 Revert "Board: DSSCOMP: Try to avoid screen flickering/artifacts during shutdown"
+f668b0e Added todays changelog and updated full history
+da2570c Revert "Battery Friend: DOn't allow hotplug during active mode"
+ddf0953 Added todays changelog and updated full history
+24def5f Raise KErnel Version
+d5ffd12 Battery Friend: DOn't allow hotplug during active mode
+fe67a77 PM: IVA AUTO RET relaxed workaround in idle path
+3e50c23 DSS: Implement workaround for Errata ID:i733.
+c458776 Fix USB speed mode
+e5df31d Revert "Revert "EMIF: implementation of errata i735 for PM timer""
