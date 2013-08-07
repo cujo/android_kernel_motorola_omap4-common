@@ -1,0 +1,18 @@
+e3cf4d1 wake_up_process() should never wakeup a TASK_STOPPED/TRACED task. Change it to use TASK_NORMAL and add the WARN_ON().
+f8ff062 selinucx: Use GFP_ATOMIC under spinlock
+acd3a52 rq_stats: changing the show function for sysfs entry def_timer_ms
+2e6bed2 rq_stats: set rq_info.init after initializing rq_info attributes
+e30afee dynamic fsync: don't disable fdatasync()
+f6e2fa4 dynamic fsync: add kernel panic notifier to force flush outstanding data more paranoia safety checks
+440e0c4 dynamic fsync: add reboot notifier to force flush outstanding data this should further prevent data corruption from kernel panics and forced reboots
+e741bbf Battery Friend: Prepare the generic early suspend handler dependant on active_state
+d56e07b Battery Friend: Force active governor to ktoonservative
+d001c48 Battery Friend: Redefine rule - we don't want to have Conservative governor in use during suspend where CPU1 is turned off because the resume process can take more time. We set whether dynamic hotplug or conservative while suspend - dependant on Battery Friend is whether On or Off.
+4db7aac Battery Friend: Remove hotplug rule - caused SoD
+302c179 Revert "Board: DSSCOMP: Try to avoid screen flickering/artifacts during shutdown"
+163b2a4 Added todays changelog and updated full history
+fb57941 Revert "Battery Friend: DOn't allow hotplug during active mode"
+b653cc3 Added todays changelog and updated full history
+99bd60d Raise Kernel version
+aea8aba Battery Friend: DOn't allow hotplug during active mode
+a907888 Battery Friend: Fix dynamic fsync
