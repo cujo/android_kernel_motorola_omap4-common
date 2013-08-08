@@ -18,11 +18,11 @@ lunch 12
 
 # built kernel & modules
 echo "Building modules..."
-make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig BOARD_KERNEL_CMDLINE='root=/dev/ram0 rw mem=1023M@0x80000000 console=null vram=10300K omapfb.vram=0:8256K,1:4K,2:2040K init=/init ip=off mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(webtop),p25(userdata) mot_sst=1 androidboot.bootloader=0x0A72' CONFIG_APANIC_PLABEL="mmcblk1p20" BOARD_KERNEL_BASE=0x80000000 BOARD_PAGE_SIZE=0x4096 $OUT/boot.img
+make -j8 TARGET_BOOTLOADER_BOARD_NAME=edison TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig BOARD_KERNEL_CMDLINE='root=/dev/ram0 rw mem=1023M@0x80000000 console=null vram=10300K omapfb.vram=0:8256K,1:4K,2:2040K init=/init ip=off mmcparts=mmcblk1:p7(pds),p15(boot),p16(recovery),p17(cdrom),p18(misc),p19(cid),p20(kpanic),p21(system),p22(cache),p23(preinstall),p24(webtop),p25(userdata) mot_sst=1 androidboot.bootloader=0x0A72' CONFIG_APANIC_PLABEL="mmcblk1p20" BOARD_KERNEL_BASE=0x80000000 BOARD_PAGE_SIZE=0x4096 $OUT/boot.img
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
-cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/edison/rls/system/lib/modules/
+cp -r /home/dtrail/android/system/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/edison/rls/system/lib/modules/
 
 # Switch to kernel folder
 echo "Entering kernel source..."
@@ -51,17 +51,17 @@ make -j4
 # Keep in mind that we assume that the modules were already built and are in place
 # So we just copy and rename, then pack to zip including the date
 echo "Packaging flashable Zip file..."
-cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/edison/rls/system/etc/kexec/kernel
+cp arch/arm/boot/zImage /home/dtrail/android/built/edison/rls/system/etc/kexec/kernel
 
-cd /home/mnl-manz/razr_kdev_kernel/built/edison/rls
+cd /home/dtrail/android/built/edison/rls
 zip -r "JBX-Kernel-0.8.1-Hybrid-Edison_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.8.1-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+mv "JBX-Kernel-0.8.1-Hybrid-Edison_$(date +"%Y-%m-%d").zip" /home/dtrail/android/built
 
 # Exporting changelog to file
 echo "Exporting changelog to file: '/built/Changelog-[date]'"
-cd /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/
-git log --oneline --since="4 day ago" > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
-git log --oneline  > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Full_History_Changelog
+cd /home/dtrail/android/android_kernel_motorola_omap4-common/
+git log --oneline --since="4 day ago" > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
+git log --oneline  > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Full_History_Changelog
 git add changelog/ .
 git commit -m "Added todays changelog and updated full history"
 git push origin JBX_EDISON
