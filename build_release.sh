@@ -22,22 +22,22 @@ lunch 12
 # built kernel & modules
 echo "Building modules..."
 echo " "
-make -j8 TARGET_KERNEL_SOURCE=/home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCE_defconfig CONFIG_APANIC_PLABEL="mmcblk1p20" $OUT/boot.img
+make -j8 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCE_defconfig CONFIG_APANIC_PLABEL="mmcblk1p20" $OUT/boot.img
 
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
 echo " "
-cp -r /home/mnl-manz/android/system/out/target/product/spyder/system/lib/modules/* /home/mnl-manz/razr_kdev_kernel/built/rls/system/lib/modules/
+cp -r /home/dtrail/android/system/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/rls/system/lib/modules/
 
 # Switch to kernel folder
 echo "Entering kernel source..."
 echo " "
-cd ~/razr_kdev_kernel/android_kernel_motorola_omap4-common
+cd ~/android/android_kernel_motorola_omap4-common
 
 # Exporting the toolchain (You may change this to your local toolchain location)
 echo "Starting configuration of kernel..."
 echo " "
-export PATH=~/build/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin:$PATH
+export PATH=~/android/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin:$PATH
 
 # export the flags (leave this alone)
 export ARCH=arm
@@ -60,18 +60,18 @@ make -j4
 # So we just copy and rename, then pack to zip including the date
 echo "Packaging flashable Zip file..."
 echo " "
-cp arch/arm/boot/zImage /home/mnl-manz/razr_kdev_kernel/built/rls/system/etc/kexec/kernel
+cp arch/arm/boot/zImage /home/dtrail/android/built/rls/system/etc/kexec/kernel
 
-cd /home/mnl-manz/razr_kdev_kernel/built/rls
+cd /home/dtrail/android/built/rls
 zip -r "JBX-Kernel-0.8.1-Hybrid_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.8.1-Hybrid_$(date +"%Y-%m-%d").zip" /home/mnl-manz/razr_kdev_kernel/built
+mv "JBX-Kernel-0.8.1-Hybrid_$(date +"%Y-%m-%d").zip" /home/dtrail/android/built
 
 # Exporting changelog to file
 echo "Exporting changelog to file: '/built/Changelog-[date]'"
 echo " "
-cd /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common
-git log --oneline --since="4 day ago" > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
-git log --oneline  > /home/mnl-manz/razr_kdev_kernel/android_kernel_motorola_omap4-common/changelog/Full_History_Changelog
+cd /home/dtrail/android/android_kernel_motorola_omap4-common
+git log --oneline --since="4 day ago" > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
+git log --oneline  > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Full_History_Changelog
 git add changelog/ .
 git commit -m "Added todays changelog and updated full history"
 git push origin JBX_STABLE
