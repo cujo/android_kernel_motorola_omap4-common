@@ -17,7 +17,7 @@ export USE_CCACHE=1
 make ARCH=arm distclean
 make mrproper
 source build/envsetup.sh
-lunch 12
+lunch cm_spyder-userdebug
 
 # built kernel & modules
 echo "Building modules..."
