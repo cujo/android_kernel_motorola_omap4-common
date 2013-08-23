@@ -1,3 +1,5 @@
+9144bfb derconfig: disable gallimaufry governor due to conflicts with ondemand
+9290829 Added todays changelog and updated full history
 9cd26c0 build script update
 e15b4b0 Battery Friend: Don't use the header atm
 5a430ab Battery Friend: Remove 100mhz rule from omap2plus-cpufreq
