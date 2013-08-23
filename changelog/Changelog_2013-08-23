@@ -1,0 +1,9 @@
+9cd26c0 build script update
+e15b4b0 Battery Friend: Don't use the header atm
+5a430ab Battery Friend: Remove 100mhz rule from omap2plus-cpufreq
+5cb11b3 Battery Friend: Remove static 100mhz rule from cpufreq
+fbf5ec6 defconfig: Remove all hotplug governors
+d4436e1 cpufreq: hyper: Remove some tunables
+889c587 Battery Friend: Fix conflicts during suspend and hotplugging§#
+6ac2800 moto lis3dh: use i2c block API
+46cc4b0 Revert "Revert "i2c-algo-bit: Generate correct i2c address sequence for 10-bit target""
