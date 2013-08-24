@@ -46,7 +46,7 @@ export SUBARCH=arm
 export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
-make ARCH=arm mapphone_OCE_defconfig
+make ARCH=arm mapphone_mmi_defconfig
 # export LOCALVERSION="-JBX-0.9-Hybrid"
 
 # execute build command with "-j4 core flag" 
@@ -64,17 +64,7 @@ echo " "
 cp arch/arm/boot/zImage /home/dtrail/android/built/rls/system/etc/kexec/kernel
 
 cd /home/dtrail/android/built/rls
-zip -r "JBX-Kernel-0.9-Hybrid_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.9-Hybrid_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
-
-# Exporting changelog to file
-echo "Exporting changelog to file: '/built/Changelog-[date]'"
-echo " "
-cd /home/dtrail/android/android_kernel_motorola_omap4-common
-git log --oneline --since="4 day ago" > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Changelog_$(date +"%Y-%m-%d")
-git log --oneline  > /home/dtrail/android/android_kernel_motorola_omap4-common/changelog/Full_History_Changelog
-git add changelog/ .
-git commit -m "Added todays changelog and updated full history"
-git push origin JBX_4.3
+zip -r "Stock-Kernel-0.9-Hybrid_$(date +"%Y-%m-%d").zip" *
+mv "Stock-Kernel-0.9-Hybrid_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
 
 echo "done"
