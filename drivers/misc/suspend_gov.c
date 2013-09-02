@@ -49,9 +49,10 @@ static ssize_t suspend_gov_store(struct kobject *kobj,
 	prev_gov = gov_val;
 
 	if (prev_gov < 0 || prev_gov > 3) { 
-	sscanf(buf, "%d\n", &gov_val);
 
 	}
+
+	sscanf(buf, "%d\n", &gov_val);
 	
 	if (gov_val == 0) {
 		cpufreq_ondemand_gov = "ondemand";
@@ -78,6 +79,7 @@ static ssize_t suspend_gov_store(struct kobject *kobj,
 		gov_val = 3;
 		pr_info("[dtrail] suspend governor error - bailing\n");	
 		return count;
+	}
 	
 return count;
 
@@ -145,3 +147,4 @@ static void suspend_gov_exit(void)
 
 module_init(suspend_gov_init);
 module_exit(suspend_gov_exit);
+
