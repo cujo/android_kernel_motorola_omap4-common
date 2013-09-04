@@ -125,11 +125,6 @@ static int ax8817x_set_mac_addr (struct net_device *net, void *p)
 }
 static int asix_enable_open(struct inode *ip, struct file *fp)
 {
-<<<<<<< HEAD
-        /* Empty Function For Now */
-        return 0;
-}
-=======
 	u8  *head;
 	u32  header;
 	char *packet;
@@ -149,7 +144,7 @@ static int asix_enable_open(struct inode *ip, struct file *fp)
 
 		/* get the packet length */
 		size = (u16) (header & 0x000007ff);
->>>>>>> c76ecac... patched to 3.0.9
+}
 
 static int asix_enable_release(struct inode *ip, struct file *fp)
 {
