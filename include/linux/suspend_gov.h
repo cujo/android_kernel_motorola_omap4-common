@@ -15,7 +15,7 @@ extern int cpufreq_change_gov(char *target_gov);
 static int cpufreq_restore_default_gov(void);
 extern int cpufreq_restore_default_gov(void);
 
-extern char *sgovernor;
+extern char sgovernor;
 
 #endif
 
