@@ -12,11 +12,12 @@ make ARCH=arm distclean
 # First get tags in shell
 echo "Cleaning out Android source directory..."
 echo " "
-cd ~/android/system
+cd ~/android/4.2
 export USE_CCACHE=1
 make ARCH=arm distclean
 make mrproper
 source build/envsetup.sh
+croot
 lunch cm_spyder-userdebug
 
 # built kernel & modules
@@ -27,7 +28,7 @@ make -j8 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
 echo " "
-cp -r /home/dtrail/android/system/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/rls/system/lib/modules/
+cp -r /home/dtrail/android/4.2/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/rls/system/lib/modules/
 
 # Switch to kernel folder
 echo "Entering kernel source..."
@@ -46,7 +47,7 @@ export CROSS_COMPILE=arm-eabi-
 
 # define the defconfig (Do not change)
 make ARCH=arm mapphone_OCE_defconfig
-export LOCALVERSION="-JBX-0.8.2-Hybrid"
+export LOCALVERSION="-JBX-0.9.0-Hybrid-4.2"
 
 # execute build command with "-j4 core flag" 
 # (You may change this to the count of your CPU.
@@ -63,8 +64,8 @@ echo " "
 cp arch/arm/boot/zImage /home/dtrail/android/built/rls/system/etc/kexec/kernel
 
 cd /home/dtrail/android/built/rls
-zip -r "JBX-Kernel-0.8.2-Hybrid_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.8.2-Hybrid_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
+zip -r "JBX-Kernel-0.9.0-Hybrid-4.2_$(date +"%Y-%m-%d").zip" *
+mv "JBX-Kernel-0.9.0-Hybrid-4.2_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
 
 # Exporting changelog to file
 echo "Exporting changelog to file: '/built/Changelog-[date]'"
