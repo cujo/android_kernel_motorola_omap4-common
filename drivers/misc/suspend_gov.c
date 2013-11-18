@@ -68,7 +68,6 @@ static ssize_t suspend_gov_store(struct kobject *kobj,
 	} else if (gov_val == 3) {
 		cpufreq_ondemand_gov = "ondemandx";		
 			pr_info("Suspend Governor: OndemandX\n");
-	}
 
 	} else if (gov_val < 0) {
 		gov_val = 0;
