@@ -29,60 +29,10 @@
 
 static DEFINE_MUTEX(suspend_mutex);
 
-char cpufreq_default_gov[CONFIG_NR_CPUS][MAX_GOV_NAME_LEN];
-#define MAX_GOV_NAME_LEN 16
-
-void cpufreq_store_default_gov(void)
-{
-unsigned int cpu;
-struct cpufreq_policy *policy;
-
-	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++) {
-			policy = cpufreq_cpu_get(cpu);
-		if (policy) {
-			sprintf(cpufreq_default_gov[cpu], "%s",
-			policy->governor->name);
-			cpufreq_cpu_put(policy);
-			}
-		}
-	}
-EXPORT_SYMBOL(cpufreq_store_default_gov);
-
-int cpufreq_change_gov(char *target_gov)
-	{
-	unsigned int cpu = 0;
-	for_each_online_cpu(cpu)
-	return cpufreq_set_gov(target_gov, cpu);
-	}
-EXPORT_SYMBOL(cpufreq_change_gov);
-
-int cpufreq_restore_default_gov(void)
-	{
-
-int ret = 0;
-unsigned int cpu;
-
-	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++) {
-		if (strlen((const char *)&cpufreq_default_gov[cpu])) {
-			ret = cpufreq_set_gov(cpufreq_default_gov[cpu], cpu);
-		if (ret < 0)
-	/* Unable to restore gov for the cpu as
-	* It was online on suspend and becomes
-	* offline on resume.
-	*/
-		pr_info("Unable to restore gov:%s for cpu:%d,"
-		, cpufreq_default_gov[cpu]
-		, cpu);
-								}
-		cpufreq_default_gov[cpu][0] = '\0';
-	}
-			return ret;
-}
-EXPORT_SYMBOL(cpufreq_restore_default_gov);
-
 unsigned int suspend_gov;
-unsigned int gov_val;
-char *sgovernor;
+int gov_val = 2;
+
+char *cpufreq_conservative_gov;
 
 static ssize_t suspend_gov_show(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
@@ -95,28 +45,23 @@ static ssize_t suspend_gov_store(struct kobject *kobj,
 		struct kobj_attribute *attr, const char *buf, size_t count)
 {
 
-static char *cpufreq_gov_ondemand = "ondemand";
-static char *cpufreq_gov_interactive = "interactive";
-static char *cpufreq_gov_conservative = "conservative";
-static char *cpufreq_gov_ondemandx = "ondemandx";
-
 	sscanf(buf, "%d\n", &gov_val);
 	
 	if (gov_val == 0) {
-		*sgovernor = cpufreq_gov_ondemand;
-			pr_info("Suspend Governor: %s\n", sgovernor);
+		char *cpufreq_conservative_gov = "ondemand";
+			pr_info("Suspend Governor: %s\n", cpufreq_conservative_gov);
 
 	} else if (gov_val == 1) {
-		*sgovernor = cpufreq_gov_interactive;
-			pr_info("Suspend Governor: %s\n", sgovernor);
+		char *cpufreq_conservative_gov = "interactive";
+			pr_info("Suspend Governor: %s\n", cpufreq_conservative_gov);
 
 	} else if (gov_val == 2) {
-		*sgovernor = cpufreq_gov_conservative;
-			pr_info("Suspend Governor: %s\n", sgovernor);
+		char *cpufreq_conservative_gov = "conservative";
+			pr_info("Suspend Governor: %s\n", cpufreq_conservative_gov);
 
 	} else if (gov_val == 3) {
-		*sgovernor = cpufreq_gov_ondemandx;		
-			pr_info("Suspend Governor: %s\n", sgovernor);
+		char *cpufreq_conservative_gov = "ondemandx";		
+			pr_info("Suspend Governor: %s\n", cpufreq_conservative_gov);
 
 	} else if (gov_val < 0) {
 		gov_val = 0;
@@ -132,6 +77,59 @@ static char *cpufreq_gov_ondemandx = "ondemandx";
 return count;
 
 
+}
+
+char cpufreq_default_gov[CONFIG_NR_CPUS][MAX_GOV_NAME_LEN];
+#define MAX_GOV_NAME_LEN 16
+
+void cpufreq_store_default_gov(void)
+{
+unsigned int cpu;
+struct cpufreq_policy *policy;
+
+	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++) {
+		policy = cpufreq_cpu_get(cpu);
+		if (policy) {
+			sprintf(cpufreq_default_gov[cpu], "%s",
+					policy->governor->name);
+			cpufreq_cpu_put(policy);
+			}
+		}
+	}
+
+int cpufreq_change_gov(char *target_gov)
+	{
+	unsigned int cpu = 0;
+	for_each_online_cpu(cpu)
+	return cpufreq_set_gov(target_gov, cpu);
+	pr_info("Suspend Governor: Set");
+	}
+
+int cpufreq_restore_default_gov(void)
+	{
+
+int ret = 0;
+unsigned int cpu;
+
+	for (cpu = 0; cpu < CONFIG_NR_CPUS; cpu++) {
+		if (strlen((const char *)&cpufreq_default_gov[cpu])) {
+			ret = cpufreq_set_gov(cpufreq_default_gov[cpu], cpu);
+	if (ret < 0)
+
+	/* Unable to restore gov for the cpu as
+	* It was online on suspend and becomes
+	* offline on resume.
+	*/
+		pr_info("Unable to restore gov:%s for cpu:%d,"
+		, cpufreq_default_gov[cpu]
+		, cpu);
+	else
+		pr_info("Suspend Governor: Restored default governor");
+								}
+		cpufreq_default_gov[cpu][0] = '\0';
+		pr_info("Suspend Governor: Restored default governor");
+	}
+			return ret;
 }
 
 static ssize_t suspend_gov_version_show(struct kobject *kobj,
@@ -195,4 +193,6 @@ static void suspend_gov_exit(void)
 
 module_init(suspend_gov_init);
 module_exit(suspend_gov_exit);
+
+Gravatar
 
