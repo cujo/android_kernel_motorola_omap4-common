@@ -13,6 +13,7 @@ make ARCH=arm distclean
 echo "Cleaning out Android source directory..."
 echo " "
 cd ~/android/4.2
+export PATH=${PATH/\/path\/to\/jdk\/dir:/}
 export USE_CCACHE=1
 make ARCH=arm distclean
 make mrproper
