@@ -1,3 +1,5 @@
+8fb30e9 build script: fixes
+b018ee8 Added todays changelog and updated full history
 9c2762f build script: insert commandline for wrong java version build case
 6133c0b JBX-Kernel 0.9.0-Hybrid-4.2: Defconfig changes, build script fixes
 2bfa2d7 omap: gpu: opp: Try to avoid use of max OC opp by default
