@@ -52,7 +52,7 @@
 #include <linux/live_oc.h>
 #endif
 
-#ifdef CONFIG_SUSPEND_GOV
+#if defined(CONFIG_SUSPEND_GOV) && defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF)
 #include <linux/suspend_gov.h>
 #endif
 
@@ -91,7 +91,7 @@ int oc_val = 0;
 struct cpufreq_policy *policy;
 extern bool battery_friend_active;
 
-// static int polmin = 200000;
+static int polmin = 200000;
 static int polmax = 1000000;
 #endif
 
@@ -325,7 +325,7 @@ static int omap_target(struct cpufreq_policy *policy,
 	return ret;
 }
 
-#ifdef CONFIG_SUSPEND_GOV
+#if defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF) && defined(CONFIG_SUSPEND_GOV)
 #define MAX_GOV_NAME_LEN 16
 static char cpufreq_default_gov[CONFIG_NR_CPUS][MAX_GOV_NAME_LEN];
 
@@ -384,17 +384,17 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 	lmf_screen_state = false;
 #endif
 
-#ifdef CONFIG_SUSPEND_GOV
+#if defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF) && defined(CONFIG_SUSPEND_GOV)
 
 // Change to defined suspend governor
 
 		cpufreq_store_default_gov();
 		pr_info("Suspend Governor: Stored default governor\n");
-	if (cpufreq_change_gov(cpufreq_ondemand_gov))
+	if (cpufreq_change_gov(governor))
 			pr_err("Suspend Governor: Error changing governor to %s\n",
-			cpufreq_ondemand_gov);
+			governor);
 	else
-		pr_info("Suspend Governor: Governor successfully set\n");
+		pr_info("Suspend Governor: Governor successfully set to %s\n");
 #endif
 #ifdef CONFIG_BATTERY_FRIEND
 // Bring CPU1 down
@@ -409,7 +409,10 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 	}  
 
 #endif
-
+// 200mhz min frequency during suspend
+	if (policy->min > polmin)
+	policy->min = polmin;
+	pr_info("Suspend: Set min frequency to 200mhz");
 
 	if (screen_off_max_freq) {
 		max_capped = screen_off_max_freq;
@@ -426,6 +429,9 @@ static void omap_cpu_late_resume(struct early_suspend *h)
 unsigned int cur;
 
 	mutex_lock(&omap_cpufreq_lock);
+// Restore default min frequency
+	policy->min = policy->cpuinfo.min_freq;
+	pr_info("Resume: Set min frequency to default");
 #ifdef CONFIG_CPU_FREQ_GOV_INTELLIDEMAND
 	lmf_screen_state = true;
 #endif
@@ -443,7 +449,7 @@ unsigned int cur;
         }
  }   
 #endif
-#ifdef CONFIG_SUSPEND_GOV
+#if defined(CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF) && defined(CONFIG_SUSPEND_GOV)
 // Restore prior governor
 	{
 	if (cpufreq_restore_default_gov())
@@ -1005,4 +1011,5 @@ MODULE_DESCRIPTION("cpufreq driver for OMAP2PLUS SOCs");
 MODULE_LICENSE("GPL");
 late_initcall(omap_cpufreq_init);
 module_exit(omap_cpufreq_exit);
+
 
