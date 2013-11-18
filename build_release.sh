@@ -19,7 +19,7 @@ make ARCH=arm distclean
 make mrproper
 source build/envsetup.sh
 croot
-lunch cm_spyder-userdebug
+lunch cm_spyder-eng
 
 # built kernel & modules
 echo "Building modules..."

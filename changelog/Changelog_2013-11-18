@@ -1,0 +1,310 @@
+9c2762f build script: insert commandline for wrong java version build case
+6133c0b JBX-Kernel 0.9.0-Hybrid-4.2: Defconfig changes, build script fixes
+2bfa2d7 omap: gpu: opp: Try to avoid use of max OC opp by default
+1e343e9 omap: gpu: opp: fix OC opp enable
+f0a32cd omap: cpu: opp: set default omap voltage levels for CORE, IVA to raise stability.
+b4e372a Revert "Revert "Revert "enable CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS"""
+ffae3fe omap: gpu: opp: Reduce OC OPP to 471mhz
+a863e3d Suspend Governor: Don't know if this hleps - but it compiles :D
+4c7c4fc Suspend Governor: Fix missing referrences
+7dd9830 Suspend Governor: add header file to omap2plus-cpufreq.c
+df99fd6 omap: dss: core: reduce early suspend level to avoid screen flocker after CRC animation
+0b30241 Suspend Governor: Move the main process into omap2plus-cpufreq.c
+cd70a33 defconfig: enable OMAP_DIE_TEMP_SENSOR
+482a6a9 Suspend Governor: use of predefined function cpufreq_set_gov and clean up unused stuff
+9ee295e drivers: gpu: ion: fix compile warning
+cebd140 drivers_ exfat: add missing file exfat_upcase.c
+bf3fc2d omap: temp_sensor: add module param to toggle thermal throttle
+32677c2 Suspend Governor: Move the set_governor function to the top
+a03a128 Suspeng Governor: Try to call the scaling_governor sysfs interface for idle mode governor change
+e9d8d97 Battery Friend: Remove gamma value lock
+9f8b3bd defconfig: set default selinux config
+3d69d3c omap: dss: gamma: disable battery friend gamma lock
+a79b7af Revert " ARM: implement optimized percpu variable access"
+22448fb Revert "ARM: keep __my_cpu_offset consistent with generic one"
+b9ccbc8 defconfig: disable SW_SYNC
+553bba8 Revert "trace/events: fix gpu event timestamp formatting"
+3902f88 Revert "Revert "Revert "Revert "sync: clean up compiler warnings""""
+19fbcc3 Revert "misc: uidstat: avoid create_stat() race and blockage."
+dc853b1 Revert "Revert "Revert "sync: clean up compiler warnings"""
+db80102 Revert "Revert "omap: dss: add earlysuspend handler.""
+0ca1611 Revert "omap: dss: add earlysuspend handler."
+27d8165 omap: dss: add earlysuspend handler. This potentially fixes the screen flickering after the CRC animation - if not, just fine tune the suspend value
+40f9477 drivers: add exfat driver
+a078b34 omap: gpu: opp: core: enable all gpu OPPs to make them available and adjust higher core voltages
+ece9522 omap: gpu: opp: set only two OPPs to be active - SGX doesn't scale other frequencies than 2
+93c133d omap: gpu: Enable all GPU OPPs and disable CORE_OPP100OV to prevent log from spamming.
+2aeb77b omap: gpu: Add OPP enabler macro 'omap2_get_gpu_device' to enable high OC OPP for SGX freqs
+d821e30 omap: gpu: fix fuse definitions, reduce/raise core voltages, revert back to gpu max freq 384
+85b1c6f omap: gpu: final GPU frequency setting
+0de1703 omap: gpu: fix another mistake...
+9b48912 omap: gpu: Fix wrong efuse setting for CORE OPP100OV
+e6bd89b omap: gpu: trying to enabel OC opp...
+e14c554 omap: gpu: Set core OV for OV request of SGX OC. Disable some IVA nitrosb OPPs for power savings
+651f832 omap: gpu: remove third opp to allow 416 mhz oc
+ca58ce9 omap: gpu: remove wrong fuse defintion
+b7008e0 omap_ gpu_ fix missing OC freq
+41c0a1a omap: gpu: remove sysfs interface. We use a modified PVR-SOURCE, but this driver was moved into CM sources, so we cannot commit the change here. The common OMAP SGX sysfs interface originally provides read-only entries. These entries are getting modified for rw access which allows us to dynamically overclock the GPU frequency. Trickster Mod supports this interface for GPU settings change and we can use modified frequency_limit entry for OC.
+4ff8501 omap: cpufreq: gpu: Re-arrange OPPs and fix the fuse location def
+8d39bb0 omap: cpufreq: gpu: Remove one OPP and revert GPU_OC back to 3 freqs
+beafaba omap: cpufreq: gpu_oc: enable GPU OC for trsting
+42faae3 omap: opp: gpu: only enable two freqs by default to prevent crashes.
+b5c874b live_oc: Remove leftover gpu_ov definitions
+a60472d omap: gpu: live_oc: gpu_oc: Remove all gpu_oc code. We use the common omap sgx interface for overclocking
+8ba2990 omap: opp: gpu: limit the frequencies to 3 to avoid black screen on boot
+5d75268 omap: omap2plus-cpufreq.c: Comment out some gpu_oc code
+ac18651 omap: opp: gpu: gpu_oc: Fix frequency and voltage entries and disable gpu oc - we can use the common omap gpu sysfs interface to toggle the max frequencies including overclocking.
+387ed74 omap: opp: gpu: Add missing frequency voltage definition
+822ff7b Revert "Revert "sync: clean up compiler warnings""
+2a47839 defconfig: enable DEEPIDLE
+a18bc3d Revert "omap: mailbox: enable mailbox irq per instance"
+c0b9cea Revert "omap: mailbox: add pm constraint field to mbox structure"
+ede832d Revert "omap: mailbox: relax constraint to allow powerdomain to go to CSWR"
+85727c9 Revert "omap: iommu: apply latency constraint based on power domain"
+c5dafff Revert "omap: iommu: program constraints based on platform data"
+283e96c Revert "omap: iommu: relax constraint value to allow CSWR"
+27efc08 Revert "softirq: reduce latencies"
+cb471ac staging: xvmalloc: removed
+bc50525 staging: zcache: rename main driver file
+c91a1e9 staging: zcache: replace with driver backport from 3.7
+e79dec5 Enable XVMALLOC for our modifed ZCACHE driver
+54f3eab Battery Friend: Remove any frequency locks
+bf8f747 defconfig: disable xvmalloc
+fb32643 Revert "Revert "drivers/staging/zram: change compressor from lzo to lz4""
+4cac04b Revert "Revert "staging: zram: add per-cpu support to Crypto""
+e60a91a Revert "Revert "staging: zram: add Crypto API support""
+f4cd02a Revert "Revert "drivers/staging/zram: adapt to 3.0 kernel""
+0d4ba0f Revert "Revert "zram: backport zram from 3.7 kernel""
+c4914c5 Revert "staging: zram: change default selection of LZO compression to LZ4 as we don't use LZO compression anymore"
+d5f35d2 staging: zram: change default selection of LZO compression to LZ4 as we don't use LZO compression anymore
+f299a2f Revert "Revert "enable CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS""
+41ca8c0 Revert "sync: clean up compiler warnings"
+e5bdca5 defconfig: disable DEEPIDLE DEEPIDLE is conflicting with current idle state comnfiguration.
+60124c8 net: ipv4: Fix some code
+113001f sync: don't block the flusher thread waiting on IO
+df13455 softirq: reduce latencies
+dd99422 swap: allow swap readahead to be merged
+fe9b3af mm: make swapin readahead skip over holes
+043b8ca omap: iommu: relax constraint value to allow CSWR
+bd9a4ad omap: iommu: program constraints based on platform data IOMMU driver requests and releases constraints in iommu_get and iommu_put respectively. These constraints are actually needed only on OMAP4 and beyond for sub-systems that have an AMMU. The current driver code has these values hard-coded for all the chips.
+28183b9 omap: iommu: apply latency constraint based on power domain When the iommu is taken out of reset, a latency constraint is set to avoid its power domain going to retention/off. The iommus for DSP and M3 reside in DSP and Core power domains respectively, and therefore the API for setting the constraints is different. This patch uses the appropriate API depending on the iommu (power domain) the latency constraint is being applied on.
+2c93d40 omap: mailbox: relax constraint to allow powerdomain to go to CSWR
+d8e2fd0 omap: mailbox: add pm constraint field to mbox structure By adding this field, the pm qos apis can be selectively applied only if the pm constraint is set to a +ve value.
+245355b omap: mailbox: enable mailbox irq per instance
+b67cad7 defconfig add SW_SYNC
+a446e16 net: ipv6: fix wrong ping_v6_sendmsg return value
+0a1707b net: ipv6: add missing lock in ping_v6_sendmsg
+b2693b8 ping: always initialize ->sin6_scope_id and ->sin6_flowinfo
+de01e6a net: ipv6: Add IPv6 support to the ping socket.
+5b5730f ipv6: introdcue __ipv6_addr_needs_scope_id and ipv6_iface_scope_id helper functions
+44c2cbf misc: uidstat: avoid create_stat() race and blockage.
+0fb4ab1 trace/events: fix gpu event timestamp formatting
+34587f4 sync: fix timeout = 0 wait behavior
+7f49ed8 sync: don't log wait timeouts when timeout = 0
+83840df sync: Fix race condition between merge and signal
+2fd0bb2 sync: add tracepoint support
+47a979e sw_sync: convert to new value_str debug ops
+e7e6740 sync: refactor sync debug printing
+9984e19 sync: use proper barriers when waiting indefinitely
+ae82453 sync: update new fence status with sync_fence_signal_pt
+1eb7c95 sync: protect unlocked access to fence status
+639ae54 sync: dump sync state of fence errors
+21f4ad5 sync: improve timeout dumps
+a989adc sync: use correct signed type when handling SYNC_IOC_WAIT
+3c03f2d sync: dump sync state to console on timeout
+9b3dc0f sync: clean up compiler warnings
+0e0d9cf sync: fix erase-o in sync_fence_wait
+af0c2cc sync: change wait timeout to mirror poll semantics
+8e308d9 sw_sync: Fix error paths
+417bc7c sync: Fix error paths
+5394226 sync: add reference counting to timelines
+90fc89a sync: add internal refcounting to fences
+a94cfe3 sync: optimize fence merges
+13e306e sync: reorder sync_fence_release
+2e19b91 sw_sync: export sw_sync API
+7730487 sync: export sync API symbols
+4c7101902 sync: allow async waits to be canceled
+7a5af7c Revert "Revert "ARM: 7746/1: mm: lazy cache flushing on non-mapped pages""
+7249d7c mm: remove compressed copy from zram in-memory
+ae685ae ext4: Speed up FITRIM by recording flags in ext4_group_info
+07961f6 ARM: keep __my_cpu_offset consistent with generic one
+f3c5317  ARM: implement optimized percpu variable access
+e5336ca blkdev.h: default nr_requests = 256
+a552688 mm.h: read_ahead_kb = 256
+5c455b7 fs/dcache.c: cache pressure = 65
+d152da3 ARM: assembler.h: use same WRITE_ALIGN_BYTES on omap4 as on armv6 platforms
+5d306b2 Revert "ARM: 7746/1: mm: lazy cache flushing on non-mapped pages"
+6cf5521 Revert "enable CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS"
+5b4a352 Revert "Revert "DSS: Implement workaround for Errata ID:i733.""
+a6e8459 ARM: 7746/1: mm: lazy cache flushing on non-mapped pages
+85d3079 defconfig: Add LZ4 compression and crpyto API
+65aaab2 LZ4: compression/decompression signedness mismatch (v2)
+25e23e5 lib/lz4/lz4_compress: fix macro usage error
+3df63fb crypto: Add lz4 Cryptographic API
+885fa5e lib: Add lz4 compressor module
+a6e3eb1 lib: LZ4 Kconfig / Makefile entries
+dd96d6e decompressor: Add LZ4 decompressor module
+54411ac [PATCH 3/3] Optimize ARM memset and memzero functions
+0d2c7f2 ARM: 7670/1: fix the memset fix
+b4af11d ARM: 7668/1: fix memset-related crashes caused by recent GCC (4.7.2) optimizations
+08560f1 ARM: 7301/1: Rename the T() macro to TUSER() to avoid namespace conflicts
+c4cef42 Revert "DSS: Implement workaround for Errata ID:i733."
+b4c0388 ARM: 7449/1: use generic strnlen_user and strncpy_from_user functions
+c974e24 lib: add generic strnlen_user() function
+d024579 lib: Sparc's strncpy_from_user is generic enough, move under lib/
+c46d9ac [PATCH 2/3] Optimize copy_page for modern ARM platforms
+a89c8d4 enable CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+bdca99c Revert "Input: Send events one packet at a time"
+6265a61 Input: Send events one packet at a time
+2fc52f5 block: recursive merge requests
+b0cb6db OMAP: CPU: Move dynamic hotplug. CPU1 shouldn't be turned off before the calculation of scaling driver has een finished. Let it finish the freuqnecy scaling, then turn off CPU1.
+9e1e317 Suspend Governor: Disable for now
+da486f8 Suspend Gov: Fix early suspend
+7a38b9b Suspend Governor: Move all related functions into the module, added early suspend handler
+a7c94c2 Suspend Governor: Added symsearch (unexported symbol finder) to bind an exisiting function into suspend_gov module - this prevents any conflicts with sgx-sources - or linker errors in kernel source.
+2a363ee Suspend Governor: prepare for use of symsearch as we get conflicting types with sgx sources.
+9825bab Suspend Governor: Remove static declarations from cpufreq.c as there are some structs and functions we need in our module and use of a exported symbol
+58ac0f6 Suspend Governor: Some fixes
+d1a4bb7 Suspend Governor: Complete code rewrite
+6e1b676 OMAP: CPU: IVA Voltage control: fix typo.. Added realtime clock trace for CORE and IVA (GPU exisits)
+660feb3 OMAP: CPU: IVA voltage control: Add to freq_attr
+8f4184b OMAP: CPU: Added IVA voltage control
+677c05f OMAP: GPU: Decrease voltage and base frequency
+b6a2e90 Suspend Governor: Don't declare the pointer when value changes
+c1e1856 Suspend Governor: Fix formatted output in kernel log
+8f7a477 Suspend Governor: small fix
+16f69e4 Revert "ARM: 7668/1: fix memset-related crashes caused by recent GCC (4.7.2) optimizations"
+ae74819 Revert "ARM: 7670/1: fix the memset fix"
+4448dff Revert "[PATCH 3/3] Optimize ARM memset and memzero functions"
+11a7463 Revert "[PATCH 2/3] Optimize copy_page for modern ARM platforms"
+0bbf8bd Cleanup from all prior commits
+aa7d292 Revert "zram: backport zram from 3.7 kernel"
+0200b867ff Revert "drivers/staging/zram: adapt to 3.0 kernel"
+b40a52b Revert "staging: zram: add Crypto API support"
+72748aa Revert "staging: zram: add per-cpu support to Crypto"
+1ef0d9c Revert "drivers/staging/zram: change compressor from lzo to lz4"
+a3d932a Revert "Revert "Revert "Revert "Revert "Revert "Revert "Revert "Revert "OMAPDSS: DSSCOMP: support of MEM2MEM mode with blanked pannel"""""""""
+1a4d2e5 hsmmc: Fix some stuff from prior commits
+4309baf opp4xxx_data: Fix from prior commit
+9756f82 Some minor fixes
+287380a cpuidle44xx: small additions
+bc51eef omap2plus-cpufreq: Add rule for min_capped
+47bab56 omap2plus-cpufreq: Some fixes for screen on/off freqs
+6035ea3 OMAPDSS: DISPC: more precise scale limits checking
+56265d6  OMAPDSS: DISPC: fix pclk divisor limits According to TRM, minimal pixel clock divisor value can be 1. Fix corresponding checks, as high resolution panels use undivided pixel clock frequency.
+bc4141d Revert "OMAPDSS: DISPC: more precise scale limits checking"
+0dda40c OMAPDSS: DISPC: more precise scale limits checking
+46345f2 ARMv7: Flush the vectors page using the base address
+255e2ef Revert "Revert "omap-hsmmc: Implementation of i761 errata""
+03001b3 mmc: omap: Increase number of blks we can handle
+03516d1 mmc: omap: align adma and dma table entries
+3748b8e Revert "omap-hsmmc: Implementation of i761 errata"
+509b856 omap-hsmmc: Implementation of i761 errata Errata description: Due to a bad behavior of an internal signal, the Card Error interrupt bit MMCHS_STAT[28] CERR may not be set sometimes when an error occurred in the card response.
+7cfe728 Revert "arch/arm: introduce Tuna optimized VMSPLIT of 2.5G/1.5G"
+7d7537a arch/arm: introduce Tuna optimized VMSPLIT of 2.5G/1.5G
+d105cae lib/lzo: huge LZO decompression speedup on ARM by using unaligned access
+a338f15 lib/lzo: Rename lzo1x_decompress.c to lzo1x_decompress_safe.c
+21aea19 mm/oom_kill.c (affects lowmemorykiller): prevent changing oom_adj if its value is -17
+0f86de1 cgroup/timer_slack: fix cgroup permission errors
+e377ab6  fs/dache.c / mm/page-writeback.c: allow modification of dirty_-values…
+d99c264 fs/dcache.c: adaptive vfs_cache_pressure on suspend / resume
+b91ad21 nohz: Fix update_ts_time_stat idle accounting
+43c5e20 ARM: OMAP4: l2x0: Set optimized value for prefetch offset
+0cd1888 ARM: OMAP4: l2x0: Cleanup prefetch offset register setting
+1131178 OMAP4: cpuidle: don't touch mpu and core state until CPU1 is off
+2557b55 mm/oom_kill.c (affects lowmemorykiller): prevent changing oom_score_adj if its value is -1000
+82e0ef0 mm/oom_kill.c (affects lowmemorykiller): make tasks with oom_score_adj = -1000 unkillable
+c219cd2 fs/proc/base.c (affects lowmemorykiller): oom_adj -17 triggers oom_score_adj of -1000
+46c7587 Backport of Lowmemorykiller from 3.4 kernel
+d793105 omap2plus-cpufreq.c: Add several options: Screen_on_min_freq, gpu_clock, use of max OC freq when the requested target freq is higher than the usual stock freq...
+49dc784 [PATCH 2/3] Optimize copy_page for modern ARM platforms
+c8b2039 [PATCH 3/3] Optimize ARM memset and memzero functions
+ee580a7 ARM: 7670/1: fix the memset fix
+a62f279 ARM: 7668/1: fix memset-related crashes caused by recent GCC (4.7.2) optimizations
+82e8d66 [PATCH 1/3] Rename ARM assembler push/pull macros The ARM assembler library functions use a macro called push that along with a macro called pull is used to shift bytes around in a word in an endian-independent way. However, the modern unified ARM assembler syntax also defines the instruction push to push data onto the stack, which has specific encodings in the Thumb2 instruction set. For prevent possible conflicts going forward, and to allow the use of the more transparent push instruction along with the modern unified assembler syntax, this patch renames all occurrences of the push macro to pushbits, as well as renaming the macro argument, when also called push, to pushshift.
+32f27bb drivers/staging/zram: change compressor from lzo to lz4
+2d37700 staging: zram: add per-cpu support to Crypto
+2679ab4 staging: zram: add Crypto API support
+b9f95a2 drivers/staging/zram: adapt to 3.0 kernel
+2d2af9c zram: backport zram from 3.7 kernel
+2284545 drivers/staging/zsmalloc: adapt to 3.0 kernel
+f9c0f67 Zsmalloc: Backport from 3.7 Kernel
+5214de5 Disable unalligned access default
+e12e9db ARM: 7723/1: crypto: sha1-armv4-large.S: fix SP handling
+5d0191b ARM: 7626/1: arm/crypto: Make asm SHA-1 and AES code Thumb-2 compatible
+4b9b526 Suspend Governor: export some symbols and remove module_exit to keep it in memory - hope that works
+b0702c1 UKSM: Enable it as an option - disabled by default
+9ff9811 Suspend Governor: Move the whole function into the older feature of screen off governor
+cca7be9 Suspend Governor: Move the whole function into module
+dd65329 omap2plus_cpufreq.c: decrease screen_off_max_freq to 300mhz
+b1159a0 opp4xx_data.c: Remove battery friend uV for stability. I think that the hot reboots might be cause by too low voltage
+f919d70 GPU OC: Added new OPP and reduced base frequency + core voltage for low-power GPU mode
+80c0d4d Revert "Revert "Revert "Revert "Revert "Revert "i2c-algo-bit: Generate correct i2c address sequence for 10-bit target""""""
+a6e9711 Revert "Revert "Revert "Revert "Revert "Revert "Revert "Revert "OMAPDSS: DSSCOMP: support of MEM2MEM mode with blanked pannel""""""""
+e3f41e1 Revert "Revert "Board: DSSCOMP: Try to avoid screen flickering/artifacts during shutdown""
+f939ab1 Suspend Governor: Remove init call from cpufreq file
+f4acb7b Suspend Governor: Some last fixes
+ff5f7cd Suspend Governor: It doesn't want to work...
+afc43fe Suspend Governor: experimental change
+e9cb9ee Suspend Governor: don't use a pointer
+4d50e57 Suspend Governor: Fix 'undefined referrence' issues with the old config name ...no idea why this happens..
+d70a76a Suspend Governor: sort changes
+fbb55cc Suspend Governor: move the whole function into module
+f0d9ef4 OMAP: CPU: Fix suspend freq. Don't set policy in early suspend area - causes reboot immediately
+d5ff2bc Suspend Governor: Replace Ktoonservative with Interactive because Ktoonservative is the default governor
+65b16c5 Suspend Governor: Fix some minor stuff
+c488805 Suspend Governor: Fixed some typos
+2a4f4f8 Suspend Governor Fix
+23d68d7 Suspend Governor: Fix module creations
+7f45421 Suspend Governor: Fix undefined reference error. For some reason (I really don't know) the option cannot be used when it's being renamed...
+878da27 Revert "Revert "ALSA: hda - fix typo in proc output""
+f192287 Suspend Governor: Merge old config option into suspend_gov feature
+401575e Suspend Governor: And this is the last damn stupid mistake I made here
+1809d8c Suspend Governor: Fix something
+a1d9b3e SUSpend Governor: Fix another mistake
+9d78cb3 Revert "Suspend Gov: stop"
+bf727c4 Suspend Gov: stop
+cd6cbec Suspend Governor: Fix my mistake
+c1d21a9 Suspend Governor: Add some debugging info and remove unecessary code
+ce8a50b suspend Governor: Minor fixes
+73a1f4f Suspend Gov: Code Cleanup
+6008594 Suspend Governor: Add to Makefile and kconfig
+958d25f Suspend Governor: Make suspend_gov a kobject. The module controls the selection of the suspend governor by userspace and the variable will be used in omap2plus-cpufreq
+974cb3c Suspend Governor: Fix some stuff
+0927c0f remove uneccessary file
+a46d462 Revert "Revert "Revert "Revert "Revert "i2c-algo-bit: Generate correct i2c address sequence for 10-bit target"""""
+658b94a Suspend Governor: Not a module anymore. Suspend Governor Control is now given by cpufreq userspace.
+f13fda5 Suspend Governor: Fix some stupid mistakes
+4f9bc22 Suspend Governor: Set integer to unsigned integer
+12f751d Revert "Revert "Revert "Revert "Revert "I2C: OMAP: Fix the crash in i2c remove"""""
+2664008 Suspend Governor: fix definition of suspend_goc
+7bced61 Suspend Governor: Use integer value instead of empt type 'bool'
+2f2ed53 Suspend Governor: Fix range of input value
+5b997f99 Revert "Revert "Enable optimized CRC32 and RWSEM algorithms""
+abf9188 Revert "Revert "Optimize ARM AWSEM algorithm""
+1a81874 Revert "Revert "Revert "Revert "I2C: OMAP: Fix the crash in i2c remove""""
+bab6e32 Revert "Revert "Revert "Revert "Added optimized CRC32 algorithm.""""
+4957941 Revert "Revert "Remove ARM sha1 routines""
+f8b0638 Revert "Revert "Revert "Remove ARM sha1 routines"""
+92f1717 Revert "Revert "lib/sha1.c: quiet sparse noise about symbol not declared""
+3d96e47 Revert "Revert "Remove ARM sha1 routines""
+6bdee4d Revert "Revert "lib/sha1: use the git implementation of SHA-1""
+f524600 Revert "Remove vibrator control file"
+4d137a2 Revert "Revert "Added improved glibc memcpy and memmove functions.""
+1aad59d Revert "Revert "PM / Usermodehelper: Fix freezer failures due to racy usermodehelper_is_disabled()""
+71ea738 Add new feature 'Suspend Governor Control' A new option written by me for switch suspend governor via userspace
+c51fc30 Revert "PM / Usermodehelper: Fix freezer failures due to racy usermodehelper_is_disabled()"
+16dbe34 Revert "Added improved glibc memcpy and memmove functions."
+f402e65 Remove vibrator control file
+f3e83cd Revert "lib/sha1: use the git implementation of SHA-1"
+0b4ed29 Revert "Remove ARM sha1 routines"
+8c52ccc Revert "lib/sha1.c: quiet sparse noise about symbol not declared"
+3e379be Revert "Revert "Remove ARM sha1 routines""
+2b75bfc Revert "Remove ARM sha1 routines"
+5eafc46 Revert "Revert "Revert "Added optimized CRC32 algorithm."""
+a1ae3ef i2c-omap: fixes
+14bf9a0 Revert "Revert "Revert "I2C: OMAP: Fix the crash in i2c remove"""
+92cfa2a Revert "Revert "I2C: OMAP: Fix the crash in i2c remove""
+ad27d02 Redefine vermagic rule to make it switchable
+d77fed5 Revert "Optimize ARM AWSEM algorithm"
+4afbf81 Revert "Enable optimized CRC32 and RWSEM algorithms"
