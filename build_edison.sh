@@ -26,13 +26,13 @@ echo "Building kernel and modules..."
 echo " "
 export ARCH=arm
 export SUBARCH=arm
-export LOCALVERSION="-JBX-0.9.0-Hybrid-4.2"
+export LOCALVERSION="-JBX-0.9.0-Hybrid-Edison-4.2"
 make -j4 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig $OUT/boot.img
 
 echo "Copying modules to package folder"
 echo " "
-cp -r /home/dtrail/android/4.2/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/rls/system/lib/modules/
-cp /home/dtrail/android/4.2/out/target/product/spyder/kernel /home/dtrail/android/built/rls/system/etc/kexec/
+cp -r /home/dtrail/android/4.2/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/edison/rls/system/lib/modules/
+cp /home/dtrail/android/4.2/out/target/product/spyder/kernel /home/dtrail/android/built/edison/rls/system/etc/kexec/
 
 echo "------------- "
 echo "Done building"
@@ -45,9 +45,9 @@ echo " "
 echo "Packaging flashable Zip file..."
 echo " "
 
-cd /home/dtrail/android/built/rls
-zip -r "JBX-Kernel-0.9.0-Hybrid-4.2_$(date +"%Y-%m-%d").zip" *
-mv "JBX-Kernel-0.9.0-Hybrid-4.2_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
+cd /home/dtrail/android/built/edison/rls
+zip -r "JBX-Kernel-0.9.0-Hybrid-Edison-4.2_$(date +"%Y-%m-%d").zip" *
+mv "JBX-Kernel-0.9.0-Hybrid-Edison-4.2_$(date +"%Y-%m-%d").zip" /home/dtrail/android/out
 
 # Exporting changelog to file
 cd /home/dtrail/android/android_kernel_motorola_omap4-common
