@@ -335,19 +335,17 @@ static void omap_cpu_early_suspend(struct early_suspend *h)
 	lmf_screen_state = false;
 #endif
 
-#ifdef CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF
 #ifdef CONFIG_SUSPEND_GOV
 
 // Change to defined suspend governor
 
 		cpufreq_store_default_gov();
 		pr_info("Suspend Governor: Stored default governor\n");
-	if (cpufreq_change_gov(cpufreq_conservative_gov))
+	if (cpufreq_change_gov(sgovernor))
 			pr_err("Suspend Governor: Error changing governor to %s\n",
-			cpufreq_conservative_gov);
+			sgovernor);
 	else
-		pr_info("Suspend Governor: Governor successfully set to %s\n", cpufreq_conservative_gov);
-#endif
+		pr_info("Suspend Governor: Governor successfully set to %s\n", sgovernor);
 #endif
 #ifdef CONFIG_BATTERY_FRIEND
 // Bring CPU1 down
@@ -395,7 +393,6 @@ unsigned int cur;
         }
  }   
 #endif
-#ifdef CONFIG_CONSERVATIVE_GOV_WHILE_SCREEN_OFF
 #ifdef CONFIG_SUSPEND_GOV
 // Restore prior governor
 	{
@@ -404,8 +401,6 @@ unsigned int cur;
 	else
 		pr_info("Suspend Governor: Restored user governor\n");
 	}
-		pr_info("Suspend Governor: Restored user governor\n");
-#endif
 #endif
 	if (max_capped) {
 		max_capped = 0;
@@ -662,7 +657,7 @@ static ssize_t store_screen_off_freq(struct cpufreq_policy *policy,
 #ifdef CONFIG_BATTERY_FRIEND
 if (likely(battery_friend_active))
 	{
-	screen_off_max_freq = 300000;
+	screen_off_max_freq = 500000;
 	}
 else 
 	screen_off_max_freq = freq_table[index].frequency;
@@ -793,10 +788,10 @@ static ssize_t store_gpu_oc(struct cpufreq_policy *policy, const char *buf, size
 {
 	int prev_oc, ret1, ret2; 
         struct device *dev;
-	unsigned long gpu_freqs[4] = {153600000,307200000,384000000,416000000};
+	unsigned long gpu_freqs[3] = {307200000,384000000,416000000};
 
 	prev_oc = oc_val;
-	if (prev_oc < 0 || prev_oc > 3) {
+	if (prev_oc < 0 || prev_oc > 2) {
 		// shouldn't be here
 		pr_info("[dtrail] gpu_oc error - bailing\n");	
 		return size;
@@ -805,18 +800,18 @@ static ssize_t store_gpu_oc(struct cpufreq_policy *policy, const char *buf, size
 	sscanf(buf, "%d\n", &oc_val);
 
 	if (oc_val < 0 ) oc_val = 0;
-	if (oc_val > 3 ) oc_val = 3;
+	if (oc_val > 2 ) oc_val = 2;
 	if (prev_oc == oc_val) return size;
 
         dev = omap_hwmod_name_get_dev("gpu");
 
 #ifdef CONFIG_PVR_GOVERNOR
-  if (prev_oc < 3 && oc_val == 3) {
+  if (prev_oc < 2 && oc_val == 2) {
     ret1 = opp_disable(dev, gpu_freqs[1]);
     ret2 = opp_enable(dev, gpu_freqs[oc_val]);
     pr_info("[imoseyon] gpu top speed changed from %lu to %lu (%d,%d)\n", 
       gpu_freqs[prev_oc], gpu_freqs[oc_val], ret1, ret2);
-  } else if (prev_oc == 3) {
+  } else if (prev_oc == 2) {
     ret1 = opp_disable(dev, gpu_freqs[prev_oc]);
     ret2 = opp_enable(dev, gpu_freqs[1]);
     pr_info("[imoseyon] gpu top speed changed from %lu to %lu (%d,%d)\n", 
