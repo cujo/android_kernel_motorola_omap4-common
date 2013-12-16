@@ -326,7 +326,7 @@ fault = __do_page_fault(mm, addr, fsr, flags, tsk);
    */
 
 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, 0, regs, addr);
-	+  if (flags & FAULT_FLAG_ALLOW_RETRY) {
+    if (flags & FAULT_FLAG_ALLOW_RETRY) {
 
     if (fault & VM_FAULT_MAJOR) {
       tsk->maj_flt++;

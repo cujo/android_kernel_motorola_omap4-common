@@ -131,6 +131,7 @@ extern int dirty_bytes_handler(struct ctl_table *table, int write,
 struct ctl_table;
 int dirty_writeback_centisecs_handler(struct ctl_table *, int,
 				      void __user *, size_t *, loff_t *);
+void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty);
 
 #ifdef CONFIG_DYNAMIC_PAGE_WRITEBACK
 int dynamic_dirty_writeback_handler(struct ctl_table *, int,
@@ -141,7 +142,6 @@ int dirty_writeback_suspend_centisecs_handler(struct ctl_table *, int,
               void __user *, size_t *, loff_t *);
 #endif
 
-void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty);
 unsigned long bdi_dirty_limit(struct backing_dev_info *bdi,
 			       unsigned long dirty);
 void __bdi_update_bandwidth(struct backing_dev_info *bdi,
