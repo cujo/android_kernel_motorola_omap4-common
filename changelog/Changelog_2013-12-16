@@ -1,0 +1,48 @@
+bcd0e4e Overall cleanup and fixes for all prior commits
+0c9c695 ZCACHE: Update to 3.11
+4dab3f5 Fix more trash and typos
+6927150 Revert "I/O, writeback: More less dirty throttling, filesystem writeback from page reclaim reduced"
+c01b36b Revert "I/O, writeback: More less dirty throttling, filesystem writeback from page reclaim reduced - PART 2"
+0f6a1e1 Fix typos and mistakes from prior commits
+ce59dd7 defconfig: Adapt changes to config (spyder, edison)
+3785e1b mm: frontswap: backport from 3.11
+676b87a zsmalloc backport from 3.11 / Adapt to 3.0
+3c0e9a4 mm: cleancache: Update to backport from 3.11
+8262f0d mm: frontswapt: backport from 3.11
+27c6cf7  timer: optimize apply_slack()
+7d6823f sched: Fix select_fallback_rq() vs cpu_active/cpu_online
+dd32714 mm: fault: Fix missing entry
+ec61783 Revert: 'OMAP4: Tiler non-page-aligned support'
+0efb96d readahead: fault retry breaks mmap file read random detection.
+e044495  ARM: rwlocks: remove unused branch labels from trylock routines
+b987b4f ARM: spinlock: use ticket algorithm for ARMv6+ locking implementation
+8bf5bc2 ARM: cache: optimize for Cortex-A9
+8377f54 misc: temp_control: Fix and raise temperature limit to 75 degrees
+9080ec5 mm: added ZBUD backport from 3.11
+45c3928 cpuidle: governors: menu: decrease nr_iowait_cpu for idle
+f26a60b drivers: i2c: i2c-omap: use usleep range instead of msleep
+0132b80 kernel: sched: prevent task_group() being called a lot in set_task_rq()
+be3d566 ARM: 7178/1: fault: OOM changes ported into do_page_fault
+de79e52 x86: mm: addition to killable pagedefault function
+2396a95 kernel: power: process: reduce the time until device enters lowpower mode
+6d7609a defconfig: CONFIG_HZ=128
+1e6286d Makefile: Remove double entry and add Cortex-a9 flag
+a133855 ARM: cacheflush/cachetype: prepare for compile
+1cff724 ARM: cachetype: PIPT l-cache detection using CTR
+ec05fa8 ARM: cacheflush: added iovec-based cache flush system call
+64e0986 ARM: cacheflush: traps: no more rounding to nearest vma
+68c025f ARM: cacheflush: disable address range round up to nearest page
+0116561 mm: vmalloc: fixes and additions for prior commit(s)
+0503c17 mm: vmalloc: fix typo
+10fffbf mm: vmalloc: Use wrapper function 'get_vm_area_size' for calculating size of vm area
+9c72f16 kernel: sched: added smart wake-affine foundation
+8c907fa kernel: sched: overhead of obtain facotr reduced
+cda3dce defconfig: configure JRCU, build performance gov as a module§
+9eb6238 ARM: 7168/1: use of cache type function for 'arch_get_unmapped_area'
+31cb879 defconfig: CONFIG_HZ / CONFIG_OMAP_32K_TIMER_HZ = 300
+2e79ae7 omap: pm: move MPU PRCM interrupt event to perform before clearing source events
+6a72cfd staging: android: lowmemorykiller: Additions, fixes due to 3.4 backport
+f1bc8f2 I/O, writeback: More less dirty throttling, filesystem writeback from page reclaim reduced - PART 2
+e916fbc I/O, writeback: More less dirty throttling, filesystem writeback from page reclaim reduced
+259ffda omap: cpu: cpuidle: correct idle states for exit latency and tresholds
+70fc7d6 defconfig: default governor: revert to ktoonservative
