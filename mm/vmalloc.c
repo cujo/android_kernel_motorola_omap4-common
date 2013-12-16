@@ -1950,7 +1950,7 @@ long vread(char *buf, char *addr, unsigned long count)
 	read_lock(&vmlist_lock);
 	for (tmp = vmlist; count && tmp; tmp = tmp->next) {
 		vaddr = (char *) tmp->addr;
-		if (addr >= vaddr + get_vm_area_size(tmp)
+		if (addr >= vaddr + get_vm_area_size(tmp))
 			continue;
 		while (addr < vaddr) {
 			if (count == 0)
