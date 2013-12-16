@@ -61,10 +61,17 @@ static void throttle_delayed_work_fn(struct work_struct *work);
 
 #define TSHUT_THRESHOLD_TSHUT_HOT	110000	/* 110 deg C */
 #define TSHUT_THRESHOLD_TSHUT_COLD	100000	/* 100 deg C */
-#define BGAP_THRESHOLD_T_HOT		74000	/* 64 deg C [dtrail] Raised to 74 to allow OC freqs, but don't allow to burn CPU */
+#define BGAP_THRESHOLD_T_HOT		75000	/* 64 deg C [dtrail] Raised to 74 to allow OC freqs, but don't allow to burn CPU */
 #define BGAP_THRESHOLD_T_COLD		71000	/* 61 deg C */
 #define OMAP_ADC_START_VALUE	530
 #define OMAP_ADC_END_VALUE	923
+
+#ifdef CONFIG_OMAP_TEMP_CONTROL
+static int cold_threshold = BGAP_THRESHOLD_T_COLD;
+static int hot_threshold = BGAP_THRESHOLD_T_HOT;
+struct omap_temp_sensor *ctrl_sensor;
+int temp_limit = BGAP_THRESHOLD_T_HOT;
+#endif
 
 bool throttle_enabled = true;
 module_param(throttle_enabled, bool, 0755);
@@ -227,8 +234,12 @@ static void omap_configure_temp_sensor_thresholds(struct omap_temp_sensor
 	u32 temp = 0, t_hot, t_cold, tshut_hot, tshut_cold;
 
 #ifdef CONFIG_OMAP_TEMP_CONTROL
-	t_hot = temp_to_adc_conversion(temp_limit);
-	t_cold = temp_to_adc_conversion(temp_limit - (BGAP_THRESHOLD_T_HOT - BGAP_THRESHOLD_T_COLD));
+  if (temp_limit > 0) {
+	cold_threshold = temp_limit - 4000;
+	hot_threshold = temp_limit;
+       }
+	t_hot = temp_to_adc_conversion(hot_threshold);
+	t_cold = temp_to_adc_conversion(cold_threshold);
 #else
 	t_hot = temp_to_adc_conversion(BGAP_THRESHOLD_T_HOT);
 	t_cold = temp_to_adc_conversion(BGAP_THRESHOLD_T_COLD);
@@ -251,14 +262,12 @@ static void omap_configure_temp_sensor_thresholds(struct omap_temp_sensor
 			| (tshut_cold << OMAP4_TSHUT_COLD_SHIFT));
 	omap_temp_sensor_writel(temp_sensor, temp, BGAP_TSHUT_OFFSET);
 }
+
 #ifdef CONFIG_OMAP_TEMP_CONTROL
-void tempcontrol_update(int templimit)
+void tempcontrol_update(int tlimit)
 {
-    temp_limit = templimit;
-
-    omap_configure_temp_sensor_thresholds(ctrl_sensor);
-
-    return;
+	temp_limit = tlimit;
+	omap_configure_temp_sensor_thresholds(ctrl_sensor);
 }
 EXPORT_SYMBOL(tempcontrol_update);
 #endif
@@ -419,7 +428,7 @@ static void throttle_delayed_work_fn(struct work_struct *work)
 	curr = omap_read_current_temp(temp_sensor);
 
 #ifdef CONFIG_OMAP_TEMP_CONTROL
-	if (curr >= temp_limit || curr < 0) {
+	if (curr >= hot_threshold || curr < 0) {
 #else
 	if (curr >= BGAP_THRESHOLD_T_HOT || curr < 0) {
 #endif
@@ -505,6 +514,8 @@ static int __devinit omap_temp_sensor_probe(struct platform_device *pdev)
 	}
 
 	temp_sensor = kzalloc(sizeof(struct omap_temp_sensor), GFP_KERNEL);
+	ctrl_sensor = temp_sensor;
+	
 	if (!temp_sensor)
 		return -ENOMEM;
 
