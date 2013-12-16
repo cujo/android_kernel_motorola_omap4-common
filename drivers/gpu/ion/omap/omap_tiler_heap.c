@@ -35,7 +35,6 @@
 #define DYNAMIC_PAGE_ALLOC
 
 bool use_dynamic_pages;
-#define TILER_ENABLE_NON_PAGE_ALIGNED_ALLOCATIONS  1
 
 struct omap_ion_heap {
 	struct ion_heap heap;
@@ -196,19 +195,9 @@ int omap_tiler_alloc(struct ion_heap *heap,
 
 	BUG_ON(!n_phys_pages || !n_tiler_pages);
 
-	if( (TILER_ENABLE_NON_PAGE_ALIGNED_ALLOCATIONS)
-			&& (data->token != 0) ) {
-		tiler_handle = tiler_alloc_block_area_aligned(data->fmt, data->w, data->h,
-									    &tiler_start,
-									    NULL,
-									    data->out_align,
-									    data->offset,
-									    data->token);
-	} else {
-		tiler_handle = tiler_alloc_block_area(data->fmt, data->w, data->h,
-							    &tiler_start,
-							    NULL);
-	}
+	info->tiler_handle = tiler_alloc_block_area(data->fmt, data->w, data->h,
+                &info->tiler_start,
+                info->tiler_addrs);
 
 	if (IS_ERR_OR_NULL(tiler_handle)) {
 		ret = PTR_ERR(tiler_handle);
@@ -272,7 +261,6 @@ int omap_tiler_alloc(struct ion_heap *heap,
 	buffer->size = v_size;
 	buffer->priv_virt = info;
 	data->handle = handle;
-	data->offset = (size_t)(info->tiler_start & ~PAGE_MASK);
 
 	if(tiler_fill_virt_array(tiler_handle, info->tiler_addrs,
 			&n_tiler_pages) < 0) {
