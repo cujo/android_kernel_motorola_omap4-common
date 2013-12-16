@@ -1387,6 +1387,24 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 	hrtick_update(rq);
 }
 
+static void record_wakee(struct task_struct *p)
+{
+  /*
+   * Rough decay(wiping) for cost saving, don't worry
+   * about the boundary, really active task won't care
+   * the loose.
+   */
+  if (jiffies > current->last_switch_decay + HZ) {
+    current->nr_wakee_switch = 0;
+    current->last_switch_decay = jiffies;
+  }
+
+  if (current->last_wakee != p) {
+    current->last_wakee = p;
+    current->nr_wakee_switch++;
+  }
+}
+
 #ifdef CONFIG_SMP
 
 static void task_waking_fair(struct task_struct *p)
@@ -1408,6 +1426,7 @@ static void task_waking_fair(struct task_struct *p)
 #endif
 
 	se->vruntime -= min_vruntime;
+	record_wakee(p);
 }
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
@@ -1494,6 +1513,13 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p, int sync)
 	struct task_group *tg;
 	unsigned long weight;
 	int balanced;
+
+  /*
+   * If we wake multiple tasks be careful to not bounce
+   * ourselves around too much.
+   */
+  if (wake_wide(p))
+    return 0;
 
 	idx	  = sd->wake_idx;
 	this_cpu  = smp_processor_id();
