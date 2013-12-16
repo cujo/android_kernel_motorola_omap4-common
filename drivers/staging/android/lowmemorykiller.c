@@ -96,6 +96,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		lowmem_print(3, "lowmem_shrink %lu, %x, ofree %d %d, ma %d\n",
 				sc->nr_to_scan, sc->gfp_mask, other_free,
 				other_file, min_score_adj);
+
 	rem = global_page_state(NR_ACTIVE_ANON) +
 		global_page_state(NR_ACTIVE_FILE) +
 		global_page_state(NR_INACTIVE_ANON) +
@@ -145,7 +146,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		selected_tasksize = tasksize;
 		selected_oom_score_adj = oom_score_adj;
 		lowmem_print(2, "select '%s' (%d), adj %d, size %d, to kill\n",
-			     p->comm, p->pid, oom_score_adj, tasksize);
+			     p->pid, p->comm, oom_score_adj, tasksize);
 	}
 	if (selected) {
 		lowmem_print(1, "Killing '%s' (%d), adj %d,\n" \
@@ -178,6 +179,7 @@ static struct shrinker lowmem_shrinker = {
 
 static int __init lowmem_init(void)
 {
+	/*  task_handoff_register(&task_nb); */
 	register_shrinker(&lowmem_shrinker);
 	return 0;
 }
@@ -185,6 +187,7 @@ static int __init lowmem_init(void)
 static void __exit lowmem_exit(void)
 {
 	unregister_shrinker(&lowmem_shrinker);
+	/*  task_handoff_unregister(&task_nb); */
 }
 
 #ifdef CONFIG_ANDROID_LOW_MEMORY_KILLER_AUTODETECT_OOM_ADJ_VALUES
