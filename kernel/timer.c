@@ -42,7 +42,6 @@
 #include <linux/slab.h>
 
 #include <asm/uaccess.h>
-#include <asm/unistd.h>
 #include <asm/div64.h>
 #include <asm/timex.h>
 #include <asm/io.h>
@@ -761,7 +760,7 @@ unsigned long apply_slack(struct timer_list *timer, unsigned long expires)
 	if (mask == 0)
 		return expires;
 
-	bit = find_last_bit(&mask, BITS_PER_LONG);
+	bit = __fls(mask);
 
 	expires_limit = (expires_limit >> bit) << bit;
 
