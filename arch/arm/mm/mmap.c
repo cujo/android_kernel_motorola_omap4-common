@@ -11,7 +11,6 @@
 #include <linux/random.h>
 #include <asm/cputype.h>
 #include <asm/system.h>
-#include <asm/cachetype.h>
 
 #define COLOUR_ALIGN(addr,pgoff)		\
 	((((addr)+SHMLBA-1)&~(SHMLBA-1)) +	\
@@ -34,7 +33,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	struct vm_area_struct *vma;
 	unsigned long start_addr;
 	int do_align = 0;
-	int aliasing = cache_is_vipt_aliasing();
+	int aliasing = cache_is_vipt_aliasing(); 
 
 	/*
 	 * We only need to do colour alignment if either the I or D
