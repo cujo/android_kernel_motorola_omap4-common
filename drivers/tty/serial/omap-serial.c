@@ -1398,6 +1398,7 @@ static int serial_omap_suspend(struct device *dev)
 	u8 lcr, efr;
 
 	if (up) {
+		disable_irq(up->port.irq);
 		if (up->rts_mux_driver_control) {
 			up->rts_pullup_in_suspend = 1;
 			omap_uart_enable_rtspullup(up);
@@ -1696,7 +1697,7 @@ static int serial_omap_probe(struct platform_device *pdev)
 	if (!up->port.membase) {
 		dev_err(&pdev->dev, "can't ioremap UART\n");
 		ret = -ENOMEM;
-		goto err1;
+		goto do_free;
 	}
 
 	up->port.flags = omap_up_info->flags;
