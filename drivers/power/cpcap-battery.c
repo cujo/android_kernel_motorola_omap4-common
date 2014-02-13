@@ -685,16 +685,14 @@ CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
 //        if (!cpcap_uc_status(sply->cpcap, CPCAP_MACRO_7)){
 
            //sply->irq_status |= CPCAP_BATT_IRQ_MACRO;  This IRQ Called after start Marco 7 by cpcap_batt_irq_hdlr.
-  // dtrail: disable this stuff We use cpcap-charger driver
-  /*         cpcap_uc_start(sply->cpcap, CPCAP_MACRO_7);
+           cpcap_uc_start(sply->cpcap, CPCAP_MACRO_7);
            cpcap_uc_start(sply->cpcap, CPCAP_MACRO_9);
            cpcap_uc_start(sply->cpcap, CPCAP_MACRO_12);
 	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, 0x351, 0x351);
 	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CCM, 0x3EE, 0x3EE);
-           cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); *///Enable charge led
+           cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
 
-// dtrail: And this too as well. FIX: Maybe we need some of these, will see after testing...
-    /*       cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCC1, &value);
+           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCC1, &value);
 	   printk("CPCAP_REG_CCC1 %d \n",value);
            cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CRM, &value);
 	   printk("CPCAP_REG_CRM %d \n",value);
@@ -713,24 +711,24 @@ CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
            cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC1, &value);
 	   printk("CPCAP_REG_USBC1 %d \n",value);
            cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC2, &value);
-	   printk("CPCAP_REG_USBC2 %d \n",value); */
+	   printk("CPCAP_REG_USBC2 %d \n",value); 
 
-/*
+
            printk("CPCAP_MACRO_7 %d, 8 %d, 9 %d, 10 %d, 11 %d, 12 %d\n",
             cpcap_uc_status(sply->cpcap, CPCAP_MACRO_7), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_8), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_9),cpcap_uc_status(sply->cpcap,CPCAP_MACRO_10), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_11),cpcap_uc_status(sply->cpcap,CPCAP_MACRO_12));
-*/
- //       printk("ac_state.online: %d\n",sply->ac_state.online);
-   //     printk("usb_state.online: %d\n",sply->usb_state.online);
+
+        printk("ac_state.online: %d\n",sply->ac_state.online);
+	printk("usb_state.online: %d\n",sply->usb_state.online);
     	printk("Result Voltage: %dmV\n",sply->batt_state.batt_volt/1000);
     	printk("Result Temp: %d*C\n",sply->batt_state.batt_temp/10);
 
-   /*     if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
+          if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
 	   sply->batt_state.status = POWER_SUPPLY_STATUS_CHARGING;
         } else {
            sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
         }
 
-        printk("batt_state.status: %d\n",sply->batt_state.status); */
+        printk("batt_state.status: %d\n",sply->batt_state.status);
 
 //Getting values from cpcap.
 
