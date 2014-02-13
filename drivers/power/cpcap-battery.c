@@ -688,29 +688,29 @@ CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
            cpcap_uc_start(sply->cpcap, CPCAP_MACRO_7);
            cpcap_uc_start(sply->cpcap, CPCAP_MACRO_9);
            cpcap_uc_start(sply->cpcap, CPCAP_MACRO_12);
-	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, 0x351, 0x351);
-	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CCM, 0x3EE, 0x3EE);
-           cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
+	   cpcap_regacc_write(sply->cpcap, CPCAP_REG_CRM, 0x351, 0x351);
+	   cpcap_regacc_write(sply->cpcap, CPCAP_REG_CCM, 0x3EE, 0x3EE);
+           cpcap_regacc_write(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
 
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCC1, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCC1, &value);
 	   printk("CPCAP_REG_CCC1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CRM, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CRM, &value);
 	   printk("CPCAP_REG_CRM %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCCC2, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCCC2, &value);
 	   printk("CPCAP_REG_CCCC2 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCM, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCM, &value);
 	   printk("CPCAP_REG_CCM %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCA1, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCA1, &value);
 	   printk("CPCAP_REG_CCA1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCA2, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCA2, &value);
 	   printk("CPCAP_REG_CCA2 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCO, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCO, &value);
 	   printk("CPCAP_REG_CC0 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCI, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_CCI, &value);
 	   printk("CPCAP_REG_CCI %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC1, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_USBC1, &value);
 	   printk("CPCAP_REG_USBC1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC2, &value);
+           cpcap_regacc_read(sply->cpcap, CPCAP_REG_USBC2, &value);
 	   printk("CPCAP_REG_USBC2 %d \n",value); 
 
 
