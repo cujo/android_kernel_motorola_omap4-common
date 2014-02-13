@@ -1197,7 +1197,7 @@ static int __init cpcap_batt_debug_init(void)
 late_initcall(cpcap_batt_debug_init);
 
 */
-#endif /* CONFIG_DEBUG_FS */
+//#endif /* CONFIG_DEBUG_FS */
 
 static int __init cpcap_batt_init(void)
 {
