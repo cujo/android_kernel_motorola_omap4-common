@@ -35,9 +35,7 @@
 #include <linux/time.h>
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
-// New stuff from Quarx's mod driver
-#include <linux/delay.h>
-#include <linux/kthread.h>
+
 
 #ifdef CONFIG_BLX
 #include <linux/blx.h>
@@ -201,20 +199,17 @@ void cpcap_batt_irq_hdlr(enum cpcap_irqs irq, void *data)
 
 	switch (irq) {
 	case CPCAP_IRQ_BATTDETB:
-                printk("CPCAP_IRQ_BATTDETB\n");
 		sply->irq_status |= CPCAP_BATT_IRQ_BATTDET;
 		cpcap_irq_unmask(sply->cpcap, irq);
 		break;
 
 	case CPCAP_IRQ_VBUSOV:
-                printk("CPCAP_IRQ_VBUSOV\n");
 		sply->irq_status |=  CPCAP_BATT_IRQ_OV;
 		cpcap_irq_unmask(sply->cpcap, irq);
 		cpcap_batt_ind_chrg_ctrl(sply);
 		break;
 
 	case CPCAP_IRQ_CC_CAL:
-                printk("CPCAP_IRQ_CC_CAL");
 		sply->irq_status |= CPCAP_BATT_IRQ_CC_CAL;
 		cpcap_irq_unmask(sply->cpcap, irq);
 		break;
@@ -224,7 +219,6 @@ void cpcap_batt_irq_hdlr(enum cpcap_irqs irq, void *data)
 	case CPCAP_IRQ_UC_PRIMACRO_9:
 	case CPCAP_IRQ_UC_PRIMACRO_10:
 	case CPCAP_IRQ_UC_PRIMACRO_11:
-                printk("CPCAP_IRQ_UC_PRIMACRO\n");
 		sply->irq_status |= CPCAP_BATT_IRQ_MACRO;
 		break;
 	default:
@@ -319,8 +313,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			return -EFAULT;
 		power_supply_changed(&sply->batt);
 		cpcap_batt_ind_chrg_ctrl(sply);
-		// New stuff from Quarx's mod driver
-			printk("CPCAP_IOCTL_BATT_DISPLAY_UPDATE");
+
 		if (data->batt_changed)
 			data->batt_changed(&sply->batt, &sply->batt_state);
 
@@ -363,7 +356,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			return -EFAULT;
 
 		
-		//return 0; //Uncomment to disable battd.
+		return 0; //Uncomment to disable battd.
 
 		req.format = req_us.format;
 		req.timing = req_us.timing;
@@ -375,7 +368,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			return ret;
 
 		req_us.status = req.status;
-                //printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
+                printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
 		for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
 			req_us.result[i] = req.result[i];
 
@@ -642,92 +635,29 @@ void delay_ms(__u32 t)
 }
 
 static int cpcap_batt_monitor(void* arg) {
+	//SYMSEARCH_BIND_FUNCTION_TO(cpcap-battery, cpcap_regacc_write, cpcap_regacc_write2);
 
-
-        int i, ret, percent, volt_batt, range, max, min;
-	unsigned short value;
+        int i, percent, volt_batt, range, max, min;
 	struct cpcap_batt_ps *sply = cpcap_batt_sply;
 	struct cpcap_adc_request req;
 	struct cpcap_adc_us_request req_us;
-        struct cpcap_adc_phase phase;
-// New stuff from Quarx's mod driver
-   while (1) {  //TODO: Need split this big function
-/*
-//Before start battd
-CPCAP_REG_CRM 784
-CPCAP_REG_CCM 0
-CPCAP_REG_USBC1 4608
-CPCAP_REG_USBC2 49184
-CPCAP_MACRO_7 0, 8 0, 9 0, 10 0, 11 0, 12 0
-//After star battd
-CPCAP_REG_CRM 849 = 0x351
-CPCAP_REG_CCM 1006 = 0x3EE
-CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
-*/
+	printk("Enter to Test\n");
 
-	   printk("****Battery Phasing start ****\n");
-	   phase.offset_batti = -1;
-	   phase.slope_batti = 128;
-	   phase.offset_chrgi = 0;
-	   phase.slope_chrgi = 126;
-	   phase.offset_battp = 14;
-	   phase.slope_battp = 128;
-	   phase.offset_bp = 0;
-	   phase.slope_bp = 128;
-	   phase.offset_battt = 3;
-	   phase.slope_battt = 129;
-	   phase.offset_chrgv = -4;
+//	cpcap_regacc_write(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
 
-	   cpcap_adc_phase(sply->cpcap, &phase);
-	   printk("****Battery Phasing end ****\n");
+        //cpcap_uc_start(sply->cpcap, CPCAP_MACRO_6);
 
-//For start Macros 7 we need phasing.
-//        if (!cpcap_uc_status(sply->cpcap, CPCAP_MACRO_7)){
+//   while (1) {  //TODO: Need split this big function
 
-           //sply->irq_status |= CPCAP_BATT_IRQ_MACRO;  This IRQ Called after start Marco 7 by cpcap_batt_irq_hdlr.
-  // dtrail: disable this stuff We use cpcap-charger driver
-  /*         cpcap_uc_start(sply->cpcap, CPCAP_MACRO_7);
-           cpcap_uc_start(sply->cpcap, CPCAP_MACRO_9);
-           cpcap_uc_start(sply->cpcap, CPCAP_MACRO_12);
-	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, 0x351, 0x351);
-	   cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CCM, 0x3EE, 0x3EE);
-           cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); *///Enable charge led
+        //printk("ac_state.online: %d\n",usb->ac_state.online);
+   /*     printk("usb_state.online: %d\n",sply->usb_state.online);
 
-// dtrail: And this too as well. FIX: Maybe we need some of these, will see after testing...
-    /*       cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCC1, &value);
-	   printk("CPCAP_REG_CCC1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CRM, &value);
-	   printk("CPCAP_REG_CRM %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCCC2, &value);
-	   printk("CPCAP_REG_CCCC2 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCM, &value);
-	   printk("CPCAP_REG_CCM %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCA1, &value);
-	   printk("CPCAP_REG_CCA1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCA2, &value);
-	   printk("CPCAP_REG_CCA2 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCO, &value);
-	   printk("CPCAP_REG_CC0 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_CCI, &value);
-	   printk("CPCAP_REG_CCI %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC1, &value);
-	   printk("CPCAP_REG_USBC1 %d \n",value);
-           cpcap_regacc_read2(sply->cpcap, CPCAP_REG_USBC2, &value);
-	   printk("CPCAP_REG_USBC2 %d \n",value); */
-
-/*
-           printk("CPCAP_MACRO_7 %d, 8 %d, 9 %d, 10 %d, 11 %d, 12 %d\n",
-            cpcap_uc_status(sply->cpcap, CPCAP_MACRO_7), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_8), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_9),cpcap_uc_status(sply->cpcap,CPCAP_MACRO_10), cpcap_uc_status(sply->cpcap,CPCAP_MACRO_11),cpcap_uc_status(sply->cpcap,CPCAP_MACRO_12));
-*/
- //       printk("ac_state.online: %d\n",sply->ac_state.online);
-   //     printk("usb_state.online: %d\n",sply->usb_state.online);
-    	printk("Result Voltage: %dmV\n",sply->batt_state.batt_volt/1000);
-    	printk("Result Temp: %d*C\n",sply->batt_state.batt_temp/10);
-
-   /*     if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
-	   sply->batt_state.status = POWER_SUPPLY_STATUS_CHARGING;
+        if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
+	sply->batt_state.status = POWER_SUPPLY_STATUS_CHARGING;
+        } else if ((sply->usb_state.online == 0 || sply->ac_state.online == 0) && (sply->batt_state.status == POWER_SUPPLY_STATUS_CHARGING)) {
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
         } else {
-           sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
         }
 
         printk("batt_state.status: %d\n",sply->batt_state.status); */
@@ -747,6 +677,10 @@ CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
 
         sply->batt_state.batt_volt = req_us.result[CPCAP_ADC_BATTP]*1000;
         sply->batt_state.batt_temp = (req_us.result[CPCAP_ADC_AD3]-273)*10;  //cpcap report temp in kelvins !!!not accurately!!!
+
+	printk("Result Voltage: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Voltage batt: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Temp: %d*C\n",sply->batt_state.batt_temp/10);
 
         //printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
 	//printk("Dump of CPCAP_ADC_BANK0_NUM:\n CPCAP_ADC_VBUS:%d\n CPCAP_ADC_AD3:%d\n CPCAP_ADC_BPLUS_AD4:%d\n CPCAP_ADC_CHG_ISENSE:%d\n CPCAP_ADC_BATTI_ADC:%d\n CPCAP_ADC_USB_ID:%d\n",
@@ -772,7 +706,7 @@ CPCAP_MACRO_7 0, 8 0, 9 1, 10 0, 11 0, 12 1
         }
 	printk("Result percent: %d\n",sply->batt_state.capacity);
 
-        delay_ms(1500);
+        delay_ms(2000);
   }
 
  return 0;
