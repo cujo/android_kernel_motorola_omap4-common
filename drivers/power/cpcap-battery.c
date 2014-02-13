@@ -35,8 +35,7 @@
 #include <linux/time.h>
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
-#include <linux/delay.h>
-#include <linux/kthread.h>
+
 
 #ifdef CONFIG_BLX
 #include <linux/blx.h>
@@ -648,7 +647,7 @@ static int cpcap_batt_monitor(void* arg) {
 
         //cpcap_uc_start(sply->cpcap, CPCAP_MACRO_6);
 
-  while (1) {  //TODO: Need split this big function
+//   while (1) {  //TODO: Need split this big function
 
         //printk("ac_state.online: %d\n",usb->ac_state.online);
    /*     printk("usb_state.online: %d\n",sply->usb_state.online);
@@ -864,7 +863,7 @@ prb_exit:
 
         batt_task = kthread_create(cpcap_batt_monitor, (void*)0, "cpcap_batt_monitor");
 	wake_up_process(batt_task);
-        //cpcap_chgr_probe();
+        cpcap_chgr_probe();
 	return ret;
 }
 
