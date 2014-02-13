@@ -34,6 +34,13 @@
 #include <linux/time.h>
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
+#include "../symsearch/symsearch.h"
+#include <linux/delay.h>
+#include <linux/kthread.h>
+
+SYMSEARCH_DECLARE_FUNCTION_STATIC(unsigned long long, sched_clock2, void);
+SYMSEARCH_DECLARE_FUNCTION_STATIC(int, cpcap_regacc_write2, struct cpcap_device *cpcap, enum cpcap_reg reg,
+		       unsigned short value, unsigned short mask);
 
 #define CPCAP_BATT_IRQ_BATTDET 0x01
 #define CPCAP_BATT_IRQ_OV      0x02
@@ -52,6 +59,7 @@ static ssize_t cpcap_batt_read(struct file *file, char *buf, size_t count,
 static int cpcap_batt_probe(struct platform_device *pdev);
 static int cpcap_batt_remove(struct platform_device *pdev);
 static int cpcap_batt_resume(struct platform_device *pdev);
+static struct task_struct * batt_task;
 
 struct cpcap_batt_ps {
 	struct power_supply batt;
@@ -92,7 +100,9 @@ static enum power_supply_property cpcap_batt_props[] = {
 	POWER_SUPPLY_PROP_TECHNOLOGY,
 	POWER_SUPPLY_PROP_CAPACITY,
 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-	POWER_SUPPLY_PROP_TEMP
+	POWER_SUPPLY_PROP_TEMP,
+	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+	POWER_SUPPLY_PROP_CHARGE_COUNTER
 };
 
 static enum power_supply_property cpcap_batt_ac_props[] =
@@ -198,6 +208,8 @@ static ssize_t cpcap_batt_read(struct file *file,
 {
 	struct cpcap_batt_ps *sply = file->private_data;
 	int ret = -EFBIG;
+	SYMSEARCH_BIND_FUNCTION_TO(cpcap-battery, sched_clock, sched_clock2);
+
 	unsigned long long temp;
 
 	if (count >= sizeof(char)) {
@@ -208,7 +220,7 @@ static ssize_t cpcap_batt_read(struct file *file,
 		else
 			ret = -EFAULT;
 		sply->data_pending = 0;
-		temp = sched_clock();
+		temp = sched_clock2();
 		do_div(temp, NSEC_PER_SEC);
 		sply->last_run_time = (unsigned long)temp;
 
@@ -261,7 +273,7 @@ static int cpcap_batt_ioctl(struct inode *inode,
 			req_async->type = req_us.type;
 			req_async->callback = cpcap_batt_adc_hdlr;
 			req_async->callback_param = sply;
-
+                        printk("CPCAP_IOCTL_BATT_ATOD_ASYNC:\n format %d\n timing %d\n type %d\n",req_us.format , req_us.timing, req_us.type);
 			ret = cpcap_adc_async_read(sply->cpcap, req_async);
 			if (!ret)
 				sply->async_req_pending = 1;
@@ -277,6 +289,9 @@ static int cpcap_batt_ioctl(struct inode *inode,
 				   sizeof(struct cpcap_adc_us_request)))
 			return -EFAULT;
 
+		
+		return 0; //Uncomment to disable battd.
+
 		req.format = req_us.format;
 		req.timing = req_us.timing;
 		req.type = req_us.type;
@@ -287,8 +302,23 @@ static int cpcap_batt_ioctl(struct inode *inode,
 			return ret;
 
 		req_us.status = req.status;
+                printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
 		for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
 			req_us.result[i] = req.result[i];
+
+/*
+if (req.type == 0) {
+	printk("Dump of CPCAP_ADC_BANK0_NUM:\n CPCAP_ADC_VBUS:%d\n CPCAP_ADC_AD3:%d\n CPCAP_ADC_BPLUS_AD4:%d\n CPCAP_ADC_CHG_ISENSE:%d\n CPCAP_ADC_BATTI_ADC:%d\n CPCAP_ADC_USB_ID:%d\n",
+                           req_us.result[CPCAP_ADC_VBUS],req_us.result[CPCAP_ADC_AD3],req_us.result[CPCAP_ADC_BPLUS_AD4],req_us.result[CPCAP_ADC_CHG_ISENSE],
+                               req_us.result[CPCAP_ADC_BATTI_ADC],req_us.result[CPCAP_ADC_USB_ID]);
+}
+
+if (req.type == 2) {
+	printk("Dump of CPCAP_ADC_BANK1_NUM:\n CPCAP_ADC_AD8:%d\n CPCAP_ADC_AD9:%d\n CPCAP_ADC_LICELL:%d\n CPCAP_ADC_HV_BATTP:%d\n CPCAP_ADC_TSX1_AD12:%d\n CPCAP_ADC_TSX2_AD13:%d\n CPCAP_ADC_TSX2_AD13:%d\n, CPCAP_ADC_TSX2_AD14:%d\n",req_us.result[CPCAP_ADC_AD8],req_us.result[CPCAP_ADC_AD9],req_us.result[CPCAP_ADC_LICELL],req_us.result[CPCAP_ADC_HV_BATTP],
+                               req_us.result[CPCAP_ADC_TSX1_AD12],req_us.result[CPCAP_ADC_TSX2_AD13],req_us.result[CPCAP_ADC_TSY1_AD14],req_us.result[CPCAP_ADC_TSY2_AD15]);
+}
+*/
+               // printk("Result Voltage: %dmV\n",req_us.result[CPCAP_ADC_BATTP]);
 
 		if (copy_to_user((void *)arg, (void *)&req_us,
 				 sizeof(struct cpcap_adc_us_request)))
@@ -300,6 +330,7 @@ static int cpcap_batt_ioctl(struct inode *inode,
 		req_us.timing = req_async->timing;
 		req_us.type = req_async->type;
 		req_us.status = req_async->status;
+                printk("CPCAP_IOCTL_BATT_ATOD_READ:\n format %d\n timing %d\n type %d\n status %d\n",req_us.format , req_us.timing, req_us.type, req_us.status);
 		for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
 			req_us.result[i] = req_async->result[i];
 
@@ -403,6 +434,14 @@ static int cpcap_batt_get_property(struct power_supply *psy,
 		val->intval = sply->batt_state.batt_temp;
 		break;
 
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		val->intval = sply->batt_state.batt_full_capacity;
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+		val->intval = sply->batt_state.batt_capacity_one;
+		break;
+
 	default:
 		ret = -EINVAL;
 		break;
@@ -410,6 +449,102 @@ static int cpcap_batt_get_property(struct power_supply *psy,
 
 	return ret;
 }
+
+void delay_ms(__u32 t)
+{
+    __u32 timeout = t*HZ/1000;
+    	
+    set_current_state(TASK_INTERRUPTIBLE);
+    schedule_timeout(timeout);
+}
+
+static int cpcap_batt_monitor(void* arg) {
+	SYMSEARCH_BIND_FUNCTION_TO(cpcap-battery, cpcap_regacc_write, cpcap_regacc_write2);
+
+        int i, percent, volt_batt, range, max, min;
+	struct cpcap_batt_ps *sply = cpcap_batt_sply;
+	struct cpcap_adc_request req;
+	struct cpcap_adc_us_request req_us;
+	printk("Enter to Test\n");
+
+	cpcap_regacc_write2(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
+
+        //cpcap_uc_start(sply->cpcap, CPCAP_MACRO_6);
+
+   while (1) {  //TODO: Need split this big function
+
+        //printk("ac_state.online: %d\n",usb->ac_state.online);
+        printk("usb_state.online: %d\n",sply->usb_state.online);
+
+        if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
+	sply->batt_state.status = POWER_SUPPLY_STATUS_CHARGING;
+        } else if ((sply->usb_state.online == 0 || sply->ac_state.online == 0) && (sply->batt_state.status == POWER_SUPPLY_STATUS_CHARGING)) {
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
+        } else {
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
+        }
+
+        printk("batt_state.status: %d\n",sply->batt_state.status);
+
+//Getting values from cpcap.
+
+	req.format = CPCAP_ADC_FORMAT_CONVERTED;
+	req.timing = CPCAP_ADC_TIMING_IMM;
+	req.type = CPCAP_ADC_TYPE_BANK_0;
+ 
+	cpcap_adc_sync_read(sply->cpcap, &req);
+
+	req_us.status = req.status;
+
+	for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
+	    req_us.result[i] = req.result[i];
+
+        sply->batt_state.batt_volt = req_us.result[CPCAP_ADC_BATTP]*1000;
+        sply->batt_state.batt_temp = (req_us.result[CPCAP_ADC_AD3]-273)*10;  //cpcap report temp in kelvins !!!not accurately!!!
+
+	printk("Result Voltage: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Voltage batt: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Temp: %d*C\n",sply->batt_state.batt_temp/10);
+
+        //printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
+	//printk("Dump of CPCAP_ADC_BANK0_NUM:\n CPCAP_ADC_VBUS:%d\n CPCAP_ADC_AD3:%d\n CPCAP_ADC_BPLUS_AD4:%d\n CPCAP_ADC_CHG_ISENSE:%d\n CPCAP_ADC_BATTI_ADC:%d\n CPCAP_ADC_USB_ID:%d\n",
+        //                   req_us.result[CPCAP_ADC_VBUS],req_us.result[CPCAP_ADC_AD3],req_us.result[CPCAP_ADC_BPLUS_AD4],req_us.result[CPCAP_ADC_CHG_ISENSE],
+        //                       req_us.result[CPCAP_ADC_BATTI_ADC],req_us.result[CPCAP_ADC_USB_ID]);
+
+
+//Calculate Percent like in bootmenu. TODO:make better then now.
+
+	min  = 3500;
+        max  = 4300; // TODO: Make dynamically
+        volt_batt = cpcap_batt_sply->batt_state.batt_volt/1000;
+	range = (max - min) / 100;
+	percent = (volt_batt - min) / range;
+	if (percent > 100) percent = 100;
+	if (percent < 0)   percent = 0;
+	if (percent > 95)  sply->batt_state.status = POWER_SUPPLY_STATUS_FULL;
+
+        if (sply->batt_state.capacity != percent) {
+        sply->batt_state.capacity = percent;
+        sply->batt_state.batt_capacity_one = percent;
+
+        }
+	printk("Result percent: %d\n",sply->batt_state.capacity);
+
+        delay_ms(2000);
+  }
+
+ return 0;
+}
+
+static int cpcap_chgr_probe(void)
+{
+	int ret = 0;
+	//cpcap_batt_set_ac_prop(cpcap_batt_sply->cpcap, 1);
+	cpcap_batt_set_usb_prop_curr(cpcap_batt_sply->cpcap, 100);
+	cpcap_batt_set_usb_prop_online(cpcap_batt_sply->cpcap, 1, CPCAP_BATT_USB_MODEL_USB);
+	return ret;
+}
+
 
 static int cpcap_batt_probe(struct platform_device *pdev)
 {
@@ -431,13 +566,14 @@ static int cpcap_batt_probe(struct platform_device *pdev)
 	sply->cpcap = pdev->dev.platform_data;
 	mutex_init(&sply->lock);
 	init_waitqueue_head(&sply->wait);
-
-	sply->batt_state.status	= POWER_SUPPLY_STATUS_UNKNOWN;
+	sply->batt_state.status	= POWER_SUPPLY_STATUS_DISCHARGING; //Set discharging by default.  //POWER_SUPPLY_STATUS_UNKNOWN;
 	sply->batt_state.health	= POWER_SUPPLY_HEALTH_GOOD;
 	sply->batt_state.present = 1;
 	sply->batt_state.capacity = 100;	/* Percentage */
 	sply->batt_state.batt_volt = 4200000;	/* uV */
 	sply->batt_state.batt_temp = 230;	/* tenths of degrees Celsius */
+	sply->batt_state.batt_full_capacity = 0;
+	sply->batt_state.batt_capacity_one = 100;
 
 	sply->ac_state.online = 0;
 
@@ -551,6 +687,10 @@ unregac_exit:
 	power_supply_unregister(&sply->ac);
 
 prb_exit:
+
+        batt_task = kthread_create(cpcap_batt_monitor, (void*)0, "cpcap_batt_monitor");
+	wake_up_process(batt_task);
+        cpcap_chgr_probe();
 	return ret;
 }
 
@@ -581,8 +721,8 @@ static int cpcap_batt_resume(struct platform_device *pdev)
 	struct cpcap_batt_ps *sply = platform_get_drvdata(pdev);
 	unsigned long cur_time;
 	unsigned long long temp;
-
-	temp = sched_clock();
+	SYMSEARCH_BIND_FUNCTION_TO(cpcap-battery, sched_clock, sched_clock2);
+	temp = sched_clock2();
 	do_div(temp, NSEC_PER_SEC);
 	cur_time = ((unsigned long)temp);
 	if ((cur_time - sply->last_run_time) < 0)
@@ -601,7 +741,7 @@ static int cpcap_batt_resume(struct platform_device *pdev)
 	return 0;
 }
 
-void cpcap_batt_set_ac_prop(struct cpcap_device *cpcap, int online)
+void cpcap_batt_set_ac_prop2(struct cpcap_device *cpcap, int online)
 {
 	struct cpcap_batt_ps *sply = cpcap->battdata;
 	struct spi_device *spi = cpcap->spi;
@@ -615,9 +755,9 @@ void cpcap_batt_set_ac_prop(struct cpcap_device *cpcap, int online)
 			data->ac_changed(&sply->ac, &sply->ac_state);
 	}
 }
-EXPORT_SYMBOL(cpcap_batt_set_ac_prop);
+EXPORT_SYMBOL(cpcap_batt_set_ac_prop2);
 
-void cpcap_batt_set_usb_prop_online(struct cpcap_device *cpcap, int online,
+void cpcap_batt_set_usb_prop_online2(struct cpcap_device *cpcap, int online,
 				    enum cpcap_batt_usb_model model)
 {
 	struct cpcap_batt_ps *sply = cpcap->battdata;
@@ -633,9 +773,9 @@ void cpcap_batt_set_usb_prop_online(struct cpcap_device *cpcap, int online,
 			data->usb_changed(&sply->usb, &sply->usb_state);
 	}
 }
-EXPORT_SYMBOL(cpcap_batt_set_usb_prop_online);
+EXPORT_SYMBOL(cpcap_batt_set_usb_prop_online2);
 
-void cpcap_batt_set_usb_prop_curr(struct cpcap_device *cpcap, unsigned int curr)
+void cpcap_batt_set_usb_prop_curr2(struct cpcap_device *cpcap, unsigned int curr)
 {
 	struct cpcap_batt_ps *sply = cpcap->battdata;
 	struct spi_device *spi = cpcap->spi;
@@ -649,7 +789,7 @@ void cpcap_batt_set_usb_prop_curr(struct cpcap_device *cpcap, unsigned int curr)
 			data->usb_changed(&sply->usb, &sply->usb_state);
 	}
 }
-EXPORT_SYMBOL(cpcap_batt_set_usb_prop_curr);
+EXPORT_SYMBOL(cpcap_batt_set_usb_prop_curr2);
 
 /*
  * Debugfs interface to test how system works with different values of
@@ -689,6 +829,14 @@ static int cpcap_batt_debug_set(void *prop, u64 val)
 
 	case POWER_SUPPLY_PROP_TEMP:
 		sply->batt_state.batt_temp = data;
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		sply->batt_state.batt_full_capacity = data;
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+		sply->batt_state.batt_capacity_one = data;
 		break;
 
 	default:
@@ -732,6 +880,14 @@ static int cpcap_batt_debug_get(void *prop, u64 *val)
 		*val = sply->batt_state.batt_temp;
 		break;
 
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		*val = sply->batt_state.batt_full_capacity;
+		break;
+
+	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
+		*val = sply->batt_state.batt_capacity_one;
+		break;
+
 	default:
 		break;
 	}
@@ -760,6 +916,12 @@ static int __init cpcap_batt_debug_init(void)
 		  (void *)POWER_SUPPLY_PROP_CAPACITY, &cpcap_battery_fops);
 		debugfs_create_file("temp", 0666, dent,
 		  (void *)POWER_SUPPLY_PROP_TEMP, &cpcap_battery_fops);
+		debugfs_create_file("charge_full_design", 0666, dent,
+		  (void *)POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+		  &cpcap_battery_fops);
+		debugfs_create_file("charge_counter", 0666, dent,
+		  (void *)POWER_SUPPLY_PROP_CHARGE_COUNTER,
+		  &cpcap_battery_fops);
 	} else {
 		ret = PTR_ERR(dent);
 	}
@@ -785,6 +947,6 @@ module_exit(cpcap_batt_exit);
 
 MODULE_ALIAS("platform:cpcap_batt");
 MODULE_DESCRIPTION("CPCAP BATTERY driver");
-MODULE_AUTHOR("Motorola");
+MODULE_AUTHOR("Motorola, Quarx");
 MODULE_LICENSE("GPL");
 
