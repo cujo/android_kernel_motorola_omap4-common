@@ -929,7 +929,7 @@ prb_exit:
 
         batt_task = kthread_create(cpcap_batt_monitor, (void*)0, "cpcap_batt_monitor");
 	wake_up_process(batt_task);
-        cpcap_chgr_probe();
+        //cpcap_chgr_probe();
 	return ret;
 }
 
