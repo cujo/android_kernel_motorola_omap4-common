@@ -363,7 +363,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			return -EFAULT;
 
 		
-		return 0; //Uncomment to disable battd.
+		//return 0; //Uncomment to disable battd.
 
 		req.format = req_us.format;
 		req.timing = req_us.timing;
@@ -800,7 +800,7 @@ static int cpcap_batt_probe(struct platform_device *pdev)
 	mutex_init(&sply->lock);
 	init_waitqueue_head(&sply->wait);
 
-	sply->batt_state.status	= POWER_SUPPLY_STATUS_UNKNOWN;
+	sply->batt_state.status	= POWER_SUPPLY_STATUS_DISCHARGING; // not UNKNOWN
 	sply->batt_state.health	= POWER_SUPPLY_HEALTH_GOOD;
 	sply->batt_state.present = 1;
 	sply->batt_state.capacity = 100;	/* Percentage */
