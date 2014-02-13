@@ -363,7 +363,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			return -EFAULT;
 
 		
-		//return 0; //Uncomment to disable battd.
+		return 0; //Uncomment to disable battd.
 
 		req.format = req_us.format;
 		req.timing = req_us.timing;
@@ -1041,11 +1041,15 @@ void cpcap_batt_set_usb_prop_curr(struct cpcap_device *cpcap, unsigned int curr)
 }
 EXPORT_SYMBOL(cpcap_batt_set_usb_prop_curr);
 
+
+
 /*
  * Debugfs interface to test how system works with different values of
  * the battery properties. Once the propety value is set through the
  * debugfs, updtes from the drivers will be discarded.
  */
+
+/*
 #ifdef CONFIG_DEBUG_FS
 
 static int cpcap_batt_debug_set(void *prop, u64 val)
@@ -1192,6 +1196,7 @@ static int __init cpcap_batt_debug_init(void)
 
 late_initcall(cpcap_batt_debug_init);
 
+*/
 #endif /* CONFIG_DEBUG_FS */
 
 static int __init cpcap_batt_init(void)
