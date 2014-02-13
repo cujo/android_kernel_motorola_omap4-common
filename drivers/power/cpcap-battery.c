@@ -88,6 +88,7 @@ static int set_timestamp(const char *val, const struct kernel_param *kp);
 static int set_cc_counter(const char *val, const struct kernel_param *kp);
 static int set_cc_counter_percentage(const char *val,
 				const struct kernel_param *kp);
+static struct task_struct * batt_task;
 
 struct cpcap_batt_ps {
 	struct power_supply batt;
@@ -338,7 +339,7 @@ static long cpcap_batt_ioctl(struct file *file,
 			req_async->type = req_us.type;
 			req_async->callback = cpcap_batt_adc_hdlr;
 			req_async->callback_param = sply;
-
+                        printk("CPCAP_IOCTL_BATT_ATOD_ASYNC:\n format %d\n timing %d\n type %d\n",req_us.format , req_us.timing, req_us.type);
 			ret = cpcap_adc_async_read(sply->cpcap, req_async);
 			if (!ret)
 				sply->async_req_pending = 1;
@@ -354,6 +355,9 @@ static long cpcap_batt_ioctl(struct file *file,
 				   sizeof(struct cpcap_adc_us_request)))
 			return -EFAULT;
 
+		
+		return 0; //Uncomment to disable battd.
+
 		req.format = req_us.format;
 		req.timing = req_us.timing;
 		req.type = req_us.type;
@@ -364,8 +368,23 @@ static long cpcap_batt_ioctl(struct file *file,
 			return ret;
 
 		req_us.status = req.status;
+                printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
 		for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
 			req_us.result[i] = req.result[i];
+
+/*
+if (req.type == 0) {
+	printk("Dump of CPCAP_ADC_BANK0_NUM:\n CPCAP_ADC_VBUS:%d\n CPCAP_ADC_AD3:%d\n CPCAP_ADC_BPLUS_AD4:%d\n CPCAP_ADC_CHG_ISENSE:%d\n CPCAP_ADC_BATTI_ADC:%d\n CPCAP_ADC_USB_ID:%d\n",
+                           req_us.result[CPCAP_ADC_VBUS],req_us.result[CPCAP_ADC_AD3],req_us.result[CPCAP_ADC_BPLUS_AD4],req_us.result[CPCAP_ADC_CHG_ISENSE],
+                               req_us.result[CPCAP_ADC_BATTI_ADC],req_us.result[CPCAP_ADC_USB_ID]);
+}
+
+if (req.type == 2) {
+	printk("Dump of CPCAP_ADC_BANK1_NUM:\n CPCAP_ADC_AD8:%d\n CPCAP_ADC_AD9:%d\n CPCAP_ADC_LICELL:%d\n CPCAP_ADC_HV_BATTP:%d\n CPCAP_ADC_TSX1_AD12:%d\n CPCAP_ADC_TSX2_AD13:%d\n CPCAP_ADC_TSX2_AD13:%d\n, CPCAP_ADC_TSX2_AD14:%d\n",req_us.result[CPCAP_ADC_AD8],req_us.result[CPCAP_ADC_AD9],req_us.result[CPCAP_ADC_LICELL],req_us.result[CPCAP_ADC_HV_BATTP],
+                               req_us.result[CPCAP_ADC_TSX1_AD12],req_us.result[CPCAP_ADC_TSX2_AD13],req_us.result[CPCAP_ADC_TSY1_AD14],req_us.result[CPCAP_ADC_TSY2_AD15]);
+}
+*/
+               // printk("Result Voltage: %dmV\n",req_us.result[CPCAP_ADC_BATTP]);
 
 		if (copy_to_user((void *)arg, (void *)&req_us,
 				 sizeof(struct cpcap_adc_us_request)))
@@ -377,6 +396,7 @@ static long cpcap_batt_ioctl(struct file *file,
 		req_us.timing = req_async->timing;
 		req_us.type = req_async->type;
 		req_us.status = req_async->status;
+                printk("CPCAP_IOCTL_BATT_ATOD_READ:\n format %d\n timing %d\n type %d\n status %d\n",req_us.format , req_us.timing, req_us.type, req_us.status);
 		for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
 			req_us.result[i] = req_async->result[i];
 
@@ -606,6 +626,92 @@ static int set_cc_counter_percentage(const char *val,
 		return 0;
 }
 
+void delay_ms(__u32 t)
+{
+    __u32 timeout = t*HZ/1000;
+    	
+    set_current_state(TASK_INTERRUPTIBLE);
+    schedule_timeout(timeout);
+}
+
+static int cpcap_batt_monitor(void* arg) {
+	//SYMSEARCH_BIND_FUNCTION_TO(cpcap-battery, cpcap_regacc_write, cpcap_regacc_write2);
+
+        int i, percent, volt_batt, range, max, min;
+	struct cpcap_batt_ps *sply = cpcap_batt_sply;
+	struct cpcap_adc_request req;
+	struct cpcap_adc_us_request req_us;
+	printk("Enter to Test\n");
+
+//	cpcap_regacc_write(sply->cpcap, CPCAP_REG_CRM, CPCAP_BIT_CHRG_LED_EN, CPCAP_BIT_CHRG_LED_EN); //Enable charge led
+
+        //cpcap_uc_start(sply->cpcap, CPCAP_MACRO_6);
+
+//   while (1) {  //TODO: Need split this big function
+
+        //printk("ac_state.online: %d\n",usb->ac_state.online);
+   /*     printk("usb_state.online: %d\n",sply->usb_state.online);
+
+        if (sply->usb_state.online == 1 || sply->ac_state.online == 1) {
+	sply->batt_state.status = POWER_SUPPLY_STATUS_CHARGING;
+        } else if ((sply->usb_state.online == 0 || sply->ac_state.online == 0) && (sply->batt_state.status == POWER_SUPPLY_STATUS_CHARGING)) {
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
+        } else {
+        sply->batt_state.status = POWER_SUPPLY_STATUS_DISCHARGING;
+        }
+
+        printk("batt_state.status: %d\n",sply->batt_state.status); */
+
+//Getting values from cpcap.
+
+	req.format = CPCAP_ADC_FORMAT_CONVERTED;
+	req.timing = CPCAP_ADC_TIMING_IMM;
+	req.type = CPCAP_ADC_TYPE_BANK_0;
+ 
+	cpcap_adc_sync_read(sply->cpcap, &req);
+
+	req_us.status = req.status;
+
+	for (i = 0; i < CPCAP_ADC_BANK0_NUM; i++)
+	    req_us.result[i] = req.result[i];
+
+        sply->batt_state.batt_volt = req_us.result[CPCAP_ADC_BATTP]*1000;
+        sply->batt_state.batt_temp = (req_us.result[CPCAP_ADC_AD3]-273)*10;  //cpcap report temp in kelvins !!!not accurately!!!
+
+	printk("Result Voltage: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Voltage batt: %dmV\n",sply->batt_state.batt_volt/1000);
+	printk("Result Temp: %d*C\n",sply->batt_state.batt_temp/10);
+
+        //printk("CPCAP_IOCTL_BATT_ATOD_SYNC:\n format %d\n timing %d\n type %d\n status %d\n",req.format , req.timing, req.type, req.status);
+	//printk("Dump of CPCAP_ADC_BANK0_NUM:\n CPCAP_ADC_VBUS:%d\n CPCAP_ADC_AD3:%d\n CPCAP_ADC_BPLUS_AD4:%d\n CPCAP_ADC_CHG_ISENSE:%d\n CPCAP_ADC_BATTI_ADC:%d\n CPCAP_ADC_USB_ID:%d\n",
+        //                   req_us.result[CPCAP_ADC_VBUS],req_us.result[CPCAP_ADC_AD3],req_us.result[CPCAP_ADC_BPLUS_AD4],req_us.result[CPCAP_ADC_CHG_ISENSE],
+        //                       req_us.result[CPCAP_ADC_BATTI_ADC],req_us.result[CPCAP_ADC_USB_ID]);
+
+
+//Calculate Percent like in bootmenu. TODO:make better then now.
+
+	min  = 3500;
+        max  = 4300; // TODO: Make dynamically
+        volt_batt = cpcap_batt_sply->batt_state.batt_volt/1000;
+	range = (max - min) / 100;
+	percent = (volt_batt - min) / range;
+	if (percent > 100) percent = 100;
+	if (percent < 0)   percent = 0;
+	if (percent > 95)  sply->batt_state.status = POWER_SUPPLY_STATUS_FULL;
+
+        if (sply->batt_state.capacity != percent) {
+        sply->batt_state.capacity = percent;
+        sply->batt_state.batt_capacity_one = percent;
+
+        }
+	printk("Result percent: %d\n",sply->batt_state.capacity);
+
+        delay_ms(2000);
+  }
+
+ return 0;
+}
+
 static int cpcap_batt_probe(struct platform_device *pdev)
 {
 	int ret = 0;
@@ -635,7 +741,7 @@ static int cpcap_batt_probe(struct platform_device *pdev)
 	sply->batt_state.batt_volt = 4200000;	/* uV */
 	sply->batt_state.batt_temp = 230;	/* tenths of degrees Celsius */
 	sply->batt_state.batt_full_capacity = 0;
-	sply->batt_state.batt_capacity_one = 99;
+	sply->batt_state.batt_capacity_one = 100;
 	sply->batt_state.cycle_count = 100;	/* Percentage */
 
 	sply->ac_state.online = 0;
@@ -754,6 +860,10 @@ unregac_exit:
 	power_supply_unregister(&sply->ac);
 
 prb_exit:
+
+        batt_task = kthread_create(cpcap_batt_monitor, (void*)0, "cpcap_batt_monitor");
+	wake_up_process(batt_task);
+        cpcap_chgr_probe();
 	return ret;
 }
 
@@ -1032,5 +1142,5 @@ module_exit(cpcap_batt_exit);
 
 MODULE_ALIAS("platform:cpcap_batt");
 MODULE_DESCRIPTION("CPCAP BATTERY driver");
-MODULE_AUTHOR("Motorola");
+MODULE_AUTHOR("Motorola, Quarx, dtrail");
 MODULE_LICENSE("GPL");
