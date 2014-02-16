@@ -19,7 +19,7 @@ cd /home/dtrail/android/4.4
 while true; do
     read -p "Do you wto clean build dirs? " yn
     case $yn in
-        [Yy]* ) echo "Cleaning out kernel source directory..."; make mrproper; make ARCH=arm distclean; cd ~/android/android_kernel_motorola_omap4-common; make mrproper; break;;
+        [Yy]* ) echo "Cleaning out kernel source directory..."; make mrproper; make ARCH=arm distclean; cd /home/dtrail/android/android_kernel_motorola_omap4-common; make mrproper; break;;
         [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
     esac
@@ -48,14 +48,14 @@ export CROSS_COMPILE=arm-eabi-
 # export TARGET_KERNEL_CUSTOM_TOOLCHAIN=arm-unknown-linux-gnueabi-standard_4.7.2
 export LOCALVERSION="-JBX-3.0-Hybrid-Atrix2-4.4"
 export BOARD_HAS_SDCARD_INTERNAL=false
-make -j8 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig $OUT/boot.img
+make -j3 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCEdison_defconfig $OUT/boot.img
 echo " "
 
 # Build libhealthd.omap4
 while true; do
     read -p "Do you wish to include 10% battery meter? " yn
     case $yn in
-        [Yy]* ) echo "Moving Ramdisk into built path..."; echo " "; cp /home/dtrail/android/4.4/out/target/product/spyder/ramdisk.img /home/dtrail/android/built/4.4/3.0/edison/rls/jbx/Applications/ramdisk/; break;;
+        [Yy]* ) echo "Moving Ramdisk into built path..."; echo " "; cp /home/dtrail/android/4.4/out/target/product/umts_spyder/ramdisk.img /home/dtrail/android/built/4.4/3.0/edison/rls/jbx/Applications/ramdisk/; break;;
         [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
     esac
@@ -66,8 +66,8 @@ echo " "
 # We don't use the kernel but the modules
 echo "Copying modules to package folder"
 echo " "
-cp -r /home/dtrail/android/4.4/out/target/product/spyder/system/lib/modules/* /home/dtrail/android/built/4.4/3.0/edison/rls/system/lib/modules/
-cp /home/dtrail/android/4.4/out/target/product/spyder/kernel /home/dtrail/android/built/4.4/3.0/edison/rls/system/etc/kexec/
+cp -r /home/dtrail/android/4.4/out/target/product/umts_spyder/system/lib/modules/* /home/dtrail/android/built/4.4/3.0/edison/rls/system/lib/modules/
+cp /home/dtrail/android/4.4/out/target/product/umts_spyder/kernel /home/dtrail/android/built/4.4/3.0/edison/rls/system/etc/kexec/
 
 echo "------------- "
 echo "Done building"
