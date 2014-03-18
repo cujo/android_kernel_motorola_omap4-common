@@ -1004,6 +1004,7 @@ if (dpll_active) {
 		omap4_dpll_cascading_blocker_release(target_dev);
 
 	return omap_device_scale(req_dev, target_dev, rate);
+
 	}
 }
 #endif
