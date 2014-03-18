@@ -17,8 +17,6 @@
 #include <linux/spinlock.h>
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#include <linux/dpll.h>
-#include <linux/console.h>
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
 #include "dvfs.h"
@@ -226,7 +224,7 @@ int omap4_core_dpll_m2_set_rate(struct clk *clk, unsigned long rate)
 {
 int omap4_core_dpll_set_rate(struct clk *clk, unsigned long rate)
 {
-	int i = 0, m2_div;
+	int i = 0, m2_div, m5_div;
 	u32 mask, reg;
 	u32 shadow_freq_cfg1 = 0, shadow_freq_cfg2 = 0;
 	struct clk *new_parent;
@@ -306,6 +304,27 @@ int omap4_core_dpll_set_rate(struct clk *clk, unsigned long rate)
 		omap_emif_setup_registers(rate / 2, LPDDR2_VOLTAGE_STABLE);
 
 		/*
+		 * program CM_DIV_M5_DPLL_CORE.DPLL_CLKOUT_DIV into shadow
+		 * register as well as L3_CLK freq and update GPMC frequency
+		 *
+		 * HACK: hardcode L3_CLK = CORE_CLK / 2 for DPLL cascading
+		 * HACK: hardcode CORE_CLK = CORE_X2_CLK / 2 for DPLL
+		 * cascading
+		 */
+		m5_div = omap4_prm_read_bits_shift(
+				dpll_core_m5x2_ck->clksel_reg,
+				dpll_core_m5x2_ck->clksel_mask);
+
+		shadow_freq_cfg2 =
+			(m5_div << OMAP4430_DPLL_CORE_M5_DIV_SHIFT) |
+			(1 << OMAP4430_CLKSEL_L3_SHADOW_SHIFT) |
+			(0 << OMAP4430_CLKSEL_CORE_1_1_SHIFT) |
+			(1 << OMAP4430_GPMC_FREQ_UPDATE_SHIFT);
+
+		__raw_writel(shadow_freq_cfg2, OMAP4430_CM_SHADOW_FREQ_CONFIG2);
+
+
+		/*
 		 * program CM_DIV_M2_DPLL_CORE.DPLL_CLKOUT_DIV
 		 * for divide by two, ensure DLL_OVERRIDE = '1'
 		 * and put DPLL_CORE into LP Bypass
@@ -362,6 +381,26 @@ int omap4_core_dpll_set_rate(struct clk *clk, unsigned long rate)
 
 		/* program mn divider values */
 		omap4_prm_rmw_reg_bits(mask, reg, dd->mult_div1_reg);
+
+		/*
+		 * program CM_DIV_M5_DPLL_CORE.DPLL_CLKOUT_DIV into shadow
+		 * register as well as L3_CLK freq and update GPMC frequency
+		 *
+		 * HACK: hardcode L3_CLK = CORE_CLK / 2 for DPLL cascading
+		 * HACK: hardcode CORE_CLK = CORE_X2_CLK / 1 for DPLL
+		 * cascading
+		 */
+		m5_div = omap4_prm_read_bits_shift(
+				dpll_core_m5x2_ck->clksel_reg,
+				dpll_core_m5x2_ck->clksel_mask);
+
+		shadow_freq_cfg2 =
+			(m5_div << OMAP4430_DPLL_CORE_M5_DIV_SHIFT) |
+			(1 << OMAP4430_CLKSEL_L3_SHADOW_SHIFT) |
+			(0 << OMAP4430_CLKSEL_CORE_1_1_SHIFT) |
+			(1 << OMAP4430_GPMC_FREQ_UPDATE_SHIFT);
+
+		__raw_writel(shadow_freq_cfg2, OMAP4430_CM_SHADOW_FREQ_CONFIG2);
 
 		/*
 		 * program DPLL_CORE_M2_DIV with same value
@@ -430,7 +469,7 @@ out:
 
 	return res;
 }
-if (likely(dpll_active)) {
+
 static int __init omap4_dpll_low_power_cascade_init_clocks(void)
 {
 	sys_clkin_ck = clk_get(NULL, "sys_clkin_ck");
@@ -482,7 +521,7 @@ static int __init omap4_dpll_low_power_cascade_init_clocks(void)
 	return 0;
 }
 late_initcall(omap4_dpll_low_power_cascade_init_clocks);
-}
+
 /**
  * omap4_dpll_low_power_cascade - configure system for low power DPLL cascade
  *
@@ -497,7 +536,6 @@ late_initcall(omap4_dpll_low_power_cascade_init_clocks);
  * Reparent DPLL_CORE so that is fed by DPLL_ABE
  * Reparent DPLL_MPU & DPLL_IVA so that they are fed by DPLL_CORE
  */
-if (likely(dpll_active)) {
 static int omap4_dpll_low_power_cascade_enter(void)
 {
 	int ret = 0;
@@ -505,13 +543,14 @@ static int omap4_dpll_low_power_cascade_enter(void)
 
 	if (!dpll_cascading_inited) {
 		pr_warn("%s: failed to get all necessary clocks\n", __func__);
-		return -ENODEV;
+		ret = -ENODEV;
+		goto out;
 	}
 
+	atomic_set(&in_dpll_cascading, true);
 	omap_sr_disable(vdd_mpu);
 	omap_sr_disable(vdd_iva);
 	omap_sr_disable(vdd_core);
-	atomic_set(&in_dpll_cascading, true);
 
 	/* prevent DPLL_ABE & DPLL_CORE from idling */
 	omap3_dpll_deny_idle(dpll_abe_ck);
@@ -730,10 +769,10 @@ sr_enable:
 	omap_sr_enable(vdd_mpu, omap_voltage_get_curr_vdata(vdd_mpu));
 	omap_sr_enable(vdd_iva, omap_voltage_get_curr_vdata(vdd_iva));
 	omap_sr_enable(vdd_core, omap_voltage_get_curr_vdata(vdd_core));
+out:
 	return ret;
-	}
 }
-if (likely(dpll_active)) {
+
 static int omap4_dpll_low_power_cascade_exit(void)
 {
 	int ret = 0;
@@ -741,8 +780,8 @@ static int omap4_dpll_low_power_cascade_exit(void)
 
 	if (!dpll_cascading_inited) {
 		pr_warn("%s: failed to get all necessary clocks\n", __func__);
-		atomic_set(&in_dpll_cascading, false);
-		return -ENODEV;
+		ret = -ENODEV;
+		goto out;
 	}
 
 	omap_sr_disable(vdd_mpu);
@@ -872,14 +911,14 @@ static int omap4_dpll_low_power_cascade_exit(void)
 	__raw_writel(state.clkreqctrl, OMAP4430_PRM_CLKREQCTRL);
 
 	recalculate_root_clocks();
-	atomic_set(&in_dpll_cascading, false);
 	omap_sr_enable(vdd_mpu, omap_voltage_get_curr_vdata(vdd_mpu));
 	omap_sr_enable(vdd_iva, omap_voltage_get_curr_vdata(vdd_iva));
 	omap_sr_enable(vdd_core, omap_voltage_get_curr_vdata(vdd_core));
+out:
+	atomic_set(&in_dpll_cascading, false);
 	return ret;
-		}
-	}
 }
+
 #endif
 
 /**
@@ -948,7 +987,6 @@ int omap4_prcm_freq_update(void)
 #define MAX_DPLL_WAIT_TRIES	1000000
 
 #define OMAP_1_5GHz	1500000000
-#define OMAP_1_30GHz	1300000000
 #define OMAP_1_2GHz	1200000000
 #define OMAP_1GHz	1000000000
 #define OMAP_920MHz	920000000
@@ -1070,9 +1108,7 @@ int omap4460_mpu_dpll_set_rate(struct clk *clk, unsigned long rate)
 	 * DCC shouldn't be used at any frequency.
 	 */
 	dpll_rate = omap2_get_dpll_rate(clk->parent);
-
 	if (!cpu_is_omap447x() || rate <= OMAP_1GHz) {
-
 		/* If DCC is enabled, disable it */
 		v = __raw_readl(dd->mult_div1_reg);
 		if (v & OMAP4460_DCC_EN_MASK) {
@@ -1458,8 +1494,6 @@ void omap4_dpll_abe_reconfigure(void)
 }
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-	if (likely(dpll_active))
-{
 int omap4_dpll_cascading_blocker_hold(struct device *dev)
 {
 	struct dpll_cascading_blocker *blocker;
@@ -1467,22 +1501,12 @@ int omap4_dpll_cascading_blocker_hold(struct device *dev)
 	int ret = 0;
 
 #ifdef CONFIG_OMAP4_ONLY_OMAP4430_DPLL_CASCADING
-if (likely(dpll_active)) {
 	if (!cpu_is_omap443x())
 		return ret;
-	}
 #endif
 	if (!dev)
 		return -EINVAL;
 
-	/*
-	 * We need take a console lock due to change uart frequency.
-	 * We cannot do it under omap_dvfs_lock because it can lead to
-	 * deadlock in situation when some thread has taken the console
-	 * lock and trying to scale waiting for the omap_dvfs_lock that has
-	 * been taken already by dpll_cascading.
-	 */
-	console_lock();
 	mutex_lock(&omap_dvfs_lock);
 
 	if (list_empty(&dpll_cascading_blocker_list))
@@ -1515,36 +1539,23 @@ if (likely(dpll_active)) {
 	}
 out:
 	mutex_unlock(&omap_dvfs_lock);
-	console_unlock();
 	return ret;
 }
 EXPORT_SYMBOL(omap4_dpll_cascading_blocker_hold);
 
 int omap4_dpll_cascading_blocker_release(struct device *dev)
 {
-if (likely(dpll_active)) {
 	struct dpll_cascading_blocker *blocker;
 	int ret = 0;
 	int found = 0;
-	}
+
 #ifdef CONFIG_OMAP4_ONLY_OMAP4430_DPLL_CASCADING
-if (likely(dpll_active)) {
 	if (!cpu_is_omap443x())
 		return ret;
-	}
 #endif
-if (likely(dpll_active)) {
 	if (!dev)
 		return -EINVAL;
 
-	/*
-	 * We need take a console lock due to change uart frequency.
-	 * We cannot do it under omap_dvfs_lock because it can lead to
-	 * deadlock in situation when some thread has taken the console
-	 * lock and trying to scale waiting for the omap_dvfs_lock that has
-	 * been taken already by dpll_cascading.
-	 */
-	console_lock();
 	mutex_lock(&omap_dvfs_lock);
 
 	/* bail early if list is empty */
@@ -1580,45 +1591,12 @@ if (likely(dpll_active)) {
 	}
 out:
 	mutex_unlock(&omap_dvfs_lock);
-	console_unlock();
 	return ret;
-	}
 }
 EXPORT_SYMBOL(omap4_dpll_cascading_blocker_release);
 
 bool omap4_is_in_dpll_cascading(void)
 {
-if (likely(dpll_active)) {
 	return atomic_read(&in_dpll_cascading);
-	}
 }
-else {
-int omap4_dpll_cascading_blocker_hold(struct device *dev)
-{
-if (likely(dpll_active)) {
-	return 0;
-	}
-}
-EXPORT_SYMBOL(omap4_dpll_cascading_blocker_hold);
-
-int omap4_dpll_cascading_blocker_release(struct device *dev)
-{
-if (likely(dpll_active)) {
-	return 0;
-	}
-}
-EXPORT_SYMBOL(omap4_dpll_cascading_blocker_release);
-}
-#else
-int omap4_dpll_cascading_blocker_hold(struct device *dev)
-{
-	return 0;
-}
-EXPORT_SYMBOL(omap4_dpll_cascading_blocker_hold);
-
-int omap4_dpll_cascading_blocker_release(struct device *dev)
-{
-	return 0;
-}
-EXPORT_SYMBOL(omap4_dpll_cascading_blocker_release);
 #endif
