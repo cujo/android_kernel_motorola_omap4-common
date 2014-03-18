@@ -63,6 +63,7 @@ static unsigned int board_panel_debug;
 
 #define HDMI_CONTROL_I2C_1_REG          (0x4A100624)
 #define HDMI_CONTROL_I2C_1_DDC_PU_DIS   (0x11000000)
+#define HDMI_GPIO_HPD                   63  /* Hot plug pin for HDMI */
 
 static bool mapphone_panel_device_read_dt; /* This is by default false */
 
@@ -249,7 +250,6 @@ static struct omap_dss_device mapphone_hdtv_device = {
 			.dispc_fclk_src	= OMAP_DSS_CLK_SRC_FCK,
 		},
 		.hdmi	= {
-//			.regn	= 10,
 			.regn	= 15,
 			.regm2	= 1,
 			.max_pixclk_khz = 148500,

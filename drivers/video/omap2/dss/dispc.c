@@ -2388,10 +2388,6 @@ int dispc_setup_plane(enum omap_plane plane,
 	
 	if (cpu_is_omap44xx()) {
 #if !defined(CONFIG_OMAP2_HDMI_DEFAULT_DISPLAY)
-		/* optimization of power consumption for OMAP4 */
-//		fifo_low = (ovl_fifo_size / 2);
-//		fifo_high = ovl_fifo_size - 16;
-
 		fifo_low = dispc_calculate_threshold(plane, paddr + offset0,
 				   puv_addr + offset0, width, height,
 				   row_inc, pix_inc);

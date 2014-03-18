@@ -373,41 +373,6 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 			(u32) dsscomp_gralloc_queue, 0);
 
 	/* by default our auxiliary variable has wrong value */
-//	wb_mgr_ix = MAX_MANAGERS;
-
-	/* check the composition
-	 * if composition has wb and connected to manager
-	 * in m2m mode while blanking - do not skip the
-	 * composition for this manager */
-/*	if (blanked) {
-		for (i = 0; i < d->num_ovls; i++) {
-			if (d->ovls[i].cfg.ix == 4 &&
-						d->ovls[i].cfg.wb_mode ==
-							OMAP_WB_MEM2MEM_MODE &&
-						d->ovls[i].cfg.enabled) {
-				wb_mgr_ix = d->ovls[i].cfg.mgr_ix;
-				break;
-			}
-		}
-*/
-		/* If current composition contains no WB, but previous
-		 * composition contains WB, then we should pass this
-		 * composition */
-/*		for (ch = 0; ch < MAX_MANAGERS; ch++) {
-			if (wb_mgr_ix >= MAX_MANAGERS &&
-						ovl_use_mask[ch] & (1 << 4)) {
-				wb_mgr_ix = ch;
-				break;
-			}
-		}
-
-		if (wb_mgr_ix < MAX_MANAGERS)
-			for (ch = 0; ch < MAX_MANAGERS; ch++) {
-				if (ch != wb_mgr_ix)
-					ovl_use_mask[ch] = 0;
-			}
-	}
-*/
 	/* ignore frames while we are blanked */
 //	skip = blanked && wb_mgr_ix >= MAX_MANAGERS;
 	skip = blanked;
@@ -453,10 +418,6 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 		}
 		channels[i] = ch = mgr->id;
 
-//		if (wb_mgr_ix < MAX_MANAGERS && blanked)
-//			if (wb_mgr_ix != i)
-//				continue;
-
 		mgr_set_mask |= 1 << ch;
 
 		/* swap red & blue if requested */
@@ -466,14 +427,6 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 
 	/* create dsscomp objects for set managers (including active ones) */
 	for (ch = 0; ch < MAX_MANAGERS; ch++) {
-
-//		if (wb_mgr_ix < MAX_MANAGERS && blanked) {
-//			if (wb_mgr_ix != ch) {
-//				comp[ch] = NULL;
-//				continue;
-//			}
-//		}
-
 		if (!(mgr_set_mask & (1 << ch)) && !ovl_use_mask[ch])
 			continue;
 
