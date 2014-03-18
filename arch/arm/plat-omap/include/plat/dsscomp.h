@@ -34,3 +34,4 @@ int dsscomp_apply(dsscomp_t comp);
 u32 dsscomp_mgr_callback(void *data, int id, int status);
 
 #endif
+

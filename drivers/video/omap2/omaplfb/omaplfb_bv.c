@@ -590,3 +590,4 @@ IMG_BOOL OMAPLFBInitBlt(void)
 #endif
 	return gbBvInterfacePresent;
 }
+

@@ -381,3 +381,4 @@ struct hdmi_video_interface {
 int hdmi_lib_start_acr_wa(void);
 void hdmi_lib_stop_acr_wa(void);
 #endif
+

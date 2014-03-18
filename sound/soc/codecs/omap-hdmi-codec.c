@@ -501,3 +501,4 @@ module_exit(hdmi_codec_exit);
 MODULE_AUTHOR("Ricardo Neri <ricardo.neri@ti.com>");
 MODULE_DESCRIPTION("ASoC HDMI codec driver");
 MODULE_LICENSE("GPL");
+

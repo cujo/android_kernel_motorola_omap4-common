@@ -374,7 +374,6 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 
 	/* by default our auxiliary variable has wrong value */
 	/* ignore frames while we are blanked */
-//	skip = blanked && wb_mgr_ix >= MAX_MANAGERS;
 	skip = blanked;
 
 	if (skip && (debug & DEBUG_PHASES))
@@ -392,8 +391,6 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 	memset(comp, 0, sizeof(comp));
 	memset(ovl_new_use_mask, 0, sizeof(ovl_new_use_mask));
 
-//	if ((skip || !dsscomp_is_any_device_active()) &&
-//		wb_mgr_ix >= MAX_MANAGERS)
 	if (skip)
 		goto skip_comp;
 
@@ -427,6 +424,7 @@ int dsscomp_gralloc_queue(struct dsscomp_setup_dispc_data *d,
 
 	/* create dsscomp objects for set managers (including active ones) */
 	for (ch = 0; ch < MAX_MANAGERS; ch++) {
+
 		if (!(mgr_set_mask & (1 << ch)) && !ovl_use_mask[ch])
 			continue;
 
@@ -624,37 +622,6 @@ skip_map1d:
 		log_event(0, ms, gsync, "++refs=%d for [%p]",
 				atomic_read(&gsync->refs), (u32) comp[ch]);
 
-/*		if (wb_mgr_ix < MAX_MANAGERS && blanked)
-			comp[ch]->m2m_only = true;
-		else
-			comp[ch]->m2m_only = false;
-
-		if (ch == 1 && clone_wq && phys) {
-*/			/* start work-queue */
-/*			struct dsscomp_clone_work *wk = kzalloc(sizeof(*wk),
-								GFP_NOWAIT);
-			if (!wk) {
-				dev_err(DEV(cdev),
-					"dsscomp clone wk create failed.");
-				atomic_dec(&gsync->refs);
-				continue;
-			}
-			wk->dma_cfg.src_buf_addr =  d->ovls[0].ba;
-			wk->dma_cfg.dst_buf_addr =  phys;
-			wk->dma_cfg.width = d->ovls[0].cfg.crop.w;
-			wk->dma_cfg.height = d->ovls[0].cfg.crop.h;
-			wk->dma_cfg.stride = view.v_inc;
-			wk->comp = comp[ch];
-			INIT_WORK(&wk->work, dsscomp_gralloc_do_clone);
-			r = queue_work(clone_wq, &wk->work);
-			if (!r) {
-				dev_err(DEV(cdev),
-					"dsscomp wq start failed");
-				atomic_dec(&gsync->refs);
-			}
-			continue;
-		}
-*/
 		r = dsscomp_delayed_apply(comp[ch]);
 		if (r)
 			dev_err(DEV(cdev), "failed to apply comp (%d)\n", r);
@@ -681,11 +648,8 @@ static void dsscomp_early_suspend_cb(void *data, int status)
 	blank_complete = true;
 	wake_up(&early_suspend_wq);
 }
-#if 1 /* HACK */
-void dsscomp_early_suspend(struct early_suspend *h)
-#else 
+
 static void dsscomp_early_suspend(struct early_suspend *h)
-#endif
 {
 	struct dsscomp_setup_dispc_data d = {
 		.num_mgrs = 0,
@@ -863,3 +827,4 @@ void dsscomp_gralloc_exit(void)
 	}
 	INIT_LIST_HEAD(&free_slots);
 }
+

@@ -1183,3 +1183,4 @@ extern int fb_find_mode(struct fb_var_screeninfo *var,
 #endif /* __KERNEL__ */
 
 #endif /* _LINUX_FB_H */
+

@@ -329,3 +329,4 @@ void hdcp_ddc_abort(void)
 
 	spin_unlock_irqrestore(&hdcp.spinlock, flags);
 }
+

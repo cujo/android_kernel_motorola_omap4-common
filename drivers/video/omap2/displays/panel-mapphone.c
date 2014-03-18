@@ -4772,3 +4772,4 @@ module_exit(mapphone_panel_exit);
 MODULE_AUTHOR("Rebecca Schultz Zavin <rebecca@android.com>");
 MODULE_DESCRIPTION("Sholes Panel Driver");
 MODULE_LICENSE("GPL");
+

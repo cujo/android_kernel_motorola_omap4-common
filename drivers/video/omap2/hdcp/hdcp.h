@@ -394,3 +394,4 @@ void hdcp_ddc_abort(void);
 #endif /* __KERNEL__ */
 
 #endif /* _HDCP_H_ */
+

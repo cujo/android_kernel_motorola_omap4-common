@@ -589,7 +589,7 @@ int omap_dss_ovl_set_info(struct omap_overlay *ovl,
 /*#ifdef CONFIG_PANEL_MAPPHONE_OMAP4_HDTV
 #define FB_MODE_FLAG_DVI_AUDIO   (1 << 30)
 #define FB_MODE_FLAG_DSSMGR      (1 << 29)
-//int omapdss_hdmi_display_enable(struct omap_dss_device *dssdev, int edid_only);
+int omapdss_hdmi_display_enable(struct omap_dss_device *dssdev, int edid_only);
 int mapphone_omapdss_hdmi_get_edid(struct omap_dss_device *dssdev, u8 *edid, int len);
 int omapdss_set_hdmi_mode(struct omap_dss_device *dssdev, int code);
 int omapdss_set_hdmi_hpd(struct omap_dss_device *dssdev, bool enable);
@@ -625,3 +625,4 @@ static inline void dss_collect_irq_stats(u32 irqstatus, unsigned *irq_arr)
 #endif
 
 #endif
+
