@@ -1623,32 +1623,36 @@ static struct omap_hwmod_class_sysconfig omap44xx_dss_sysc = {
 
 static int omap44xx_dss_reset(struct omap_hwmod *oh)
 {
-#define DISPC_IRQSTATUS		(0x018UL)
-#define DISPC_CONTROL1		(0x040UL)
-#define DISPC_CONTROL2		(0x238UL)
+#define DISPC_IRQSTATUS    (0x018UL)
+#define DISPC_CONTROL1    (0x040UL)
+#define DISPC_CONTROL2    (0x238UL)
 
-	void __iomem *base_addr, *ctrl1_addr, *ctrl2_addr, *irq_addr;
+void __iomem *base_addr, *ctrl1_addr, *ctrl2_addr, *irq_addr; 
+
 	u32 ctrl1_mask = 0;
 	u32 ctrl2_mask = 0;
 	u32 irq_mask = 0;
 	u32 val;
 	unsigned long end_wait;
 
-	/* map DSS physical addresses diapazon (4kBytes) */
-	base_addr = ioremap(0x58001000, 0x00001000);
-	if (!base_addr)
-		return -ENOMEM;
-	ctrl1_addr = base_addr + DISPC_CONTROL1;
-	ctrl2_addr = base_addr + DISPC_CONTROL2;
-	irq_addr = base_addr + DISPC_IRQSTATUS;
-
+  /* map DSS physical addresses diapazon (4kBytes) */
+  base_addr = ioremap(0x58001000, 0x00001000);
+  if (!base_addr)
+    return -ENOMEM;
+  ctrl1_addr = base_addr + DISPC_CONTROL1;
+  ctrl2_addr = base_addr + DISPC_CONTROL2;
+  irq_addr = base_addr + DISPC_IRQSTATUS;
+ 
 	/* HACK */
+
 	/* If LCD1/LCD2/TV are active, disable them first before
 	 * moving the clock sources back to PRCM. We don't want to change
 	 * the clock source while a DMA is active.
 	 */
-	/* Read DISPC_CONTROL1 register */
-	val = __raw_readl(ctrl1_addr);
+
+	 /* Read DISPC_CONTROL1 register */
+	 val = __raw_readl(ctrl1_addr);
+
 	if (val & (1 << 0)) {
 		/* LCD1 */
 		irq_mask |= 1 << 0;
@@ -1659,7 +1663,6 @@ static int omap44xx_dss_reset(struct omap_hwmod *oh)
 		irq_mask |= 1 << 24;
 		ctrl1_mask |= 1 << 1;
 	}
-
 	val = __raw_readl(ctrl2_addr);
 	if (val & (1 << 0)) {
 		/* LCD2 */
@@ -1686,9 +1689,9 @@ static int omap44xx_dss_reset(struct omap_hwmod *oh)
 		((__raw_readl(irq_addr) & irq_mask) != irq_mask));
 
 	iounmap(base_addr);
-
 	omap_hwmod_write(0x0, oh, 0x40);
 	return 0;
+
 #undef DISPC_IRQSTATUS
 #undef DISPC_CONTROL1
 #undef DISPC_CONTROL2
@@ -5648,7 +5651,6 @@ static struct omap_hwmod_ocp_if *omap44xx_uart1_slaves[] = {
 static struct omap_hwmod omap44xx_uart1_hwmod = {
 	.name		= "uart1",
 	.class		= &omap44xx_uart_hwmod_class,
-	.flags          = HWMOD_SWSUP_SIDLE,
 	.mpu_irqs	= omap44xx_uart1_irqs,
 	.mpu_irqs_cnt	= ARRAY_SIZE(omap44xx_uart1_irqs),
 	.sdma_reqs	= omap44xx_uart1_sdma_reqs,
@@ -6457,4 +6459,5 @@ int __init omap44xx_hwmod_init(void)
 {
 	return omap_hwmod_register(omap44xx_hwmods);
 }
+
 

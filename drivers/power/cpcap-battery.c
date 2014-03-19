@@ -36,6 +36,11 @@
 #include <linux/miscdevice.h>
 #include <linux/debugfs.h>
 
+
+#ifdef CONFIG_BLX
+#include <linux/blx.h>
+#endif
+
 #define CPCAP_BATT_IRQ_BATTDET 0x01
 #define CPCAP_BATT_IRQ_OV      0x02
 #define CPCAP_BATT_IRQ_CC_CAL  0x04
@@ -385,6 +390,7 @@ static long cpcap_batt_ioctl(struct file *file,
 
 static void cpcap_batt_ind_chrg_ctrl(struct cpcap_batt_ps *sply)
 {
+
 	unsigned long long temp;
 	unsigned short cpcap_reg;
 	struct cpcap_platform_data *pdata = sply->cpcap->spi->dev.platform_data;
@@ -426,6 +432,15 @@ static void cpcap_batt_ind_chrg_ctrl(struct cpcap_batt_ps *sply)
 			pdata->ind_chrg->force_charge_complete(1);
 		pr_cpcap_batt(TRANSITION, "batt capacity 100, chrgcmpl set");
 		sply->ind_chrg_dsbl_time = (unsigned long)temp;
+#ifdef CONFIG_BLX
+	} else if ((get_charginglimit() != MAX_CHARGINGLIMIT && sply->batt_state.batt_capacity_one >= get_charginglimit()) && 
+		   (sply->ac_state.model == CPCAP_BATT_AC_IND)) {
+			pdata->ind_chrg->force_charge_complete(1);
+		pr_cpcap_batt(TRANSITION, "BLX: capacity reached, chrgcmpl set");
+		pr_info("BLX: capacity reached %d, chrgcmpl set\n", get_charginglimit());
+		sply->ind_chrg_dsbl_time = (unsigned long)temp;
+#endif
+
 	} else if (((temp - sply->ind_chrg_dsbl_time) >= INDCHRG_RS_TIME) ||
 		   (sply->batt_state.batt_capacity_one <= INDCHRG_RS_CPCY)) {
 		if (pdata->ind_chrg->force_charge_complete != NULL)
@@ -1009,3 +1024,4 @@ MODULE_ALIAS("platform:cpcap_batt");
 MODULE_DESCRIPTION("CPCAP BATTERY driver");
 MODULE_AUTHOR("Motorola");
 MODULE_LICENSE("GPL");
+

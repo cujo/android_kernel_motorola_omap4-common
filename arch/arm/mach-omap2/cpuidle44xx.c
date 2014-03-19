@@ -435,7 +435,7 @@ static void omap4_enter_idle_primary(struct omap4_processor_cx *cx)
 
 	pr_debug("%s: cpu0 down\n", __func__);
 
-	omap4_enter_sleep(0, PWRDM_POWER_OFF, false);
+	omap4_enter_sleep(0, PWRDM_POWER_OFF, false); 
 
 	pr_debug("%s: cpu0 up\n", __func__);
 

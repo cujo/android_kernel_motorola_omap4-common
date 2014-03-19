@@ -18,6 +18,7 @@
 #include <linux/ktime.h>
 #include <linux/hrtimer.h>
 #include <trace/events/power.h>
+#include <linux/module.h>
 
 #include "cpuidle.h"
 
@@ -74,16 +75,6 @@ static void cpuidle_idle_call(void)
 	 */
 	hrtimer_peek_ahead_timers();
 #endif
-
-	/*
-	 * Call the device's prepare function before calling the
-	 * governor's select function.  ->prepare gives the device's
-	 * cpuidle driver a chance to update any dynamic information
-	 * of its cpuidle states for the current idle period, e.g.
-	 * state availability, latencies, residencies, etc.
-	 */
-	if (dev->prepare)
-		dev->prepare(dev);
 
 	/* ask the governor for the next state */
 	next_state = cpuidle_curr_governor->select(dev);
