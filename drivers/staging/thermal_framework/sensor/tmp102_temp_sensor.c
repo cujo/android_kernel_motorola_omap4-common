@@ -314,7 +314,7 @@ static int __devinit tmp102_temp_sensor_probe(
 	tmp102->therm_fw = kzalloc(sizeof(struct thermal_dev), GFP_KERNEL);
 	if (tmp102->therm_fw) {
 		tmp102->therm_fw->name = TMP102_SENSOR_NAME;
-		tmp102->therm_fw->domain_name = "cpu";
+		tmp102->therm_fw->domain_name = "pcb";
 		tmp102->therm_fw->dev = tmp102->dev;
 		tmp102->therm_fw->dev_ops = &tmp102_temp_sensor_ops;
 		thermal_sensor_dev_register(tmp102->therm_fw);
