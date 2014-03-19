@@ -225,7 +225,6 @@ int set_dss_ovl_info(struct dss2_ovl_info *oi)
 		info.enabled = false;
 		goto done;
 
-<<<<<<< HEAD
 /*	wb = omap_dss_get_wb(0);
 
 	wb->get_wb_info(wb, &wb_info);
@@ -245,8 +244,6 @@ int set_dss_ovl_info(struct dss2_ovl_info *oi)
 			info.enabled = false;
 			goto done;
 		}*/
-=======
->>>>>>> 2763615... OMAP4: HDMI: add support for moto platform
 	}
 
 	/* adjust crop to UV pixel boundaries */
