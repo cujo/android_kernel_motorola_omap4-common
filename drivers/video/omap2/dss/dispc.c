@@ -459,6 +459,69 @@ void dispc_restore_context(void)
 #undef SR
 #undef RR
 
+static u32 dispc_calculate_threshold(enum omap_plane plane, u32 paddr,
+				u32 puv_addr, u16 width, u16 height,
+				s32 row_inc, s32 pix_inc)
+{
+	int shift;
+	u32 channel_no = plane;
+	u32 val, burstsize, doublestride;
+	u32 rotation, bursttype, color_mode;
+	struct dispc_config dispc_reg_config;
+
+	if (width >= 1920)
+		return 1500;
+
+	/* Get the burst size */
+	shift = (plane == OMAP_DSS_GFX) ? 6 : 14;
+	val = dispc_read_reg(DISPC_OVL_ATTRIBUTES(plane));
+	burstsize = FLD_GET(val, shift + 1, shift);
+	doublestride = FLD_GET(val, 22, 22);
+	rotation = FLD_GET(val, 13, 12);
+	bursttype = FLD_GET(val, 29, 29);
+	color_mode = FLD_GET(val, 4, 1);
+
+	/* base address for frame (Luma frame in case of YUV420) */
+	dispc_reg_config.ba = paddr;
+	/* base address for Chroma frame in case of YUV420 */
+	dispc_reg_config.bacbcr = puv_addr;
+	/* OrgSizeX for frame */
+	dispc_reg_config.sizex = width - 1;
+	/* OrgSizeY for frame */
+	dispc_reg_config.sizey = height - 1;
+	/* burst size */
+	dispc_reg_config.burstsize = burstsize;
+	/* pixel increment */
+	dispc_reg_config.pixelinc = pix_inc;
+	/* row increment */
+	dispc_reg_config.rowinc  = row_inc;
+	/* burst type: 1D/2D */
+	dispc_reg_config.bursttype = bursttype;
+	/* chroma DoubleStride when in YUV420 format */
+	dispc_reg_config.doublestride = doublestride;
+	/* Pixcel format of the frame.*/
+	dispc_reg_config.format = color_mode;
+	/* Rotation of frame */
+	dispc_reg_config.rotation = rotation;
+
+	/* DMA buffer allications - assuming reset values */
+	dispc_reg_config.gfx_top_buffer = 0;
+	dispc_reg_config.gfx_bottom_buffer = 0;
+	dispc_reg_config.vid1_top_buffer = 1;
+	dispc_reg_config.vid1_bottom_buffer = 1;
+	dispc_reg_config.vid2_top_buffer = 2;
+	dispc_reg_config.vid2_bottom_buffer = 2;
+	dispc_reg_config.vid3_top_buffer = 3;
+	dispc_reg_config.vid3_bottom_buffer = 3;
+	dispc_reg_config.wb_top_buffer = 4;
+	dispc_reg_config.wb_bottom_buffer = 4;
+
+	/* antiFlicker is off */
+	dispc_reg_config.antiflicker = 0;
+
+	return sa_calc_wrap(&dispc_reg_config, channel_no);
+}
+
 int dispc_runtime_get(void)
 {
 	int r;
@@ -502,7 +565,6 @@ int dispc_runtime_get(void)
 			goto err_dss_get;
 
 		/* XXX dispc fclk can also come from DSI PLL */
-
 		clk_enable(dispc.dss_clk);
 
 		r = pm_runtime_get_sync(&dispc.pdev->dev);
@@ -522,9 +584,9 @@ err_runtime_get:
 	dss_runtime_put();
 err_dss_get:
 	mutex_unlock(&dispc.runtime_lock);
- 	return r;
 
- }
+	return r;
+}
 
 void dispc_runtime_put(void)
 {
@@ -541,7 +603,6 @@ void dispc_runtime_put(void)
 		WARN_ON(r);
 
 		clk_disable(dispc.dss_clk);
-
 
 		dss_runtime_put();
 
@@ -807,7 +868,7 @@ dispc_get_scaling_coef(u32 inc, bool five_taps)
 	static const struct dispc_hv_coef coef_M32[8] = {
 		{    7,   34,   46,   34,    7 },
 		{    4,   31,   46,   37,   10 },
-		{    1,   28,   46,   39,   14 },
+		{    1,   27,   46,   39,   14 },
 		{   -1,   24,   46,   42,   17 },
 		{   21,   45,   45,   21,   -4 },
 		{   17,   42,   46,   24,   -1 },
@@ -1404,10 +1465,10 @@ static void _dispc_set_scale_param(enum omap_plane plane,
 	hscaleup = orig_width <= out_width;
 	vscaleup = orig_height <= out_height;
 
+	_dispc_set_scale_coef(plane, hscaleup, vscaleup, five_taps, color_comp);
+
 	fir_hinc = 1024 * orig_width / out_width;
 	fir_vinc = 1024 * orig_height / out_height;
-
-	_dispc_set_scale_coef(plane, fir_hinc, fir_vinc, five_taps, color_comp);
 
 	_dispc_set_fir(plane, fir_hinc, fir_vinc, color_comp);
 }
@@ -2104,8 +2165,8 @@ int dispc_scaling_decision(u16 width, u16 height,
 		if (!can_scale)
 			goto loop;
 
-		if (out_width * maxdownscale < in_width ||
-			out_height * maxdownscale < in_height) 
+		if (out_width < in_width / maxdownscale ||
+			out_height < in_height / maxdownscale)
 			goto loop;
 
 		/* Use 5-tap filter unless must use 3-tap */
@@ -2384,14 +2445,8 @@ int dispc_setup_plane(enum omap_plane plane,
 	_dispc_set_pre_mult_alpha(plane, pre_mult_alpha);
 	_dispc_setup_global_alpha(plane, global_alpha);
 
-	ovl_fifo_size = dispc_get_plane_fifo_size(plane);
-	
 	if (cpu_is_omap44xx()) {
 #if !defined(CONFIG_OMAP2_HDMI_DEFAULT_DISPLAY)
-		/* optimization of power consumption for OMAP4 */
-//		fifo_low = (ovl_fifo_size / 2);
-//		fifo_high = ovl_fifo_size - 16;
-
 		fifo_low = dispc_calculate_threshold(plane, paddr + offset0,
 				   puv_addr + offset0, width, height,
 				   row_inc, pix_inc);
@@ -3412,7 +3467,7 @@ int dispc_calc_clock_rates(unsigned long dispc_fclk_rate,
 {
 	if (cinfo->lck_div > 255 || cinfo->lck_div == 0)
 		return -EINVAL;
-	if (cinfo->pck_div < 1 || cinfo->pck_div > 255) 
+	if (cinfo->pck_div < 2 || cinfo->pck_div > 255)
 		return -EINVAL;
 
 	cinfo->lck = dispc_fclk_rate / cinfo->lck_div;

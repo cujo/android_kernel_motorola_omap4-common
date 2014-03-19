@@ -461,3 +461,4 @@ MODULE_DESCRIPTION("omap mailbox: omap2/3/4 architecture specific functions");
 MODULE_AUTHOR("Hiroshi DOYU <Hiroshi.DOYU@nokia.com>");
 MODULE_AUTHOR("Paul Mundt");
 MODULE_ALIAS("platform:omap2-mailbox");
+

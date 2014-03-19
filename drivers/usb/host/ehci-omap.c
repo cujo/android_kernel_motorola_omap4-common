@@ -566,6 +566,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
 	}
 
 	pm_runtime_get_sync(dev->parent);
+	*pdata->usbhs_update_sar = 1;
 
 	/*
 	 * An undocumented "feature" in the OMAP3 EHCI controller,
@@ -710,7 +711,6 @@ static int ehci_omap_bus_suspend(struct usb_hcd *hcd)
 
 	if (hcd->self.connection_change) {
 		dev_err(dev, "Connection state changed\n");
-		save_usb_sar_regs();
 		hcd->self.connection_change = 0;
 	}
 
@@ -765,7 +765,7 @@ static int ehci_omap_bus_resume(struct usb_hcd *hcd)
 	oh = omap_hwmod_lookup(USBHS_EHCI_HWMODNAME);
 
 	if (oh)
-		ret = omap_hwmod_disable_ioring_wakeup(oh);
+	ret = omap_hwmod_disable_ioring_wakeup(oh);
 #endif
 
 	/* Re-enable any external transceiver clocks first */
@@ -785,6 +785,8 @@ static int ehci_omap_bus_resume(struct usb_hcd *hcd)
 
 	set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
 	enable_irq(hcd->irq);
+
+	*pdata->usbhs_update_sar = 1;
 
 	return ehci_bus_resume(hcd);
 }
@@ -847,5 +849,4 @@ static struct hc_driver ehci_omap_hc_driver = {
 MODULE_ALIAS("platform:omap-ehci");
 MODULE_AUTHOR("Texas Instruments, Inc.");
 MODULE_AUTHOR("Felipe Balbi <felipe.balbi@nokia.com>");
-
 

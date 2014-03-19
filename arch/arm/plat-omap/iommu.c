@@ -31,11 +31,6 @@
 	     (__i < (n)) && (cr = __iotlb_read_cr((obj), __i), true);	\
 	     __i++)
 
-
-#define SET_MPU_CORE_CONSTRAINT	400
-#define SET_DSP_CONSTRAINT	10
-#define CLEAR_CONSTRAINT	-1
-
 /* accommodate the difference between omap1 and omap2/3 */
 static const struct iommu_functions *arch_iommu;
 
@@ -858,14 +853,12 @@ static void _set_latency_cstr(struct iommu *obj, bool set)
 {
 	int val;
 
-		val = set ? obj->pm_constraint : PM_QOS_DEFAULT_VALUE;
-
-		if (!strcmp(obj->name, "ducati"))
+	val = set ? obj->pm_constraint : PM_QOS_DEFAULT_VALUE;
+	if (!strcmp(obj->name, "ducati"))
 		pm_qos_update_request(obj->qos_request, val);
-
 	else if (!strcmp(obj->name, "tesla"))
-	    omap_pm_set_max_dev_wakeup_lat(obj->dev,
-	        obj->dev, val);
+		omap_pm_set_max_dev_wakeup_lat(obj->dev,
+				obj->dev, val);
 
 	return;
 }
