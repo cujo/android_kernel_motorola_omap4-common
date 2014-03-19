@@ -108,7 +108,7 @@ PREPARE KERNEL SOURCE
 1. git clone this repo (JBX-Kernel) into a seperate folder.
 2. Be sure you're in JBX_30X branch.
 3. Edit build scripts for your local paths.
-   (i.e. for Droid RAZR use 'build_quad.sh', for ATRIX 2 use 'build_edison_quad.sh', etc..).
+   (i.e. for Droid RAZR use 'build.sh', for ATRIX 2 use 'build_edison.sh', etc..).
 4. Keep in mind that the build scripts assume you to have my 'built_rls' repo cloned on your local harddrive.
 5. If you don't want to use it, exclude the section and install the kernel manually! Otherwise proceed NOW at 'OPTIONAL'.
 6. Run the build script (or proceed firsth with OPTIONAL).
