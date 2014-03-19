@@ -33,6 +33,7 @@
 #include "dt_path.h"
 #include <linux/of.h>
 
+#define DM_FILLER		20
 #define MAX_VIBS		2
 #define MAX_PWMS		8
 #define MAX_VOLT		4
