@@ -3807,16 +3807,6 @@ static int mapphone_panel_power_on(struct omap_dss_device *dssdev)
 		goto err0;
 	}
 
-	static bool skip_first_boot = true;
-
-	if ((skip_first_boot || !first_boot) && !dssdev->phy.dsi.d2l_use_ulps) {
-		if (dssdev->platform_enable) {
-			ret = dssdev->platform_enable(dssdev);
-			if (ret)
-				goto err0;
-		}
-	}
-
 #ifdef CONFIG_FB_OMAP_BOOTLOADER_INIT
 	if (first_boot) {
 		/*
