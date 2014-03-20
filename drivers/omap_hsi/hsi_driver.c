@@ -30,7 +30,7 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
-#include <linux/dpll.h>
+
 #include <mach/omap4-common.h>
 #include <plat/omap_device.h>
 

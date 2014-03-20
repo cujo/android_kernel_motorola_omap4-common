@@ -755,4 +755,3 @@ module_exit(lis3dh_exit);
 MODULE_DESCRIPTION("lis3dh accelerometer driver");
 MODULE_AUTHOR("Motorola");
 MODULE_LICENSE("GPL");
-

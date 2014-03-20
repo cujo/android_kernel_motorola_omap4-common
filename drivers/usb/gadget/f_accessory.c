@@ -1196,4 +1196,3 @@ static void acc_cleanup(void)
 	kfree(_acc_dev);
 	_acc_dev = NULL;
 }
-
