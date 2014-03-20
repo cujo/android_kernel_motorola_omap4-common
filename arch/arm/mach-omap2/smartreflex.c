@@ -808,13 +808,15 @@ int sr_enable(struct voltagedomain *voltdm, struct omap_volt_data *volt_data)
 		return -EINVAL;
 	}
 
-	if (volt_data->sr_bypass) {
+	// Not sure if this is beeing ever called because of the bypass check in SR 3, so disable for now 
+
+/*	if (volt_data->sr_bypass) {
 		pr_warn("%s: %s: SR 3 skipped: Voltage Nominal=%d\n",
 			__func__, voltdm->name, volt_data->volt_nominal);
 
 		return;
 	}
-
+*/
 
 	nvalue_reciprocal = sr_retrieve_nvalue(sr, volt_data->sr_efuse_offs);
 
