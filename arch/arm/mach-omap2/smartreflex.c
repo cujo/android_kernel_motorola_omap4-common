@@ -573,7 +573,7 @@ bool is_sr_enabled(struct voltagedomain *voltdm)
 }
 
 /**
- * sr_configure_errgen() - Configures the smrtreflex to perform AVS using the
+ * sr_configure_errgen() - Configures the smartreflex to perform AVS using the
  *			 error generator module.
  * @voltdm:	VDD pointer to which the SR module to be configured belongs to.
  *
@@ -807,6 +807,14 @@ int sr_enable(struct voltagedomain *voltdm, struct omap_volt_data *volt_data)
 		dev_warn(&sr->pdev->dev, "%s: bad voltage data\n", __func__);
 		return -EINVAL;
 	}
+
+	if (volt_data->sr_bypass) {
+		pr_warn("%s: %s: SR 3 skipped: Voltage Nominal=%d\n",
+			__func__, voltdm->name, volt_data->volt_nominal);
+
+		return;
+	}
+
 
 	nvalue_reciprocal = sr_retrieve_nvalue(sr, volt_data->sr_efuse_offs);
 
