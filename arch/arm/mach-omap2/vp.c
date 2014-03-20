@@ -126,6 +126,7 @@ void __init omap_vp_init(struct voltagedomain *voltdm)
  * This is hence useful for all users of voltage domain to precisely
  * identify once the PMIC voltage has been set by the voltage processor
  */
+/*
 bool omap_vp_is_transdone(struct voltagedomain *voltdm)
 {
 
@@ -133,11 +134,12 @@ bool omap_vp_is_transdone(struct voltagedomain *voltdm)
 
 	return vp->common->ops->check_txdone(vp->id) ? true : false;
 }
-
+*/
 /**
  * omap_vp_clear_transdone() - clear voltage transfer done status on vp
  * @voltdm:	pointer to the VDD which is to be scaled.
  */
+/*
 void omap_vp_clear_transdone(struct voltagedomain *voltdm)
 {
 	struct omap_vp_instance *vp = voltdm->vp;
@@ -145,7 +147,7 @@ void omap_vp_clear_transdone(struct voltagedomain *voltdm)
 	vp->common->ops->clear_txdone(vp->id);
 
 	return;
-}
+} */
 
 int omap_vp_update_errorgain(struct voltagedomain *voltdm,
 			     struct omap_volt_data *volt_data)
@@ -203,9 +205,8 @@ int omap_vp_forceupdate_scale(struct voltagedomain *voltdm,
 	 * This is an additional allowance to ensure we are in proper state
 	 * to enter into forceupdate state transition.
 	 */
-	omap_test_timeout((voltdm->read(vp->vstatus) & vp->common->vstatus_vpidle),
-			VP_IDLE_TIMEOUT, timeout);
-
+	omap_test_timeout((voltdm->read(vp->vstatus)), VP_IDLE_TIMEOUT,
+								timeout);
 	if (timeout >= VP_IDLE_TIMEOUT)
 		_vp_controlled_err(vp, voltdm,
 			"%s:vdd_%s idletimdout forceupdate(v=%ld)\n",
@@ -412,8 +413,8 @@ void omap_vp_disable(struct voltagedomain *voltdm)
 	 * Wait for VP idle Typical latency is <2us. Maximum latency is ~100us
 	 * Depending on if we catch VP in the middle of an SR operation.
 	 */
-	omap_test_timeout((voltdm->read(vp->vstatus) & vp->common->vstatus_vpidle),
-			VP_IDLE_TIMEOUT, timeout);
+	omap_test_timeout((voltdm->read(vp->vstatus)),
+			  VP_IDLE_TIMEOUT, timeout);
 
 	if (timeout >= VP_IDLE_TIMEOUT)
 		pr_warning("%s: vdd_%s idle timedout before disable\n",
@@ -427,8 +428,8 @@ void omap_vp_disable(struct voltagedomain *voltdm)
 	/*
 	 * Wait for VP idle Typical latency is <2us. Maximum latency is ~100us
 	 */
-	omap_test_timeout((voltdm->read(vp->vstatus) & vp->common->vstatus_vpidle),
-			VP_IDLE_TIMEOUT, timeout);
+	omap_test_timeout((voltdm->read(vp->vstatus)),
+			  VP_IDLE_TIMEOUT, timeout);
 
 	if (timeout >= VP_IDLE_TIMEOUT)
 		pr_warning("%s: vdd_%s idle timedout after disable\n",
