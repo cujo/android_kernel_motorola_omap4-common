@@ -1,0 +1,33 @@
+78dbbe4 Edison: use specific device setup for compile
+503b084 defconfig updates
+33a98af modules: Enable DPLL and disable Battery_Friend by default
+bb109b2 omap: plat: mailbox/iommu: Fix and cleanup
+6ff496f omap: opp: fix voltage margins and missing deps
+9128ea6 omap: hdmi: cleanup derp
+479764e defconfig updates
+76d3566 Some last adaptions
+2fd1033 drivers: thermal, staging, cpuidle: adapt changes from 3.0.31
+d64fdbe omap: hdmi: display: latest changes from lucize and stargo adapted to JBX
+97fe36c omap: arch: arm: omap: adapt changes from 3.0.31
+49a82ad omap: remoteproc, rpmsg: adapt changes from 3.0.31
+63e8cf1 omap: hdmi: Motorola implementation
+10c69bd Revert "Revert "omap4-common: add missing checks for CONFIG_USB_OOBWAKE""
+4eaa203 omap4-common: Revert back to Motorola's workaround for i719
+98cc1e9 Revert "omap4-common: Revert USB-code back to Motorola implementation"
+13cfc20 omap4-common: back to Motorola
+2c68bcf Revert "omap4-common: add missing checks for CONFIG_USB_OOBWAKE"
+91e5014 Revert "Revert "Revert changes to ehci-omap""
+365194e Revert "JBX: Big cleanup and fixes:"
+8613e64 Revert "Recent fixes for prior commit"
+6f5d765 Revert "Revert changes to ehci-omap"
+3f5706a Revert changes to ehci-omap
+5d12924 Recent fixes for prior commit
+13853b8 omap: panel: remove obsolete code
+4fd79cf4 JBX: Big cleanup and fixes:
+0443928 defconfig updates
+e5ce043 OMAP4: HDMI: update to 3.4
+fa12212 omap: hdmi: merge changes from luzice and adapt to JBX-Kernel
+ca72408 Update README.md
+8b4e35a omap: panel: fix firstboot reject issue
+6acfa39 remove config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT
+7708859 Revert "add config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT to disable first_boot logic in mapphone_panel"
