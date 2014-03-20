@@ -19,8 +19,8 @@ static int sr_class3_enable(struct voltagedomain *voltdm,
 			    struct omap_volt_data *volt_data)
 {
 	/* check bypass flag, if enabled, do nothing */
-	if (volt_data->sr_bypass)
-		return 0;
+/*	if (volt_data->sr_bypass)
+		return 0; */
 
 	omap_vp_enable(voltdm);
 	return sr_enable(voltdm, volt_data);

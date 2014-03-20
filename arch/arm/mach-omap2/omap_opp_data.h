@@ -76,25 +76,24 @@ struct omap_opp_def {
  * XXX Is this needed?  Just use C99 initializers in data files?
  */
 #ifdef CONFIG_OMAP_SMARTREFLEX_CUSTOM_SENSOR
-#define VOLT_DATA_DEFINE(_v_nom, _v_margin, _efuse_offs, _bypass, _nsensor, _psensor, _errminlimit, _errgain, _abb_type) \
+#define VOLT_DATA_DEFINE(_v_nom, _v_margin, _efuse_offs,/* _bypass,*/ _nsensor, _psensor, _errminlimit, _errgain, _abb_type) \
 {									\
 	.volt_nominal = _v_nom, 					\
 	.volt_margin = _v_margin, 					\
 	.sr_efuse_offs = _efuse_offs, 					\
-	.sr_bypass	= _bypass,              			\
 	.sr_nsensor = _nsensor, 					\
 	.sr_psensor = _psensor, 					\
 	.sr_errminlimit = _errminlimit, 				\
 	.vp_errgain = _errgain, 					\
 	.abb_type = _abb_type, 						\
 }
+/*	.sr_bypass	= _bypass,              			\*/
 #else 
-#define VOLT_DATA_DEFINE(_v_nom, _v_margin, _efuse_offs, _bypass, _errminlimit, _errgain, _abb_type) \
+#define VOLT_DATA_DEFINE(_v_nom, _v_margin, _efuse_offs, _errminlimit, _errgain, _abb_type) \
 {								       \
 	.volt_nominal	= _v_nom,				       \
 	.volt_margin	= _v_margin,				       \
 	.sr_efuse_offs	= _efuse_offs,				       \
-	.sr_bypass	= _bypass,                                     \
 	.sr_errminlimit = _errminlimit,				       \
 	.vp_errgain	= _errgain,				       \
 	.abb_type	= _abb_type,				       \

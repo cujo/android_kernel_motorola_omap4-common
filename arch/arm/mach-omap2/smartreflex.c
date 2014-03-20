@@ -808,11 +808,11 @@ int sr_enable(struct voltagedomain *voltdm, struct omap_volt_data *volt_data)
 		return -EINVAL;
 	}
 
-	if (volt_data->sr_bypass) {
+/*	if (volt_data->sr_bypass) {
 		pr_warn("%s: %s: SR 3 skipped: Voltage Nominal=%d\n",
 			__func__, voltdm->name, volt_data->volt_nominal);
 
-		return;
+		return; */
 	}
 
 
