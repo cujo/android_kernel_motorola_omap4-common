@@ -1755,20 +1755,24 @@ static int omap_dss_mgr_blank(struct omap_overlay_manager *mgr,
 	mc->dirty = true;
 	mgr->info_dirty = false;
 
+
 	/*
 	 * TRICKY: Enable apply irq even if not waiting for vsync, so that
 	 * DISPC programming takes place in case GO bit was on.
 	 */
-	if (!dss_cache.irq_enabled) {
-		u32 mask;
+		if (!dss_cache.irq_enabled) {
+			u32 mask;
 
-		mask = DISPC_IRQ_VSYNC	| DISPC_IRQ_EVSYNC_ODD |
-			DISPC_IRQ_EVSYNC_EVEN;
-		if (dss_has_feature(FEAT_MGR_LCD2))
-			mask |= DISPC_IRQ_VSYNC2;
+			mask = DISPC_IRQ_VSYNC | DISPC_IRQ_EVSYNC_ODD |
+							DISPC_IRQ_EVSYNC_EVEN;
 
-		r = omap_dispc_register_isr(dss_apply_irq_handler, NULL, mask);
-		dss_cache.irq_enabled = true;
+			if (dss_has_feature(FEAT_MGR_LCD2))
+				mask |= DISPC_IRQ_VSYNC2;
+
+			r = omap_dispc_register_isr(dss_apply_irq_handler,
+								NULL, mask);
+			dss_cache.irq_enabled = true;
+		}
 	}
 
 	if (!r_get) {
@@ -2048,19 +2052,22 @@ skip_mgr:
 		}
 	}
 
-	r = 0;
-	if (!dss_cache.irq_enabled) {
-		u32 mask;
+		r = 0;
+		if (!dss_cache.irq_enabled) {
+			u32 mask;
 
-		mask = DISPC_IRQ_VSYNC	| DISPC_IRQ_EVSYNC_ODD |
-			DISPC_IRQ_EVSYNC_EVEN;
-		if (dss_has_feature(FEAT_MGR_LCD2))
-			mask |= DISPC_IRQ_VSYNC2;
+			mask = DISPC_IRQ_VSYNC | DISPC_IRQ_EVSYNC_ODD |
+							DISPC_IRQ_EVSYNC_EVEN;
 
-		r = omap_dispc_register_isr(dss_apply_irq_handler, NULL, mask);
-		dss_cache.irq_enabled = true;
+			if (dss_has_feature(FEAT_MGR_LCD2))
+				mask |= DISPC_IRQ_VSYNC2;
+
+			r = omap_dispc_register_isr(dss_apply_irq_handler,
+								NULL, mask);
+			dss_cache.irq_enabled = true;
+		}
+		configure_dispc();
 	}
-	configure_dispc();
 
 done:
 	spin_unlock_irqrestore(&dss_cache.lock, flags);
