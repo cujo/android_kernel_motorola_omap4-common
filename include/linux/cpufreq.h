@@ -24,8 +24,6 @@
 
 #define CPUFREQ_NAME_LEN 16
 
-int lock_policy_rwsem_write(int cpu);
-void unlock_policy_rwsem_write(int cpu); 
 
 /*********************************************************************
  *                     CPUFREQ NOTIFIER INTERFACE                    *
@@ -317,11 +315,6 @@ __ATTR(_name, 0644, show_##_name, store_##_name)
  *********************************************************************/
 int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu);
 int cpufreq_update_policy(unsigned int cpu);
-int cpufreq_set_gov(char *target_gov, unsigned int cpu);
-
-/* static struct cpufreq_governor *__find_governor(const char *str_governor);
-static int __cpufreq_set_policy(struct cpufreq_policy *data,
-				struct cpufreq_policy *policy); */
 
 #ifdef CONFIG_CPU_FREQ
 /* query the current CPU frequency (in kHz). If zero, cpufreq couldn't detect it */
