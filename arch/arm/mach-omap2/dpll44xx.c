@@ -1135,7 +1135,7 @@ int omap4460_mpu_dpll_set_rate(struct clk *clk, unsigned long rate)
 		 */
 		/* based on Google's recent patches, anything below 1.5 GHz
 		 * do not need to enable DCC due to Tuna Board issues.
-		 * for me, anything above 1.35 GHz should use DCC for clock
+		 * for me, anything above 1.3 GHz should use DCC for clock
 		 * stability
 		 */
 		if (rate != dpll_rate * 2) {
