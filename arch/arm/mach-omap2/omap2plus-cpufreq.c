@@ -123,7 +123,7 @@ static int gpu_freq_idx = DEFAULT_MAX_GPU_FREQUENCY_INDEX;
 #endif
 
 #ifdef CONFIG_OMAP4430_IVA_OVERCLOCK
-#define OMAP4430_IVA_OC_FREQUENCY 500000000 // must match value in opp4xxx_data.c
+#define OMAP4430_IVA_OC_FREQUENCY 430000000 // must match value in opp4xxx_data.c
 static int iva_freq_oc = 0; // boolean flag
 #endif
 
