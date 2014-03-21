@@ -5,11 +5,9 @@
 #				     #
 #(c)2014 dtrail <mnl.manz@gmail.com> #
 ######################################
-
-###################################
-# Start preparing the environment #
-###################################
-
+# 
+# Prepare compiler
+#	
 #
 # Define variable
 #
@@ -20,7 +18,7 @@
 	declare toolchain
 	declare built_dir
 	declare out_dir	
-
+	
 	# Return values of PATH detection in check() function
 	# In case the sources cannot be found in default place or on local hdd
 	# they will return 'false' - which starts the user_check()
@@ -29,12 +27,12 @@
 	declare arm_check=true
 	declare builtdir_check=true
 	declare outdir_check=true
-
+	
 	# CPU Cores
 	declare core
+	
+function config_read {
 
-config_read()
-{
 	# Default PATHs
 	echo "Reading config...." >&2
 	source config.conf
@@ -44,6 +42,69 @@ config_read()
 	echo "Built folder		:  $builtdir" >&2
 	echo "Out folder		:  $outdir" >&2
 }
+echo " "
+echo "Welcome to the JBX-KERNEL-BUILDER!"
+echo " "
+######################################
+#	     Main Menu		     #
+######################################
+function main {
+		# clear the screen here
+		clear;
+	echo "######################################"
+	echo "#		    Main Menu		   #"
+	echo "######################################"
+	echo " "
+	echo " "
+	echo "[1] Check your environemnt"
+	echo " "
+	echo " "
+	echo " "
+	echo "[2]"
+	echo "This option is useful to see quickly if the kernel gets compiled after commited any changes."
+	echo "This is recommended to test new code, otherwise a full build takes more time and when it gets"
+	echo "interrupted by any compiler error or something, it's hard to see the actual error message."
+	echo "After the test build is successfully compiled, run a full build."
+	echo " "
+	echo "[3]"
+	echo "This will build a full installer package (Kernel, modules, Aroma Installer)"
+	echo "and place it in the specified out dir - Ready to flash!"
+	echo " "
+	echo "[4]"
+	echo "You might want to clean the kernel source directoy and start over from scratch."
+	echo "can be useful if you got too many errors while compiling, and fixed them one by one,"
+	echo "in some cases the kernel will compile - but after cleaned out the source dir"
+	echo "some new errors might appear. To sum it up: If you commited a lot of changes"
+	echo "to the kernel, it's always better to clean out the build dirs"
+	echo
+	echo "[5]"
+	echo "Do I really have to explain this option? :-D"
+	echo "	BUT: You might want to enter your local PATHs in the config.conf file."
+	echo "	The Builder checks it and checks also if these paths are true."
+	echo " 	If any of them doesn't exist, the Builder lets you enter the correct PATHs,"
+	echo "	but they WILL NOT be saved (I have problems to make this work - for now)"
+	echo "  You can just exit, etner your PATHs and then restart the Builder."
+	echo " "
+	echo " "
+	echo " "
+		# Choose option
+		while true; do
+		    read -p "Select: [1] Check environment [2]Compile Test [3]Build full package [4]Clean build dirs [5]Exit : " 12345
+		    case $12345 in
+			[1]* ) check;;
+		        [2]* ) testb;;
+		        [3]* ) full;;
+			[4]* ) make mrproper; make clean; main;;
+			[5]* ) exit;;
+		        * ) echo "Enter a number from 1-4 ";;
+		    esac
+		done
+}
+
+	
+	
+	
+#### We start here
 
 #######################
 ## Declare functions ##
@@ -67,29 +128,8 @@ function clear {
 	eval "function clear { echo -en '$CLEAR'; }"
 }
 
-##
-## Do we have all needed stuff in its places?
-#############################################
-store()
-{
-	kern_check=true
-	cm_check=true
-	arm_check=true
-	builtdir_check=true
-	outdir_check=true
-	sleep 1
-	echo " "
-	echo $kern_check
-	echo $cm_check
-	echo $arm_check
-	echo $builtdir_check
-	echo $outdir_check
-	sleep 1
-	adjust;
-}
+function check {
 
-check()
-{
 	# Read from config file
 	config_read;
 	# check if kernel source exist in default path
@@ -165,10 +205,9 @@ check()
 	store;
 }
 
-
 # Check for directories
-user_check() 
-{
+function user_check {
+
 	# Clear screen
 	clear;
 
@@ -221,13 +260,40 @@ user_check()
 	while true; do
 	    read -p "Correct? Press [y], if not correct press [n] to retry : " yn
 	    case $yn in
-	        [Yy]* ) kern_dir=$kerneldir; cm_dir=$cmsource; toolchain=$cmsource/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin; built_dir=$builtdirpath; out_dir=$outpath; store;;
+	        [Yy]* ) store;;
 	        [Nn]* ) user_check;;
 	        * ) echo "Enter 'y' or 'n' ";;
 	    esac
 	done
 }
 
+
+
+##
+## Do we have all needed stuff in its places?
+#############################################
+store()
+{
+	kern_dir=$kerneldir
+	cm_dir=$cmsource
+	toolchain=$cmsource/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin
+	built_dir=$builtdirpath
+	out_dir=$outpath; 
+	kern_check=true
+	cm_check=true
+	arm_check=true
+	builtdir_check=true
+	outdir_check=true
+	sleep 1
+	echo " "
+	echo $kern_check
+	echo $cm_check
+	echo $arm_check
+	echo $builtdir_check
+	echo $outdir_check
+	sleep 1
+	adjust;
+}
 
 #
 # Show stored paths in variables
@@ -262,74 +328,15 @@ core_select()
 		echo
 		core=$(($cores * 2))
 }
-# 
-# Prepare compiler
-#	
-set -m
-echo " "
-echo "Welcome to the JBX-KERNEL-BUILDER!\n"
-echo " "
+
 ##########################################
 # preparation done! Continue with script #
 ##########################################
 
 ######################################
-#	     Main Menu		     #
-######################################
-main()
-{
-	# clear the screen here
-	clear
-echo "######################################"
-echo "#		    Main Menu		   #"
-echo "######################################"
-echo " "
-echo " "
-echo "[1]"
-echo "The first option is useful to see quickly if the kernel gets compiled after commited any changes."
-echo "This is recommended to test new code, otherwise a full build takes more time and when it gets"
-echo "interrupted by any compiler error or something, it's hard to see the actual error message."
-echo "After the test build is successfully compiled, run a full build."
-echo
-echo "[2]"
-echo "This will build a full installer package (Kernel, modules, Aroma Installer)"
-echo "and place it in the specified out dir - Ready to flash!"
-echo
-echo "[3]"
-echo "You might want to clean the kernel source directoy and start over from scratch."
-echo "can be useful if you got too many errors while compiling, and fixed them one by one,"
-echo "in some cases the kernel will compile - but after cleaned out the source dir"
-echo "some new errors might appear. To sum it up: If you commited a lot of changes"
-echo "to the kernel, it's always better to clean out the build dirs"
-echo
-echo "[4]"
-echo "Do I really have to explain this option? :-D"
-echo "	BUT: You might want to enter your local PATHs in the config.conf file."
-echo "	The Builder checks it and checks also if these paths are true."
-echo " 	If any of them doesn't exist, the Builder lets you enter the correct PATHs,"
-echo "	but they WILL NOT be saved (I have problems to make this work - for now)"
-echo "  You can just exit, etner your PATHs and then restart the Builder."
-echo " "
-echo " "
-echo " "
-	# Choose option
-	while true; do
-	    read -p "Select: [2]Compile Test [3]Build full package [4]Clean build dirs [5]Exit : " 12345
-	    case $12345 in
-		[1]* ) check;;
-	        [2]* ) testb;;
-	        [3]* ) full;;
-		[4]* ) make mrproper; make clean; main;;
-		[5]* ) exit;;
-	        * ) echo "Enter a number from 1-4 ";;
-	    esac
-	done
-}
-######################################
 #	     TEST - BUILD	     #
 ######################################
-testb()
-{
+function testb {
 	# We need your actual CPU power
 	core_select;
 	# clear the screen here
@@ -367,8 +374,8 @@ testb()
 }
 
 
-errchk()
-{
+function errchk {
+
 	echo
 	echo "Congrats! The kernel has been built! --Or not???."
 	echo "Usually we use the most recent amount of CPU cores x2 to compile."
@@ -398,8 +405,7 @@ errchk()
 ######################################
 #	     FULL - BUILD	     #
 ######################################
-full()
-{
+function full {
 	# clear the screen here
 	clear
 	# Select device
@@ -418,8 +424,8 @@ full()
 ##############################
 #	    SPYDER	     #
 ##############################
-spyder()
-{
+function spyder {
+
 	sleep 1
 	clear;
 	echo " "
@@ -547,3 +553,5 @@ spyder()
 	    esac
 	done
 }
+
+echo " ": main;
