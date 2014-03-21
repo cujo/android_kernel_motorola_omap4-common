@@ -479,9 +479,10 @@ EXPORT_SYMBOL(trace_hardirqs_off);
 
 void trace_hardirqs_on(void)
 {
- trace_hardirqs_on_caller(CALLER_ADDR0);
+	if (!preempt_trace() && irq_trace())
+		start_critical_timing(CALLER_ADDR0, CALLER_ADDR1);
 }
-EXPORT_SYMBOL(trace_hardirqs_on);
+EXPORT_SYMBOL(trace_hardirqs_off);
 
 void trace_hardirqs_on_caller(unsigned long caller_addr)
 {
