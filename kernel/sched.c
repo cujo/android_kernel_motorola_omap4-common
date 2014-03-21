@@ -1811,6 +1811,8 @@ static void double_rq_unlock(struct rq *rq1, struct rq *rq2)
 static void calc_load_account_idle(struct rq *this_rq);
 static void update_sysctl(void);
 static int get_update_sysctl_factor(void);
+static void __update_cpu_load(struct rq *this_rq, unsigned long this_load,
+			      unsigned long pending_updates);
 
 static inline void __set_task_cpu(struct task_struct *p, unsigned int cpu)
 {
