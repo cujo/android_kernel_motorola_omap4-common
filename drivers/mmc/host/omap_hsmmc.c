@@ -178,7 +178,6 @@ extern bool dpll_active;
 #define OMAP_MMC_SLEEP_TIMEOUT		1000
 #define OMAP_MMC_OFF_TIMEOUT		8000
 
-
 /* Errata definitions */
 #define OMAP_HSMMC_ERRATA_I761    BIT(0)
 
@@ -1025,9 +1024,7 @@ omap_hsmmc_xfer_done(struct omap_hsmmc_host *host, struct mmc_data *data)
 
 	return;
 }
--static int
-
-omap_hsmmc_errata_i761(struct omap_hsmmc_host *host, struct mmc_command *cmd)
+static int omap_hsmmc_errata_i761(struct omap_hsmmc_host *host, struct mmc_command *cmd)
 {
   u32 rsp10, csre;
 
