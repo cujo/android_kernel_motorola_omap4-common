@@ -845,10 +845,12 @@ static int exec_mmap(struct mm_struct *mm)
 		}
 	}
 	task_lock(tsk);
+	preempt_disable_rt();
 	active_mm = tsk->active_mm;
 	tsk->mm = mm;
 	tsk->active_mm = mm;
 	activate_mm(active_mm, mm);
+	preempt_enable_rt();	
 	if (old_mm && tsk->signal->oom_score_adj == OOM_SCORE_ADJ_MIN) {
 		atomic_dec(&old_mm->oom_disable_count);
 		atomic_inc(&tsk->mm->oom_disable_count);
