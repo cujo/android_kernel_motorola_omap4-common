@@ -467,7 +467,7 @@ static int omap4_keypad_resume(struct device *dev)
 
 	return 0;
 }
--#ifdef CONFIG_PM_SLEEP
+#ifdef CONFIG_PM_SLEEP
 
 /* static SIMPLE_DEV_PM_OPS(omap4_keypad_pm_ops, omap4_keypad_suspend,
  omap4_keypad_resume); */
