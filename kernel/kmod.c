@@ -318,7 +318,7 @@ int usermodehelper_disable(void)
 	down_write(&umhelper_sem);
 	usermodehelper_disabled = 1;
 	up_write(&umhelper_sem);
-
+	smp_mb();					
 	/*
 	 * From now on call_usermodehelper_exec() won't start any new
 	 * helpers, so it is sufficient if running_helpers turns out to
