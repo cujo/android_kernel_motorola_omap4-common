@@ -1,0 +1,90 @@
+9c8c58e omap: opp: raise voltages and correct margin per OPP
+932952c allo: back to previous versions
+81ad41b staging: timed_gpio: back to previous versions
+cae759b Revert "Merge and cleanuop 3.0.31 [WIP]"
+5899d85 Kernel: revert to original modded ver
+6971c63 kernel: revert to mod config
+01e489c use prior backports
+7e789c7 omap: cpufreq: enable nightmare gov and use IVA OC 500Mhz
+2a345b7 cpufreq: night,are to kconfig
+384506f Add missing definitions of preempt_enable_rt(); preempt_disable_rt();
+c2c6e2a Introduce preemp_rt function in memblock and fix typo in preempt.h
+e682a66 omap: opp: activated forward-body bias to increase stability for new lowered voltage values.
+188c2f2 kernel: partly to 3.0.31 but keep backports from 3.13
+3b7d32f patch: rt: preempt_disable_rt for CONFIG_PREEMPT_RT
+3baee40 Edison/Targa: defconfig updates
+9e91e29 some leftover things adapted to 3.0.31 - even they're not in use
+c8283bd defconfig update
+8d33676 arm: kernel: smp: 3.0.31
+b2a374a mm: protect activate_mm() by preempt_[disable|enable]_rt()
+bba6dcb omap: thermal: fix header
+35b2534 omap: opp: fix typos
+4c2eaa0 some fixes
+38a8907 omap: opp: remove leftover arguments from smartreflex bypass flag
+6ef5ac1 omap: cpu: adapt to 3.0.31
+30b274b omap: vp: remove vpidle mask and transdone function
+0c4da7f kernel: smp: revert back to previous cpu timeout code
+73a2a3c Smartreflex: disable bypass flag
+63880b3 Revert "Smartreflex: disable bypass check in sr driver. Probably we will never get there because of the bypass check in SR class 3 driver"
+6591307 Revert "Revert "omap: opp: add missing arguments for voltage calibration""
+0d3acdc Revert "omap: opp: add missing arguments for voltage calibration"
+cec3c42 Fixup from merge
+8f63eba omap: opp: add missing arguments for voltage calibration
+dac7311 Edison: build script: fix BIG typo
+cc5a916 Merge and cleanuop 3.0.31 [WIP]
+00f06d1 omap: dss: overlay: remove OMAP4XXX limitation code
+08557ba drivers: modem: remove error timer
+bdf9e76 [WIP] Merge drivers and stuff to 3.0.31
+83e3eb0 omap: opp: allow software margin per OPP
+9b826ec Smartreflex: disable bypass check in sr driver. Probably we will never get there because of the bypass check in SR class 3 driver
+6377c3f Smartreflex: add bypass flag for use with high OC frequencies
+6a35f9a omap: dpll: fix
+52dbc25 some missing adaptions
+dce65e1 omap: thermal: update thermal framework to 3.0.31
+2e3f0b7 Revert "omap: thermal: update thermal framework to 3.0.31"
+7ac2a5f omap: thermal: update thermal framework to 3.0.31
+56aacf4 cpufreq: add Nightmare governor
+0f4b612  omap4-common: only disable interrupt when port is suspending
+2113bca omap4-common: serial a. modem: Use 3.4 backport
+700b7ec omap: serial: suspend disable port, adapt DPLL
+6c31eb4 Revert "revert some serial settings"
+eaa3e01 Revert "[WIP] 3.0.31"
+c37f8bac omap: lpddr2_elpida: revert back to prior RAM timings
+27cc271 omap: hdmi: 3.4 backport
+a79fd18 Revert "omap: hdmi: display: latest changes from lucize and stargo adapted to JBX"
+381bc7c Revert "drivers: thermal, staging, cpuidle: adapt changes from 3.0.31"
+6d10150 Edison: fix typo
+cb7b475 Added todays changelog and updated full history
+78dbbe4 Edison: use specific device setup for compile
+503b084 defconfig updates
+33a98af modules: Enable DPLL and disable Battery_Friend by default
+bb109b2 omap: plat: mailbox/iommu: Fix and cleanup
+6ff496f omap: opp: fix voltage margins and missing deps
+9128ea6 omap: hdmi: cleanup derp
+479764e defconfig updates
+76d3566 Some last adaptions
+2fd1033 drivers: thermal, staging, cpuidle: adapt changes from 3.0.31
+d64fdbe omap: hdmi: display: latest changes from lucize and stargo adapted to JBX
+97fe36c omap: arch: arm: omap: adapt changes from 3.0.31
+49a82ad omap: remoteproc, rpmsg: adapt changes from 3.0.31
+63e8cf1 omap: hdmi: Motorola implementation
+10c69bd Revert "Revert "omap4-common: add missing checks for CONFIG_USB_OOBWAKE""
+4eaa203 omap4-common: Revert back to Motorola's workaround for i719
+98cc1e9 Revert "omap4-common: Revert USB-code back to Motorola implementation"
+13cfc20 omap4-common: back to Motorola
+2c68bcf Revert "omap4-common: add missing checks for CONFIG_USB_OOBWAKE"
+91e5014 Revert "Revert "Revert changes to ehci-omap""
+365194e Revert "JBX: Big cleanup and fixes:"
+8613e64 Revert "Recent fixes for prior commit"
+6f5d765 Revert "Revert changes to ehci-omap"
+3f5706a Revert changes to ehci-omap
+5d12924 Recent fixes for prior commit
+13853b8 omap: panel: remove obsolete code
+4fd79cf4 JBX: Big cleanup and fixes:
+0443928 defconfig updates
+e5ce043 OMAP4: HDMI: update to 3.4
+fa12212 omap: hdmi: merge changes from luzice and adapt to JBX-Kernel
+ca72408 Update README.md
+8b4e35a omap: panel: fix firstboot reject issue
+6acfa39 remove config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT
+7708859 Revert "add config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT to disable first_boot logic in mapphone_panel"
