@@ -46,7 +46,6 @@ u32 omap4_prm_read_inst_reg(s16 inst, u16 reg)
 {
 	return __raw_readl(OMAP44XX_PRM_REGADDR(inst, reg));
 }
-
 /* Write into a register in a CM/PRM instance in the PRM module */
 void omap4_prm_write_inst_reg(u32 val, s16 inst, u16 reg)
 {
@@ -195,6 +194,8 @@ static struct device fake_reset_dev;
 void omap4_prm_global_warm_sw_reset(void)
 {
 	u32 v;
+
+
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 if (likely(dpll_active)) {
