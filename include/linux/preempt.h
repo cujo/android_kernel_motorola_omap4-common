@@ -124,7 +124,6 @@ do { \
 #define preempt_disable_rt preempt_disable
 #define preempt_enable_rt preempt_enable
 #else
-#define
 #define preempt_disable_rt do { } while (0)
 #define preempt_enable_rt do { } while (0)
 #endif

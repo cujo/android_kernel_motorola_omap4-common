@@ -126,8 +126,9 @@ struct mem_cgroup_stat_cpu {
  */
 struct mem_cgroup_per_zone {
 	/*
-	 * spin_lock to protect the per cgroup LRU
+	 * raw_spin_lock to protect the per cgroup LRU
 	 */
+	raw_spinlock_t 		lru_lock;
 	struct list_head	lists[NR_LRU_LISTS];
 	unsigned long		count[NR_LRU_LISTS];
 
