@@ -91,6 +91,7 @@ function main {
 		while true; do
 		    read -p "Select: [1] Check environment [2]Compile Test [3]Build full package [4]Clean build dirs [5]Exit : " 12345
 		    case $12345 in
+			echo
 			[1]* ) check;;
 		        [2]* ) testb;;
 		        [3]* ) full;;
