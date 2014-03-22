@@ -3320,6 +3320,29 @@ static void _dispc_set_pol_freq(enum omap_channel channel, bool onoff, bool rf,
 	dispc_write_reg(DISPC_POL_FREQ(channel), l);
 }
 
+static void dispc_get_pol_freq(enum omap_channel channel,
+      enum omap_panel_config *config, u8 *acbi, u8 *acb)
+{
+  u32 l = dispc_read_reg(DISPC_POL_FREQ(channel));
+  *config = 0;
+
+  if (FLD_GET(l, 17, 17))
+    *config |= OMAP_DSS_LCD_ONOFF;
+  if (FLD_GET(l, 16, 16))
+    *config |= OMAP_DSS_LCD_RF;
+  if (FLD_GET(l, 15, 15))
+    *config |= OMAP_DSS_LCD_IEO;
+  if (FLD_GET(l, 14, 14))
+    *config |= OMAP_DSS_LCD_IPC;
+  if (FLD_GET(l, 13, 13))
+    *config |= OMAP_DSS_LCD_IHS;
+  if (FLD_GET(l, 12, 12))
+    *config |= OMAP_DSS_LCD_IVS;
+
+  *acbi = FLD_GET(l, 11, 8);
+  *acb = FLD_GET(l, 7, 0);
+}
+
 void dispc_set_pol_freq(enum omap_channel channel,
 		enum omap_panel_config config, u8 acbi, u8 acb)
 {
