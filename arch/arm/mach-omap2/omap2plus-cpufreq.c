@@ -142,38 +142,6 @@ static unsigned int omap_getspeed(unsigned int cpu)
 	return rate;
 }
 
-static void omap_cpufreq_lpj_recalculate(unsigned int target_freq,
-					unsigned int cur_freq)
-{
-#ifdef CONFIG_SMP
-	unsigned int i;
-
-	/*
-	* Note that loops_per_jiffy is not updated on SMP systems in
-	* cpufreq driver. So, update the per-CPU loops_per_jiffy value
-	* on frequency transition. We need to update all dependent CPUs.
-	*/
-	for_each_possible_cpu(i) {
-		struct lpj_info *lpj = &per_cpu(lpj_ref, i);
-	if (!lpj->freq) {
-		lpj->ref = per_cpu(cpu_data, i).loops_per_jiffy;
-		lpj->freq = cur_freq;
-		}
-
-		per_cpu(cpu_data, i).loops_per_jiffy =
-		cpufreq_scale(lpj->ref, lpj->freq, target_freq);
-	}	
-
-		/* And don't forget to adjust the global one */
-	if (!global_lpj_ref.freq) {
-		global_lpj_ref.ref = loops_per_jiffy;
-		global_lpj_ref.freq = cur_freq;
-		}
-		loops_per_jiffy = cpufreq_scale(global_lpj_ref.ref, global_lpj_ref.freq,
-										target_freq);
-#endif
-}
-
 int omap_cpufreq_scale(struct device *req_dev, unsigned int target_freq)
 {
 	unsigned int i;
@@ -209,7 +177,6 @@ int omap_cpufreq_scale(struct device *req_dev, unsigned int target_freq)
 	ret = omap_device_scale(req_dev, mpu_dev, freqs.new * 1000);
 
 	freqs.new = omap_getspeed(0);
-
 
 #ifdef CONFIG_SMP
 	/*
@@ -1192,12 +1159,9 @@ static struct cpufreq_driver omap_driver = {
 	.attr		= omap_cpufreq_attr,
 };
 
-
-
 static int omap_cpufreq_suspend_noirq(struct device *dev)
 {
 	mutex_lock(&omap_cpufreq_lock);
-
 	omap_cpufreq_suspended = true;
 	mutex_unlock(&omap_cpufreq_lock);
 	return 0;
@@ -1206,7 +1170,6 @@ static int omap_cpufreq_suspend_noirq(struct device *dev)
 static int omap_cpufreq_resume_noirq(struct device *dev)
 {
 	mutex_lock(&omap_cpufreq_lock);
-
 	if (omap_getspeed(0) != current_target_freq)
 		omap_cpufreq_scale(mpu_dev, current_target_freq);
 
@@ -1277,7 +1240,6 @@ static int __init omap_cpufreq_init(void)
 		if (t)
 			pr_warn("%s_init: platform_driver_register failed\n",
 				__func__);
-	ret = omap_cpufreq_cooling_init();
 	}
 
 	return ret;
