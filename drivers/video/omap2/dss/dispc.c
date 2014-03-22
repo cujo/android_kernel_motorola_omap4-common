@@ -459,6 +459,69 @@ void dispc_restore_context(void)
 #undef SR
 #undef RR
 
+static u32 dispc_calculate_threshold(enum omap_plane plane, u32 paddr,
+				u32 puv_addr, u16 width, u16 height,
+				s32 row_inc, s32 pix_inc)
+{
+	int shift;
+	u32 channel_no = plane;
+	u32 val, burstsize, doublestride;
+	u32 rotation, bursttype, color_mode;
+	struct dispc_config dispc_reg_config;
+
+	if (width >= 1920)
+		return 1500;
+
+	/* Get the burst size */
+	shift = (plane == OMAP_DSS_GFX) ? 6 : 14;
+	val = dispc_read_reg(DISPC_OVL_ATTRIBUTES(plane));
+	burstsize = FLD_GET(val, shift + 1, shift);
+	doublestride = FLD_GET(val, 22, 22);
+	rotation = FLD_GET(val, 13, 12);
+	bursttype = FLD_GET(val, 29, 29);
+	color_mode = FLD_GET(val, 4, 1);
+
+	/* base address for frame (Luma frame in case of YUV420) */
+	dispc_reg_config.ba = paddr;
+	/* base address for Chroma frame in case of YUV420 */
+	dispc_reg_config.bacbcr = puv_addr;
+	/* OrgSizeX for frame */
+	dispc_reg_config.sizex = width - 1;
+	/* OrgSizeY for frame */
+	dispc_reg_config.sizey = height - 1;
+	/* burst size */
+	dispc_reg_config.burstsize = burstsize;
+	/* pixel increment */
+	dispc_reg_config.pixelinc = pix_inc;
+	/* row increment */
+	dispc_reg_config.rowinc  = row_inc;
+	/* burst type: 1D/2D */
+	dispc_reg_config.bursttype = bursttype;
+	/* chroma DoubleStride when in YUV420 format */
+	dispc_reg_config.doublestride = doublestride;
+	/* Pixcel format of the frame.*/
+	dispc_reg_config.format = color_mode;
+	/* Rotation of frame */
+	dispc_reg_config.rotation = rotation;
+
+	/* DMA buffer allications - assuming reset values */
+	dispc_reg_config.gfx_top_buffer = 0;
+	dispc_reg_config.gfx_bottom_buffer = 0;
+	dispc_reg_config.vid1_top_buffer = 1;
+	dispc_reg_config.vid1_bottom_buffer = 1;
+	dispc_reg_config.vid2_top_buffer = 2;
+	dispc_reg_config.vid2_bottom_buffer = 2;
+	dispc_reg_config.vid3_top_buffer = 3;
+	dispc_reg_config.vid3_bottom_buffer = 3;
+	dispc_reg_config.wb_top_buffer = 4;
+	dispc_reg_config.wb_bottom_buffer = 4;
+
+	/* antiFlicker is off */
+	dispc_reg_config.antiflicker = 0;
+
+	return sa_calc_wrap(&dispc_reg_config, channel_no);
+}
+
 int dispc_runtime_get(void)
 {
 	int r;
