@@ -113,7 +113,7 @@ static unsigned int fr_sc_max;
 #endif
 
 #ifdef CONFIG_DYN_HOTPLUG
-unsigned int dyn_hotplug = 1;
+unsigned int dyn_hotplug = 0;
 module_param(dyn_hotplug, int, 0755);
 #endif
 
