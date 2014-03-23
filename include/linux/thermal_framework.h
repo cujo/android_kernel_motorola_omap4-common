@@ -19,6 +19,7 @@
 #define __LINUX_THERMAL_FRAMEWORK_H__
 
 struct thermal_dev;
+struct thermal_domain;
 
 /**
  * struct thermal_dev_ops  - Structure for device operation call backs
@@ -67,7 +68,6 @@ struct thermal_dev {
 	struct list_head node;
 	int		index;
 	int 		current_temp;
-	struct thermal_domain   *domain;
 
 };
 
