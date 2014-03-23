@@ -1,0 +1,47 @@
+1fe8181 [PATCH] [RT] preempt_disable_rt for CONFIG_PREEMPT_RT
+0379196 kernel: smp: Improve CPU timeout code for CPU online handling
+ce3e47b Dynamic Hotplug: Disable by default
+d451893 defconfig: Intelli_Plug: Set dual-core
+1c8e866 omap: cpu: IVA OC 500 Mhz
+840d902 kernel: cpu: fix log spam
+19de9b8 Revert "arch: arm: smp: 3.0.31"
+04f9744 omap: thermal: fix header
+e8376b8 intellidemand: minor tweak for better performance
+f765570  Asynchronous Fsync: initial extraction of Async Fsync from HTC
+044cd95 Intelli_Plug: adapt for dual-core, Intelliactive: add to config
+3bec312 intelli_plug: switch to use dedicated high priority workqueue
+e47ea44 intelliactive: tune for OMAP2 SOCs
+dffe024 intelliactive: backport to Linux 3.0.x / Linux 3.1.x kernels
+a1e40dd Intelliactive Governor
+4da4652 Intelliplug 2.0
+97416e1 Revert "Revert "Modem: 3.4 backport""
+4a433a3 arm: kernel: patchset to fix behavior of hotplugging and atomic operations
+df1f602 omap: opp: IVA OC 500mhz
+a0e7dc1 arch: arm: smp: 3.0.31
+dd39db5 omap: thermal: update thermal framework to 3.0.31
+6d4f54c omap: dss: manager: remove m2m function, disable BFQ for edison, targa
+b2339ae omap: dss: add missing function 'dispc_calculate_threshold'
+295a2b3 defconfig: disable BFQ for now
+7950dee block: bfq: add config option
+929df2a omap: dss: add missing function 'dispc_get_pol_freq'
+5217d26 Edison: use edison device tree for compiling
+5195b8a omap: voltage: add missing function 'omap_get_nominal_voltage'
+9eb0f7d asm: remove useless function MUTEX_SHOULD_XCHG_COUNT (x86)
+17ce05d omap: opp: fix derp
+786237c defconfig updates
+215eb45 OMAP4: HDMI: update to 3.4
+9c0af14 HDMI: Add Moto support
+7602b07 cpufreq: nightmare: add to config options
+7818ae3 cpufreq: add Nightmare governor
+8ef7ea2 Revert "Modem: 3.4 backport"
+60c16e7 Modem: 3.4 backport
+deee773 omap: panel: fix firstboot reject issue
+24d740c remove config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT
+d0d7d38 Revert "add config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT to disable first_boot logic in mapphone_panel"
+f29b278 omap4-common: add missing checks for CONFIG_USB_OOBWAKE
+4ef6185 omap4-common: only disable interrupt when port is suspending
+dde2bc7 omap: serial: disable serial port irq during suspend
+fa39487 mailbox: fix 3.0.31 - fixes camera
+50d228b omap: cpuidle: revert to 3.8 hybrid backport
+aff5cb6 Revert "omap: cpuidle: remove leftover code for qos requests"
+8d9b4b0 Revert "omap: cpuidle: fix idle params"
