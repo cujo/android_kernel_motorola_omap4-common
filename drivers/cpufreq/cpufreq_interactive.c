@@ -31,6 +31,10 @@
 #include <linux/input.h>
 #include <asm/cputime.h>
 
+#ifdef CONFIG_OMAP4_DPLL_CASCADING
+extern bool dpll_active;
+#endif
+
 #define CREATE_TRACE_POINTS
 #include <trace/events/cpufreq_interactive.h>
 
@@ -119,7 +123,6 @@ static unsigned long min_sample_time;
 #define DEFAULT_TIMER_RATE (20 * USEC_PER_MSEC)
 static unsigned long timer_rate;
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-if (likely(dpll_active))
 static unsigned long default_timer_rate;
 #endif
 
@@ -163,9 +166,9 @@ struct cpufreq_governor cpufreq_gov_interactive = {
 };
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-	if (likely(dpll_active)) {
 void cpufreq_interactive_set_timer_rate(unsigned long val, unsigned int reset)
 {
+if (likely(dpll_active)) {
 	if (!reset) {
 		default_timer_rate = timer_rate;
 		timer_rate = val;
@@ -1259,8 +1262,9 @@ static int __init cpufreq_interactive_init(void)
 	above_hispeed_delay_val = DEFAULT_ABOVE_HISPEED_DELAY;
 	timer_rate = DEFAULT_TIMER_RATE;
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-	if (likely(dpll_active))
+if (likely(dpll_active)) {
 	default_timer_rate = DEFAULT_TIMER_RATE;
+	}
 #endif
 
 	sampling_periods = DEFAULT_SAMPLING_PERIODS;

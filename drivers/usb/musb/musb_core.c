@@ -103,7 +103,7 @@
 #include "musb_core.h"
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#include <linux/dpll.h>
+extern bool dpll_active;
 #include <mach/omap4-common.h>
 #endif
 
@@ -410,7 +410,7 @@ static irqreturn_t musb_stage0_irq(struct musb *musb, u8 int_usb,
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 if (likely(dpll_active)) {
 	musb->event = -1;
-		}
+	}
 #endif
 	dev_dbg(musb->controller, "<== Power=%02x, DevCtl=%02x, int_usb=0x%x\n", power, devctl,
 		int_usb);
@@ -674,7 +674,7 @@ if (likely(dpll_active)) {
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 if (likely(dpll_active)) {
 		musb->event = USB_EVENT_ID;
-			}
+		}
 #endif
 #ifdef CONFIG_USB_MUSB_OTG
 		/* flush endpoints when transitioning from Device Mode */
@@ -744,7 +744,7 @@ b_host:
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 if (likely(dpll_active)) {
 		musb->event = USB_EVENT_NONE;
-			}
+		}
 #endif
 		switch (musb->xceiv->state) {
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
@@ -816,7 +816,7 @@ if (likely(dpll_active)) {
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 if (likely(dpll_active)) {
 				musb->event = USB_EVENT_VBUS;
-					}
+	}
 #endif
 			switch (musb->xceiv->state) {
 #ifdef CONFIG_USB_OTG
@@ -1893,7 +1893,7 @@ if (likely(dpll_active)) {
 		omap4_dpll_cascading_blocker_hold(musb->controller);
 	else if (USB_EVENT_NONE == musb->event)
 		omap4_dpll_cascading_blocker_release(musb->controller);
-			}
+	}
 #endif
 }
 

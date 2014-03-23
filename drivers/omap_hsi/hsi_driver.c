@@ -30,7 +30,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
-#include <linux/dpll.h>
+
+#ifdef CONFIG_OMAP4_DPLL_CASCADING
+extern bool dpll_active;
+#endif
+
 #include <mach/omap4-common.h>
 #include <plat/omap_device.h>
 
@@ -44,10 +48,13 @@
 					  /* cycle */
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
+if (likely(dpll_active)) 
+{
 struct hsi_dpll_cascading_blocker {
 	bool lock_dpll_cascading;
 	struct device *dev;
 	struct work_struct dpll_blocker_work;
+	}	
 };
 
 static struct hsi_dpll_cascading_blocker dpll_blocker = {
@@ -662,9 +669,11 @@ static int __init hsi_init_gdd_chan_count(struct hsi_dev *hsi_ctrl)
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 static void hsi_dpll_cascading_blocker_work(struct work_struct *work)
 {
+if (likely(dpll_active)) 
+{
+
 	struct hsi_dpll_cascading_blocker *dpll_blocker;
 
-if (likely(dpll_active)) {
 	dpll_blocker = container_of(work,
 			struct hsi_dpll_cascading_blocker,
 			dpll_blocker_work);

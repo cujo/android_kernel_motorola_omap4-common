@@ -44,6 +44,7 @@
 #include <linux/pm_qos_params.h>
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
+extern bool dpll_active;
 #include <linux/notifier.h>
 #include <plat/clock.h>
 
@@ -747,8 +748,10 @@ static void omap_i2c_dpll_configure(struct omap_i2c_dev *dev,
 				    struct omap_i2c_bus_platform_data *pdata,
 				    unsigned long fclk_rate)
 {
+if (likely(dpll_active)) 
+{
 	unsigned long internal_clk;
-if (likely(dpll_active)) {
+
 	u16 psc = 0, scll = 0, sclh = 0;
 	u16 fsscll = 0, fssclh = 0, hsscll = 0, hssclh = 0;
 
@@ -852,8 +855,10 @@ omap_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 	int i;
 	int r;
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
+if (likely(dpll_active)) {
 	struct platform_device *pdev;
 	struct omap_i2c_bus_platform_data *pdata;
+	}
 #endif
 
 	if (dev == NULL)
@@ -912,7 +917,7 @@ if (likely(dpll_active)) {
 		omap_i2c_dpll_configure(dev, pdata, dev->i2c_fclk_rate);
 	}
 	spin_unlock(&dev->dpll_lock);
-	}
+}
 #endif
 	for (i = 0; i < num; i++) {
 		r = omap_i2c_xfer_msg(adap, &msgs[i], (i == (num - 1)));

@@ -14,7 +14,7 @@
 #define OMAP_ARCH_OMAP4_COMMON_H
 
 #include <asm/proc-fns.h>
-#include <linux/dpll.h>
+extern bool dpll_active;
 /*
  * Secure low power context save/restore API index
  */

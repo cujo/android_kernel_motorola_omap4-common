@@ -17,6 +17,7 @@
 #include <linux/spinlock.h>
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
+extern bool dpll_active;
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
 #include "dvfs.h"
@@ -220,9 +221,10 @@ int omap4_core_dpll_m2_set_rate(struct clk *clk, unsigned long rate)
  * Program the CORE DPLL, including handling of EMIF frequency changes on M2
  * divider.  Returns 0 on success, otherwise a negative error code.
  */
-	if (likely(dpll_active))
-{
 int omap4_core_dpll_set_rate(struct clk *clk, unsigned long rate)
+{
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Setting core dpll rate \n");
 {
 	int i = 0, m2_div, m5_div;
 	u32 mask, reg;
@@ -468,9 +470,13 @@ out:
 	}
 
 	return res;
+	}
 }
 
 static int __init omap4_dpll_low_power_cascade_init_clocks(void)
+{
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Init low_power_cascade clocks \n");
 {
 	sys_clkin_ck = clk_get(NULL, "sys_clkin_ck");
 	dpll_abe_ck = clk_get(NULL, "dpll_abe_ck");
@@ -519,9 +525,9 @@ static int __init omap4_dpll_low_power_cascade_init_clocks(void)
 		dpll_cascading_inited = true;
 
 	return 0;
-}
+	}
 late_initcall(omap4_dpll_low_power_cascade_init_clocks);
-
+}
 /**
  * omap4_dpll_low_power_cascade - configure system for low power DPLL cascade
  *
@@ -537,6 +543,9 @@ late_initcall(omap4_dpll_low_power_cascade_init_clocks);
  * Reparent DPLL_MPU & DPLL_IVA so that they are fed by DPLL_CORE
  */
 static int omap4_dpll_low_power_cascade_enter(void)
+{
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Entering low_power_cascade \n");
 {
 	int ret = 0;
 	u32 mask;
@@ -771,9 +780,13 @@ sr_enable:
 	omap_sr_enable(vdd_core, omap_voltage_get_curr_vdata(vdd_core));
 out:
 	return ret;
+	}
 }
 
 static int omap4_dpll_low_power_cascade_exit(void)
+{
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Exiting low_power_cascade \n");
 {
 	int ret = 0;
 	u32 mask;
@@ -917,8 +930,8 @@ static int omap4_dpll_low_power_cascade_exit(void)
 out:
 	atomic_set(&in_dpll_cascading, false);
 	return ret;
+	}
 }
-
 #endif
 
 /**
@@ -1496,13 +1509,18 @@ void omap4_dpll_abe_reconfigure(void)
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 int omap4_dpll_cascading_blocker_hold(struct device *dev)
 {
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Init dpll_cascading_blocker_hold \n");
+{
 	struct dpll_cascading_blocker *blocker;
 	int list_was_empty = 0;
 	int ret = 0;
 
 #ifdef CONFIG_OMAP4_ONLY_OMAP4430_DPLL_CASCADING
+if (likely(dpll_active))
+{
 	if (!cpu_is_omap443x())
-		return ret;
+}		return ret;
 #endif
 	if (!dev)
 		return -EINVAL;
@@ -1540,18 +1558,24 @@ int omap4_dpll_cascading_blocker_hold(struct device *dev)
 out:
 	mutex_unlock(&omap_dvfs_lock);
 	return ret;
+	}
 }
 EXPORT_SYMBOL(omap4_dpll_cascading_blocker_hold);
 
 int omap4_dpll_cascading_blocker_release(struct device *dev)
+{
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: Init dpll_cascading_blocker_release \n");
 {
 	struct dpll_cascading_blocker *blocker;
 	int ret = 0;
 	int found = 0;
 
 #ifdef CONFIG_OMAP4_ONLY_OMAP4430_DPLL_CASCADING
+if (likely(dpll_active))
+{
 	if (!cpu_is_omap443x())
-		return ret;
+}		return ret;
 #endif
 	if (!dev)
 		return -EINVAL;
@@ -1592,11 +1616,16 @@ int omap4_dpll_cascading_blocker_release(struct device *dev)
 out:
 	mutex_unlock(&omap_dvfs_lock);
 	return ret;
+	}
 }
 EXPORT_SYMBOL(omap4_dpll_cascading_blocker_release);
 
 bool omap4_is_in_dpll_cascading(void)
 {
+if (likely(dpll_active))
+	pr_info("%s: DPLL_CASCADING: is_in_dpll_cascading \n");
+	{
 	return atomic_read(&in_dpll_cascading);
+	}
 }
 #endif

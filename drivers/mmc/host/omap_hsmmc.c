@@ -44,7 +44,7 @@
 #include <plat/omap-pm.h>
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#include <linux/dpll.h>
+extern bool dpll_cascading;
 #include <linux/notifier.h>
 #include <plat/clock.h>
 #endif
@@ -2089,10 +2089,13 @@ static int omap_hsmmc_sleep_to_off(struct omap_hsmmc_host *host)
 static void
 omap_hsmmc_dpll_clocks_configure(struct omap_hsmmc_host *host, int clk)
 {
+if (likely(dpll_active)) 
+{
+
 	int regval = 0, dsor = 0;
 	unsigned long timeout = 0;
 	u32 count = 0;
-if (likely(dpll_active)) {
+
 	if (host->mmc->ios.clock != 0)
 		dsor = clk / host->mmc->ios.clock;
 	omap_hsmmc_stop_clock(host);
@@ -2121,6 +2124,8 @@ if (likely(dpll_active)) {
 static void
 omap_hsmmc_dpll_clocks_reconfigure(struct omap_hsmmc_host *host)
 {
+if (likely(dpll_active)) 
+{
 	spin_lock(&host->dpll_lock);
 	if (host->dpll_entry == 1) {
 		omap_hsmmc_dpll_clocks_configure(host, OMAP_MMC_DPLL_CLOCK);
@@ -2130,7 +2135,8 @@ omap_hsmmc_dpll_clocks_reconfigure(struct omap_hsmmc_host *host)
 		host->dpll_exit = 0;
 	}
 	spin_unlock(&host->dpll_lock);
-}
+	}
+}	
 #endif
 
 /* Handler for [DISABLED -> ENABLED] transition */
@@ -2393,7 +2399,8 @@ static void omap_hsmmc_debugfs(struct mmc_host *mmc)
 static int omap_hsmmc_dpll_notifier(struct notifier_block *nb,
 					unsigned long val, void *data)
 {
-if (likely(dpll_active)) {
+if (likely(dpll_active)) 
+{
 	struct omap_hsmmc_host *host =
 		container_of(nb, struct omap_hsmmc_host, nb);
 	struct clk_notifier_data *cnd = (struct clk_notifier_data *)data;

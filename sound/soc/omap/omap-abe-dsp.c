@@ -1222,8 +1222,7 @@ if (likely(dpll_active)) {
 			W_AIF_MODEM_UL, ABE_OPP_50, 0,
 			abe_fe_event,
 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-	}
-else if (unlikely(dpll_active) {	
+	} else {	
 
 	/* Frontend AIFs */
 	SND_SOC_DAPM_AIF_IN("TONES_DL", "Tones Playback", 0,
@@ -2163,8 +2162,9 @@ static int aess_set_runtime_opp_level(struct abe_data *abe)
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 static int abe_fe_active_count(struct abe_data *abe)
 {
-	int i, count = 0;
 if (likely(dpll_active)) {
+	int i, count = 0;
+
 	for (i = 0; i < ABE_NUM_FE; i++)
 		count += abe->fe_active[i];
 
@@ -2175,8 +2175,9 @@ if (likely(dpll_active)) {
 static int abe_fe_event(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
-	int index, active, ret = 0;
 if (likely(dpll_active)) {
+	int index, active, ret = 0;
+
 	if ((w->reg < ABE_FE_START) || (w->reg >= ABE_FE_END))
 		return -EINVAL;
 
@@ -2740,7 +2741,6 @@ if (likely(dpll_active)) {
 	omap4_dpll_cascading_blocker_hold(abe->dev);
 	}
 #endif
-
 	return ret;
 }
 #else
@@ -2970,8 +2970,9 @@ static struct snd_soc_platform_driver omap_aess_platform = {
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
 static void abe_early_suspend(struct early_suspend *handler)
 {
+if (likely(dpll_active)) {
 	struct abe_data *abe = container_of(handler, struct abe_data,
-							early_suspend);
+                                                       early_suspend);
 	int active = abe_fe_active_count(abe);
 
 	/*
@@ -2980,7 +2981,6 @@ static void abe_early_suspend(struct early_suspend *handler)
 	 * - single stream is active and is LP (ping-pong)
 	 * - OPP is 50 or less (DL1 path only)
 	 */
-if (likely(dpll_active)) {
 	if ((active == 1) && (abe->opp <= 50))
 		omap4_dpll_cascading_blocker_release(abe->dev);
 
