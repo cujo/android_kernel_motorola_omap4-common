@@ -49,7 +49,7 @@
 #include "smartreflex.h"
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#include <linux/dpll.h>
+extern bool dpll_active;
 #include <mach/omap4-common.h>
 #endif
 
@@ -751,6 +751,7 @@ else if (!omap_cpufreq_suspended)
 		cpumask_setall(policy->cpus);
 	}
 
+	omap_cpufreq_cooling_init();
 	/* Tranisition time for worst case */
 	policy->cpuinfo.transition_latency = 40 * 1000;
 
@@ -1278,7 +1279,6 @@ static int __init omap_cpufreq_init(void)
 		if (t)
 			pr_warn("%s_init: platform_driver_register failed\n",
 				__func__);
-	ret = omap_cpufreq_cooling_init();
 	}
 
 	return ret;
