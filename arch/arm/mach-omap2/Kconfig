@@ -505,6 +505,13 @@ config OMAP4_ONLY_OMAP4430_DPLL_CASCADING
 	  only on OMAP4430, where it provides significant power savings.
 	  Keeps DPLL cascading disabled for other OMAPs.
 
+config DPLL
+        bool "Support for enable/disable dpll cascading"
+	depends on OMAP4_DPLL_CASCADING
+        default y
+        help
+          Say Y here to enable dpll module
+
 
 config OMAP_RAM_CONSOLE
         bool "Enable OMAP support for Android RAM console"
