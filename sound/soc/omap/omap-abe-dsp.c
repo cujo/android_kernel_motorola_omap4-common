@@ -43,7 +43,6 @@
 #include <linux/debugfs.h>
 #include <linux/opp.h>
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#include <linux/dpll.h>
 #include <linux/earlysuspend.h>
 #include <mach/omap4-common.h>
 #endif
@@ -70,9 +69,9 @@
 #define OMAP_ABE_HF_DC_OFFSET_STEP	(4600 / 8)
 
 #ifdef CONFIG_OMAP4_DPLL_CASCADING
-#define ABE_FE_START           (ABE_NUM_MIXERS + ABE_NUM_MUXES)
-#define ABE_NUM_FE             10
-#define ABE_FE_END             (ABE_FE_START + ABE_NUM_FE)
+#define ABE_FE_START		(ABE_NUM_MIXERS + ABE_NUM_MUXES)
+#define ABE_NUM_FE		10
+#define ABE_FE_END		(ABE_FE_START + ABE_NUM_FE)
 
 static int abe_fe_event(struct snd_soc_dapm_widget *w,
 			struct snd_kcontrol *kcontrol, int event);
@@ -1273,6 +1272,7 @@ else if (unlikely(dpll_active) {
 	SND_SOC_DAPM_AIF_OUT("MODEM_UL", "MODEM Capture", 0,
 			W_AIF_MODEM_UL, ABE_OPP_50, 0),
 #endif
+
 	/* Backend DAIs  */
 	SND_SOC_DAPM_AIF_IN("PDM_UL1", "Analog Capture", 0,
 			W_AIF_PDM_UL1, ABE_OPP_50, 0),
@@ -2187,7 +2187,7 @@ if (likely(dpll_active)) {
 		active = abe_fe_active_count(the_abe);
 
 		if (!the_abe->early_suspended || (active > 1))
-			ret = omap4_dpll_cascading_blocker_hold(the_abe->dev);
+                       ret = omap4_dpll_cascading_blocker_hold(the_abe->dev);
 	} else {
 		the_abe->fe_active[index]--;
 	}
