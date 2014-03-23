@@ -308,7 +308,7 @@ static struct omap_opp_def __initdata omap443x_opp_def_list[] = {
 	/* IVA OPP3 - OPP-Turbo */
 	OPP_INITIALIZER("iva", "dpll_iva_m5x2_ck", "iva", true, 332000000, OMAP4430_VDD_IVA_OPPTURBO_UV),
 	/* IVA OPP4 - OPP-Nitro */
-	OPP_INITIALIZER("iva", "dpll_iva_m5x2_ck", "iva", false, 430000000, OMAP4430_VDD_IVA_OPPNITRO_UV),
+	OPP_INITIALIZER("iva", "dpll_iva_m5x2_ck", "iva", true, 430000000, OMAP4430_VDD_IVA_OPPNITRO_UV),
 	/* IVA OPP4 - OPP-NitroSB */
 	OPP_INITIALIZER("iva", "dpll_iva_m5x2_ck", "iva", true, 500000000, OMAP4430_VDD_IVA_OPPNITROSB_UV),
 	/* SGX OPP1 - OPP50 */
@@ -333,7 +333,7 @@ static struct omap_opp_def __initdata omap443x_opp_def_list[] = {
 	OPP_INITIALIZER("dsp", "dpll_iva_m4x2_ck", "iva", true, 465500000, OMAP4430_VDD_IVA_OPP100_UV),
 	/* DSP OPP3 - OPPTB */
 #ifdef CONFIG_BATTERY_FRIEND
-	OPP_INITIALIZER("dsp", "dpll_iva_m4x2_ck", "iva", true, 496000000, OMAP4430_VDD_IVA_OPPTURBO_UV),
+	OPP_INITIALIZER("dsp", "dpll_iva_m4x2_ck", "false", true, 496000000, OMAP4430_VDD_IVA_OPPTURBO_UV),
 #else
 	OPP_INITIALIZER("dsp", "dpll_iva_m4x2_ck", "iva", true, 496000000, OMAP4430_VDD_IVA_OPPTURBO_UV),
 #endif
@@ -520,27 +520,6 @@ static struct omap_opp_def __initdata omap446x_opp_def_list[] = {
   OPP_INITIALIZER("dss_dispc", "virt_lcd_pclk", "core", true, 170000000, OMAP4460_VDD_CORE_OPP100_UV),
 #endif 
 }; 
-/**
- * omap4_mpu_opp_enable() - helper to enable the OPP
- * @freq:	frequency to enable
- */
-/*static void __init omap4_mpu_opp_enable(unsigned long freq)
-{
-	struct device *mpu_dev;
-	int r;
-
-	mpu_dev = omap2_get_mpuss_device();
-	if (!mpu_dev) {
-		pr_err("%s: no mpu_dev, did not enable f=%ld\n", __func__,
-			freq);
-		return;
-	}
-
-	r = opp_enable(mpu_dev, freq);
-	if (r < 0)
-		dev_err(mpu_dev, "%s: opp_enable failed(%d) f=%ld\n", __func__,
-			r, freq);
-} */
 
 /**
 * omap4_mpu_opp_enable() - helper to enable the OPP
@@ -564,27 +543,6 @@ static void __init omap4_opp_enable(const char *oh_name, unsigned long freq)
 				r, freq);
 }
 
-/**
- * omap4_gpu_opp_enable() - helper to enable the OPP
- * @freq:	frequency to enable
- */
-/*static void __init omap4_gpu_opp_enable(unsigned long freq)
-{
-	struct device *gpu_dev;
-	int r;
-
-	gpu_dev = omap2_get_gpu_device();
-	if (!gpu_dev) {
-		pr_err("%s: no gpu_dev, did not enable f=%ld\n", __func__,
-			freq);
-		return;
-	}
-
-	r = opp_enable(gpu_dev, freq);
-	if (r < 0)
-		dev_err(gpu_dev, "%s: opp_enable failed(%d) f=%ld\n", __func__,
-			r, freq);
-} */
 
 int __init omap4_opp_init(void)
 {
@@ -627,46 +585,6 @@ int __init omap4_opp_init(void)
 			omap4_opp_enable("gpu", 153600000);
 			omap4_opp_enable("gpu", 384000000);
 
-/**
- * omap4_opp_init() - initialize omap4 opp table
- */
-/*int __init omap4_opp_init(void)
-{
-	int r = -ENODEV;
-	int trimmed = 1;
-
-	if (!cpu_is_omap44xx())
-		return r;
-	if (cpu_is_omap443x())
-		r = omap_init_opp_table(omap443x_opp_def_list,
-			ARRAY_SIZE(omap443x_opp_def_list));
-  else if (cpu_is_omap446x()) {
-		r = omap_init_opp_table(omap446x_opp_def_list,
-			ARRAY_SIZE(omap446x_opp_def_list)); 
-		trimmed = omap_readl(0x4a002268) & ((1 << 18) | (1 << 19));
-		if (!trimmed) 
-			omap_writel(0x29, 0x4a002330);
-	}
-
-	if (!r) {
-		if (omap4_has_mpu_1_2ghz()) 
-			omap4_mpu_opp_enable(1200000000);
-			omap4_mpu_opp_enable(1300000000);
-	
-		if (!trimmed)
-			pr_info("This is DPLL un-trimmed SOM. OPP is limited at 1.2 GHz\n"); 
-		if (omap4_has_mpu_1_5ghz() && trimmed)
-			omap4_mpu_opp_enable(1500000000); 
-	} */
-
-	/*struct device *dev;
-
-        dev = omap_hwmod_name_get_dev("gpu");
-	opp_enable(dev, 512000000); */
-
-//			omap4_gpu_opp_enable(153600000);
-//			omap4_gpu_opp_enable(384000000);
-//			omap4_gpu_opp_enable(416000000);
 
 #ifdef CONFIG_CUSTOM_VOLTAGE
 	customvoltage_init();
