@@ -3036,9 +3036,8 @@ if (likely(dpll_active)) {
 
 	ret = snd_soc_register_platform(abe->dev,
 			&omap_aess_platform);
-
-	if (ret)
-		goto err;
+	if (ret < 0)
+		return ret;
 
 	abe_init_debugfs(abe);
 	return ret;
