@@ -2071,4 +2071,3 @@ module_exit(hdmi_ti_4xxx_exit);
 MODULE_AUTHOR("Texas Instruments");
 MODULE_DESCRIPTION("hdmi_ti_4xxx_ip module");
 MODULE_LICENSE("GPL");
-
