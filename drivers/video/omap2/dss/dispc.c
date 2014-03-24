@@ -42,6 +42,7 @@
 #include <mach/tiler.h>
 #include <plat/omap-pm.h>
 #include <video/omapdss.h>
+#include <../mach-omap2/powerdomain.h>
 
 #include "../clockdomain.h"
 #include "dss.h"
@@ -564,7 +565,6 @@ int dispc_runtime_get(void)
 		if (r)
 			goto err_dss_get;
 
-
 		/* XXX dispc fclk can also come from DSI PLL */
 		clk_enable(dispc.dss_clk);
 
@@ -591,6 +591,7 @@ err_dss_get:
 
 void dispc_runtime_put(void)
 {
+	struct powerdomain *dss_powerdomain = pwrdm_lookup("dss_pwrdm");
 	mutex_lock(&dispc.runtime_lock);
 
 	if (--dispc.runtime_count == 0) {
@@ -599,6 +600,14 @@ void dispc_runtime_put(void)
 		DSSDBG("dispc_runtime_put\n");
 
 		dispc_save_context();
+
+		/* Sets DSS max latency constraint
+		 * * (allowing for deeper power state)
+		 * */
+		omap_pm_set_max_dev_wakeup_lat(
+				&dispc.pdev->dev,
+				&dispc.pdev->dev,
+				dss_powerdomain->wakeup_lat[PWRDM_FUNC_PWRST_OFF]);
 
 		r = pm_runtime_put_sync(&dispc.pdev->dev);
 		WARN_ON(r);
@@ -4125,6 +4134,21 @@ static void _omap_dispc_initial_config(void)
 	dispc_read_plane_fifo_sizes();
 }
 
+void dispc_cleanup_irq(void)
+{
+	/*
+	 * This is called in dispc probe function
+	 * before requesting irq
+	 */
+
+	/*Disable all interrupts */
+	dispc_write_reg(DISPC_IRQENABLE, 0x0);
+
+	/*Clear interrupts if any */
+	dispc_write_reg(DISPC_IRQSTATUS, 0xffffffff);
+
+}
+
 /* DISPC HW IP initialisation */
 static int omap_dispchw_probe(struct platform_device *pdev)
 {
@@ -4171,6 +4195,15 @@ static int omap_dispchw_probe(struct platform_device *pdev)
 		r = -ENODEV;
 		goto err_irq;
 	}
+
+	/*
+	 * Need to disable DISPC_IRQ  and clear DISPC_IRQSTATUS here,
+	 * so no irqs are deliverd before the dsi block is fully
+	 * initialzed -- this will be needed if bootloader initialized
+	 * DSS already and interrupt are enabled.
+	 */
+	if (cpu_is_omap44xx())
+		dispc_cleanup_irq();
 
 	r = request_irq(dispc.irq, omap_dispc_irq_handler, IRQF_SHARED,
 		"OMAP DISPC", dispc.pdev);
