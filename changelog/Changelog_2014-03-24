@@ -1,0 +1,90 @@
+52732f6 defconfig updates
+e67e393 sound: soc/pci/usb: sync to CM
+35a8548 omap: dss: sync to CM
+9055745 omap: dss: hdmi: sync to CM repo
+1ccaa79 omap: dsscomp: fix debug events
+14f3dd8 defconfig updates
+b753fde Finally enable IVA freqs
+bd0456e remoteproc, rpmsg: Update to 3.0.31
+ea38239 Disable DPLL Cascading
+b232f16 Remove DSS handler for DSS, revert IVA changes
+3e95ab8 Revert "omap: cpuidle: correct behaviour"
+196c9c3 Revert "include: hcd: update [3.0.31]"
+10381ac Revert "omap: cpu: update cpuidle driver and fix syntax for pm"
+21ec380 Revert "i2c: update all drivers"
+8de0012 Revert "gpio: update pca952x driver (not related to this device)"
+2298f02 Cleanup mistakes in DPLL
+f066f71 omap: cpuidle: correct behaviour
+569549f2 omap: dss: remove earlysuspend handler from dss core.
+a440007 omap: dpll_cascading: enable by default for all devices [TEST]
+5bbc517 omap: dpll_cascading: module: move to cpufreq section
+84cfaea omap: dpll_cascading: Fix and adapt module
+ba0bd2c omap: thermal: fix header
+b5dcbd4 Revert "omap: thermal: fix header"
+6962a2b omap: cpufreq: fix thermal framework cooling init
+6ef53c9 Revert "thermal_framework: update header file [3.0.31]"
+32ee0cd Revert "thermal_framework: add missing struct *domain"
+54b38da thermal_framework: add missing struct *domain
+02a7b7d include: hcd: update [3.0.31]
+70b405d gpio: update pca952x driver (not related to this device)
+779fab3 serial: mdm6600: update driver [3.0.31]
+197cae0 thermal_framework: update header file [3.0.31]
+5b06c70 omap: board: usb: cleanup
+a87b02d i2c: update all drivers
+5424216 omap: cpu: update cpuidle driver and fix syntax for pm
+f301026 omap: sound: remove OPP_PATCH to prevent conflicts with HDMI sound
+d121a18 omap4-common: Revert back to Motorola's workaround for i719
+304e287 omap: opp: cleanup and enable IVA OPP4 to prevent crashes on HDMI sound
+e90673c Targa: Fix typo (fixes bootloop)
+57c7b8d cpu: add Nightmare governor to Makefile
+78ac4da omap: opp: introduce new omap_opp_enable function [3.0.31], raise voltages, change IVA setup
+f4824c7 Edison/Targa: defconfig: add missing options
+6c94145 Intelli-Plug: Enable debug - want to see what it does in dmesg?
+f6dafb8 Added todays changelog and updated full history
+1fe8181 [PATCH] [RT] preempt_disable_rt for CONFIG_PREEMPT_RT
+0379196 kernel: smp: Improve CPU timeout code for CPU online handling
+ce3e47b Dynamic Hotplug: Disable by default
+d451893 defconfig: Intelli_Plug: Set dual-core
+1c8e866 omap: cpu: IVA OC 500 Mhz
+840d902 kernel: cpu: fix log spam
+19de9b8 Revert "arch: arm: smp: 3.0.31"
+04f9744 omap: thermal: fix header
+e8376b8 intellidemand: minor tweak for better performance
+f765570  Asynchronous Fsync: initial extraction of Async Fsync from HTC
+044cd95 Intelli_Plug: adapt for dual-core, Intelliactive: add to config
+3bec312 intelli_plug: switch to use dedicated high priority workqueue
+e47ea44 intelliactive: tune for OMAP2 SOCs
+dffe024 intelliactive: backport to Linux 3.0.x / Linux 3.1.x kernels
+a1e40dd Intelliactive Governor
+4da4652 Intelliplug 2.0
+97416e1 Revert "Revert "Modem: 3.4 backport""
+4a433a3 arm: kernel: patchset to fix behavior of hotplugging and atomic operations
+df1f602 omap: opp: IVA OC 500mhz
+a0e7dc1 arch: arm: smp: 3.0.31
+dd39db5 omap: thermal: update thermal framework to 3.0.31
+6d4f54c omap: dss: manager: remove m2m function, disable BFQ for edison, targa
+b2339ae omap: dss: add missing function 'dispc_calculate_threshold'
+295a2b3 defconfig: disable BFQ for now
+7950dee block: bfq: add config option
+929df2a omap: dss: add missing function 'dispc_get_pol_freq'
+5217d26 Edison: use edison device tree for compiling
+5195b8a omap: voltage: add missing function 'omap_get_nominal_voltage'
+9eb0f7d asm: remove useless function MUTEX_SHOULD_XCHG_COUNT (x86)
+17ce05d omap: opp: fix derp
+786237c defconfig updates
+215eb45 OMAP4: HDMI: update to 3.4
+9c0af14 HDMI: Add Moto support
+7602b07 cpufreq: nightmare: add to config options
+7818ae3 cpufreq: add Nightmare governor
+8ef7ea2 Revert "Modem: 3.4 backport"
+60c16e7 Modem: 3.4 backport
+deee773 omap: panel: fix firstboot reject issue
+24d740c remove config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT
+d0d7d38 Revert "add config: CONFIG_PANEL_MAPPHONE_SKIP_FIRSTBOOT to disable first_boot logic in mapphone_panel"
+f29b278 omap4-common: add missing checks for CONFIG_USB_OOBWAKE
+4ef6185 omap4-common: only disable interrupt when port is suspending
+dde2bc7 omap: serial: disable serial port irq during suspend
+fa39487 mailbox: fix 3.0.31 - fixes camera
+50d228b omap: cpuidle: revert to 3.8 hybrid backport
+aff5cb6 Revert "omap: cpuidle: remove leftover code for qos requests"
+8d9b4b0 Revert "omap: cpuidle: fix idle params"
