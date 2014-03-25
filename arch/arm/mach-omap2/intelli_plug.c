@@ -83,7 +83,7 @@ static unsigned int nr_run_thresholds_full[] = {
 
 static unsigned int nr_run_thresholds_eco[] = {
 /*      1,  2, - on-line cpus target */
-        3,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
+        2,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
         };
 
 static unsigned int nr_run_hysteresis = 4;  /* 0.5 thread */
@@ -450,6 +450,7 @@ static int input_dev_filter(const char *input_dev_name)
 	if (strstr(input_dev_name, "touchscreen") ||
 		strstr(input_dev_name, "sec_touchscreen") ||
 		strstr(input_dev_name, "touch_dev") ||
+		strstr(input_dev_name, "Atmel maXTouch Touchscreen") ||
 		strstr(input_dev_name, "-keypad") ||
 		strstr(input_dev_name, "-nav") ||
 		strstr(input_dev_name, "-oj")) {
