@@ -73,8 +73,6 @@ static unsigned int busy_persist_count = 0;
 
 static bool suspended = false;
 
-
-
 #define NR_FSHIFT	3
 static unsigned int nr_fshift = NR_FSHIFT;
 module_param(nr_fshift, uint, 0644);
@@ -213,7 +211,6 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 	unsigned int nr_run_stat;
 	unsigned int cpu_count = 0;
 	unsigned int nr_cpus = 0;
-	
 
 	int decision = 0;
 	int i;
@@ -348,7 +345,7 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 				if (nr_cpus < 2) {
 					for (i = 1; i < cpu_count; i++)
 						cpu_up(i);
-				} else {
+				} else 
 				 if (int_hotplug == 0) {			
 				  	//pr_info("case 1: Hotplug locked \n");
 					break;
@@ -367,11 +364,12 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 				if (nr_cpus < 3) {
 					for (i = 1; i < cpu_count; i++)
 						cpu_up(i);
-				} else {
-				 if (int_hotplug == 0) {			
+				} else 
+				 if (int_hotplug == 0) {		
 				  	//pr_info("case 1: Hotplug locked \n");
 					break;
-				  } else if (int_hotplug == 1) {
+					}
+					else if (int_hotplug == 1) {
 					for (i = 3; i > 2; i--)
 						cpu_down(i);
 				}
@@ -418,10 +416,9 @@ static void intelli_plug_early_suspend(struct early_suspend *handler)
 	mutex_unlock(&intelli_plug_mutex);
 
 	// put rest of the cores to sleep!
-		for (i = num_of_active_cores - 1; i > 0; i--) {
-			cpu_down(i);
+	for (i = num_of_active_cores - 1; i > 0; i--) {
+		cpu_down(i);
 	}
-	
 }
 
 static void __cpuinit intelli_plug_late_resume(struct early_suspend *handler)
@@ -572,4 +569,3 @@ MODULE_DESCRIPTION("'intell_plug' - An intelligent cpu hotplug driver for "
 MODULE_LICENSE("GPL");
 
 late_initcall(intelli_plug_init);
-
