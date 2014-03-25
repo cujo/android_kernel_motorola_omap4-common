@@ -26,6 +26,9 @@
 //#define DEBUG_INTELLI_PLUG
 #undef DEBUG_INTELLI_PLUG
 
+static unsigned int int_hotplug = 0;
+module_param(int_hotplug, int, 0755);
+
 #define INTELLI_PLUG_MAJOR_VERSION	2
 #define INTELLI_PLUG_MINOR_VERSION	2
 
@@ -70,6 +73,8 @@ static unsigned int busy_persist_count = 0;
 
 static bool suspended = false;
 
+
+
 #define NR_FSHIFT	3
 static unsigned int nr_fshift = NR_FSHIFT;
 module_param(nr_fshift, uint, 0644);
@@ -83,7 +88,7 @@ static unsigned int nr_run_thresholds_full[] = {
 
 static unsigned int nr_run_thresholds_eco[] = {
 /*      1,  2, - on-line cpus target */
-        2,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
+        3,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
         };
 
 static unsigned int nr_run_hysteresis = 4;  /* 0.5 thread */
@@ -208,6 +213,7 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 	unsigned int nr_run_stat;
 	unsigned int cpu_count = 0;
 	unsigned int nr_cpus = 0;
+	
 
 	int decision = 0;
 	int i;
@@ -229,8 +235,13 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 			case 1:
 				if (persist_count > 0)
 					persist_count--;
-				if (persist_count == 0)
-					cpu_down(1);
+			 if (int_hotplug == 0) {			
+			  	//pr_info("case 1: Hotplug locked \n");
+				break;
+			  } else if (int_hotplug == 1) { 
+			       if (persist_count == 0)	
+				   	cpu_down(1);
+				}			
 #ifdef DEBUG_INTELLI_PLUG
 				pr_info("case 1: %u\n", persist_count);
 #endif
@@ -314,12 +325,17 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 		if (!suspended) {
 			switch (cpu_count) {
 			case 1:
+			 if (int_hotplug == 0) {			
+			  	//pr_info("case 1: Hotplug locked \n");
+				break;
+			  } else if (int_hotplug == 1) {
 				if (persist_count > 0)
 					persist_count--;
 				if (persist_count == 0) {
 					//take down everyone
 					for (i = 3; i > 0; i--)
 						cpu_down(i);
+					}
 				}
 #ifdef DEBUG_INTELLI_PLUG
 				pr_info("case 1: %u\n", persist_count);
@@ -333,6 +349,10 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 					for (i = 1; i < cpu_count; i++)
 						cpu_up(i);
 				} else {
+				 if (int_hotplug == 0) {			
+				  	//pr_info("case 1: Hotplug locked \n");
+					break;
+				  } else if (int_hotplug == 1) {
 					for (i = 3; i >  1; i--)
 						cpu_down(i);
 				}
@@ -348,6 +368,10 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 					for (i = 1; i < cpu_count; i++)
 						cpu_up(i);
 				} else {
+				 if (int_hotplug == 0) {			
+				  	//pr_info("case 1: Hotplug locked \n");
+					break;
+				  } else if (int_hotplug == 1) {
 					for (i = 3; i > 2; i--)
 						cpu_down(i);
 				}
@@ -394,9 +418,10 @@ static void intelli_plug_early_suspend(struct early_suspend *handler)
 	mutex_unlock(&intelli_plug_mutex);
 
 	// put rest of the cores to sleep!
-	for (i = num_of_active_cores - 1; i > 0; i--) {
-		cpu_down(i);
+		for (i = num_of_active_cores - 1; i > 0; i--) {
+			cpu_down(i);
 	}
+	
 }
 
 static void __cpuinit intelli_plug_late_resume(struct early_suspend *handler)
