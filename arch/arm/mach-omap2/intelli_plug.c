@@ -86,7 +86,7 @@ static unsigned int nr_run_thresholds_full[] = {
 
 static unsigned int nr_run_thresholds_eco[] = {
 /*      1,  2, - on-line cpus target */
-        3,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
+        4,  UINT_MAX /* avg run threads * 2 (e.g., 9 = 2.25 threads) */
         };
 
 static unsigned int nr_run_hysteresis = 4;  /* 0.5 thread */
@@ -152,8 +152,8 @@ static unsigned int calculate_thread_stats(void)
 
 #ifdef CONFIG_INTELLI_PLUG_DUAL
 	threshold_size =  ARRAY_SIZE(nr_run_thresholds_eco);
-	nr_run_hysteresis = 4;
-	nr_fshift = 1;
+	nr_run_hysteresis = 6;
+	nr_fshift = 2;
 #ifdef DEBUG_INTELLI_PLUG
 	pr_info("intelliplug: eco mode active!");
 #endif
