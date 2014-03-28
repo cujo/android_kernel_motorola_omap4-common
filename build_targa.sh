@@ -49,6 +49,22 @@ export CROSS_COMPILE=arm-eabi-
 export LOCALVERSION="-JBX-3.0-Hybrid-Bionic-4.4"
 make -j8 TARGET_KERNEL_SOURCE=/home/dtrail/android/android_kernel_motorola_omap4-common/ TARGET_KERNEL_CONFIG=mapphone_OCTarga_defconfig $OUT/boot.img
 
+# Ramdisk needs addition to fix 10% battery
+cd /data/4.4/out/target/product/targa
+rm ramdisk.img
+cd ramdisk
+gzip -dc ../ramdisk.img | cpio -i
+
+echo " "
+echo "Edit files: add ':/system/framework/telephony-msim.jar' to BOOTCLASSPATH "
+echo " "
+
+sleep
+
+find . | cpio -o -H newc | gzip > ../ramdisk.img
+
+# end ramdisk
+
 # Build libhealthd.omap4
 while true; do
     read -p "Do you wish to include 10% battery meter? " yn
