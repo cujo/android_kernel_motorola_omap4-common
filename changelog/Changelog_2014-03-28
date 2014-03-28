@@ -1,0 +1,62 @@
+0c89873 Targa: temporary method to fix 10% battery for the Bionic
+3188ea2 Revert "OMAP4: hsmmc: fix race conditions in suspend/resume path"
+8ec48f2 Revert "Added optomized compiler flags"
+e3db479 Revert "Fix optimized compiler flags"
+57371e8 Fix optimized compiler flags
+a72f252 Revert "InteractiveX: Sync to latest version by Imoseyon"
+c6b872d ARM: omap: dmtimer: add omap_dm_timer_dump_regs function
+b2bb4f7 video: fbmod: parse audio blocks from EDID
+298f131 HACK: OMAP4: HDMI: Swap left-right channels for I2S Channel 1
+d40e3ed ASoC: OMAP4: HDMI: add mixer control to get LPCM channels
+03d498f Added optomized compiler flags
+5f8f55d netfilter: xt_IDLETIMER: Rename INTERFACE to LABEL in netlink notification.
+9706956 OMAP4: hsmmc: fix race conditions in suspend/resume path
+08db2f9 mmc: Make sure host is disabled on suspend
+a2afc2f ARM: disable preemption in machine_shutdown
+fa0377c cfg80211: allow registering to beacons
+e89e24f nl80211: add API to probe a client
+5437804 nl80211: allow subscribing to unexpected class3 frames
+2b02db0 nl80211: advertise device AP SME
+b015d48 nl80211: advertise GTK rekey support, new triggers
+531da44 nl80211: support sending TDLS commands/frames
+2e3db46 cfg80211/nl80211: support GTK rekey offload
+dd96b03 timekeeping: fix 32-bit overflow in get_monotonic_boottime
+52478f8 InteractiveX: Sync to latest version by Imoseyon
+3441d53 Revert "cpufreq: Optimize cpufreq_frequency_table_verify()"
+19c5e84 cpuidle: Add last_residency trace event for residency profiling
+01e555d omap4: cpuidle: optimize code path with macros
+2beb175 cpufreq: Optimize cpufreq_frequency_table_verify()
+e5e04f4 Intelli-Plug: Use Dual-Core mode and tune it for better performance
+35bb5f7 Added todays changelog and updated full history
+11d926e Intelli-Plug: Disable Dual-Core mode
+608a43e Intelli-Plug: Add sysfs toggle for screen-on-hotplug enable/disable
+f669098 Intelli-Plug: Add sysfs toggle for screen-on-hotplug enable/disable
+f130ba9 defconfig: fix enable DEBUG_INTELLI_PLUG option
+fa7e422 Edison: Don't use Modem 3.4 driver backport
+6ecc59e defconfig updates
+023b091 Revert "omap4-common: Revert back to Motorola's workaround for i719"
+b516414 Enable unaligned access confioption
+e91e87c kernel: audit: bye stupid logs
+71c04f4  net: loopback: set default mtu to 64K
+9f7736c block: Reserve only one queue tag for sync IO if only 3 tags are available
+a4e54f1 readahead: make context readahead more conservative This helps performance on moderately dense random reads on SSD. Before, readahead will be started whenever reading page N+1 when it happen to read N recently.  After patch, we'll only start readahead when *three* random reads happen to access pages N, N+1, N+2.  The probability of this happening is extremely low for pure random reads, unless they are very dense, which actually deserves some readahead.
+ff6aed2 cfg80211: Fix memory leak
+d03824e Intelli-Plug: target online CPUs set to '2'. Enable rq_stats to give proper functionality to several Intelli-Plug functions
+f40ca14 CPU hotplug, debug: detect imbalance between get_online_cpus() and put_online_cpus()
+e3d3f2a Added todays changelog and updated full history
+52732f6 defconfig updates
+e67e393 sound: soc/pci/usb: sync to CM
+35a8548 omap: dss: sync to CM
+9055745 omap: dss: hdmi: sync to CM repo
+1ccaa79 omap: dsscomp: fix debug events
+14f3dd8 defconfig updates
+b753fde Finally enable IVA freqs
+bd0456e remoteproc, rpmsg: Update to 3.0.31
+ea38239 Disable DPLL Cascading
+b232f16 Remove DSS handler for DSS, revert IVA changes
+3e95ab8 Revert "omap: cpuidle: correct behaviour"
+196c9c3 Revert "include: hcd: update [3.0.31]"
+10381ac Revert "omap: cpu: update cpuidle driver and fix syntax for pm"
+21ec380 Revert "i2c: update all drivers"
+8de0012 Revert "gpio: update pca952x driver (not related to this device)"
+2298f02 Cleanup mistakes in DPLL
